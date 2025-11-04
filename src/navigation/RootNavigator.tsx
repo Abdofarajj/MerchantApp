@@ -4,7 +4,9 @@ import { useAuthStore } from "../store/authStore";
 import AppNavigator from "./AppNavigator";
 import AuthNavigator from "./AuthNavigator";
 
-export type NavigationProps = Partial<ComponentProps<typeof NavigationContainer>>;
+export type NavigationProps = Partial<
+  ComponentProps<typeof NavigationContainer>
+>;
 
 export const navigationRef = { current: null };
 

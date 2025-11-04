@@ -31,7 +31,6 @@ const tabs = [
 ];
 
 export default function AppNavigator() {
-
   return (
     <Tab.Navigator
       screenOptions={{
