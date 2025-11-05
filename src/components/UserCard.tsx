@@ -70,7 +70,24 @@ export default function UserCard(props: UserCardProps) {
       {...restProps}
       {...touchableProps}
     >
+        
       <View style={styles.card}>
+        {/* Right side: content */}
+        <View style={styles.content}>
+          <Text style={[styles.name, nameStyle]} numberOfLines={1}>
+            {name}
+          </Text>
+
+          {email ? (
+            <Text style={[styles.details, detailsStyle]} numberOfLines={1}>
+              {email}
+            </Text>
+          ) : null}
+
+          <Text style={[styles.details, detailsStyle]} numberOfLines={1}>
+            {phoneNumber}
+          </Text>
+        </View>
         {/* Left side: action icons side-by-side */}
         <View style={styles.sideActions}>
           <View style={[styles.iconContainer, deleteOpts.containerStyle]}>
@@ -91,39 +108,25 @@ export default function UserCard(props: UserCardProps) {
             />
           </View>
         </View>
-
-        {/* Right side: content */}
-        <View style={styles.content}>
-          <Text style={[styles.name, nameStyle]} numberOfLines={1}>
-            {name}
-          </Text>
-
-          {email ? (
-            <Text style={[styles.details, detailsStyle]} numberOfLines={1}>
-              {email}
-            </Text>
-          ) : null}
-
-          <Text style={[styles.details, detailsStyle]} numberOfLines={1}>
-            {phoneNumber}
-          </Text>
-        </View>
       </View>
     </TouchableOpacity>
   );
 }
 
-const CARD_BG = "#49f37373"; // off-white blue
+const CARD_BG = "#d7f8e0e0"; // off-white greenish
 
 const styles = StyleSheet.create({
   wrapper: {
     width: "100%",
   },
   card: {
+    direction: "rtl",
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: CARD_BG,
     padding: 16,
+    borderWidth: 2,
+    borderColor: "#f7f2f2ff",
     borderRadius: 12,
     // iOS shadow
     shadowColor: "#dde4dbb0",
@@ -135,6 +138,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   sideActions: {
+    flex: 1,
     // make room for two larger icons side-by-side on the left
     flexDirection: "row",
     alignItems: "center",
@@ -148,23 +152,24 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   content: {
-    flex: 1,
+    flex: 4,
     paddingLeft: 8,
     paddingRight: 4,
   },
   name: {
     fontSize: 20,
     fontWeight: "800",
-    
     color: "#0b3b66",
-    textAlign: "right",
+    borderBottomWidth: 1,
+    borderBottomColor: "#00000034",
+    paddingStart: 4,
+    marginBottom: 4,
   },
   details: {
     marginTop: 4,
     fontSize: 14,
     color: "#56606bff",
     opacity: 0.8,
-    textAlign: "right",
   },
 });
 
