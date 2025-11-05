@@ -38,7 +38,8 @@
             "backgroundColor": "#000000"
           }
         }
-      ]
+      ],
+      "expo-font"
     ],
     "extra": {
       "API_URL": "https://e-voucher-merchant.zaho.ly:6443/",

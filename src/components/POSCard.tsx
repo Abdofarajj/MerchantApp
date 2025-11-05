@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from "../components/Text";
 interface POSCardProps {
   id: string;
   serialNumber: string;

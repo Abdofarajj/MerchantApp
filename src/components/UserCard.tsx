@@ -1,14 +1,16 @@
 import React from "react";
 import {
-    StyleProp,
-    StyleSheet,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    TouchableOpacityProps,
-    View,
-    ViewStyle
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewStyle
 } from "react-native";
+
+import Text from "../components/Text";
+
 import { Colors } from "../theme";
 import { IconComponent } from "./Icon";
 
@@ -158,7 +160,6 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: "800",
     color: Colors.dark.text,
     borderBottomWidth: 1,
     borderBottomColor: "#000000ff",

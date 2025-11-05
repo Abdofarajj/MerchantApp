@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { Alert, StyleSheet, View, useColorScheme } from "react-native";
 import { Button, TextInput as PaperTextInput } from "react-native-paper";
+import Text from "../components/Text";
 import { useLoginMutation } from "../services/Accounts/hook";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";

@@ -5,11 +5,13 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   useColorScheme,
 } from "react-native";
+
+import Text from "../components/Text";
+
 import { IconComponent } from "../components/Icon"; // use lowercase filename
 import POSCard from "../components/POSCard";
 import QuickActionButton from "../components/QuickActionButton";
@@ -135,11 +137,13 @@ export default function HomeScreen() {
     },
     headerTitle: {
       fontSize: 24,
+      fontFamily: "Alexandria",
       fontWeight: "bold",
       color: theme.colors.text,
     },
     headerSubtitle: {
       fontSize: 16,
+      fontFamily: "Alexandria",
       color: theme.colors.textSecondary,
       // marginTop: 4,
     },
@@ -151,21 +155,25 @@ export default function HomeScreen() {
       fontSize: 16,
       color: "white",
       marginBottom: 8,
+      fontFamily: "Alexandria",
     },
     balanceAmount: {
       fontSize: 32,
       fontWeight: "bold",
+      fontFamily: "Alexandria",
       color: "white",
       marginBottom: 16,
     },
     pendingLabel: {
       fontSize: 14,
       color: "white",
+      fontFamily: "Alexandria",
       opacity: 0.8,
       marginTop: 5,
     },
     pendingValue: {
       fontSize: 18,
+      fontFamily: "Alexandria",
       fontWeight: "bold",
       color: "white",
     },
@@ -195,6 +203,7 @@ export default function HomeScreen() {
     sectionTitle: {
       fontSize: 20,
       fontWeight: "bold",
+      fontFamily: "Alexandria",
       color: theme.colors.text,
     },
     viewAllText: {

@@ -5,13 +5,13 @@ import {
     ImageSourcePropType,
     StyleProp,
     StyleSheet,
-    Text,
     TouchableOpacity,
     TouchableOpacityProps,
     View,
     ViewStyle,
 } from "react-native";
 
+import Text from "../components/Text";
 interface IconProps extends Omit<TouchableOpacityProps, "style"> {
     iconName: string | number;
     iconSize?: number;
