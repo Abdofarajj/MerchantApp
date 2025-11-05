@@ -16,7 +16,7 @@ export default function UsersScreen() {
 
   return (
     <Screen useSafeArea={false}>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <ScrollView contentContainerStyle={[styles.container]}>
         <View style={styles.list}>
           {users.map((u) => (
             <UserCard

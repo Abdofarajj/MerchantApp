@@ -9,6 +9,7 @@ import {
     View,
     ViewStyle
 } from "react-native";
+import { Colors } from "../theme";
 import { IconComponent } from "./Icon";
 
 interface IconButtonOptions {
@@ -50,15 +51,15 @@ export default function UserCard(props: UserCardProps) {
 
   const deleteOpts: IconButtonOptions = {
     name: deleteIcon?.name ?? "delete",
-    size: deleteIcon?.size ?? 45, // larger default
-    color: deleteIcon?.color ?? "#c42525ff",
+    size: deleteIcon?.size ?? 40, // larger default
+    color: deleteIcon?.color ?? "#ff3300ff",
     containerStyle: deleteIcon?.containerStyle,
   };
 
   const editOpts: IconButtonOptions = {
     name: editIcon?.name ?? "edit",
-    size: editIcon?.size ?? 45, // larger default
-    color: editIcon?.color ?? "#152f79ff",
+    size: editIcon?.size ?? 40, // larger default
+    color: editIcon?.color ?? "#bcfff1ff",
     containerStyle: editIcon?.containerStyle,
   };
 
@@ -113,11 +114,10 @@ export default function UserCard(props: UserCardProps) {
   );
 }
 
-const CARD_BG = "#d7f8e0e0"; // off-white greenish
+const CARD_BG = "#25367523"; // off-white greenish
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: "100%",
   },
   card: {
     direction: "rtl",
@@ -125,31 +125,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: CARD_BG,
     padding: 16,
-    borderWidth: 2,
-    borderColor: "#f7f2f2ff",
+    borderWidth: 1,
+    borderColor: "#a8e9f1ff",
     borderRadius: 12,
     // iOS shadow
-    shadowColor: "#dde4dbb0",
+    shadowColor: "#1c331621",
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.02,
     shadowRadius: 8,
     // Android elevation
     elevation: 2,
     marginVertical: 8,
   },
   sideActions: {
-    flex: 1,
+    flex: 2,
     // make room for two larger icons side-by-side on the left
-    flexDirection: "row",
+    // flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     width: 96,
     paddingRight: 8,
   },
   iconContainer: {
-    marginHorizontal: 8,
-    backgroundColor: "#e1f0e891",
-    borderRadius: 16,
+    margin: 8,
+    backgroundColor: "#e1f0e834",
+    borderRadius: 20,
   },
   content: {
     flex: 4,
@@ -159,17 +159,17 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "800",
-    color: "#0b3b66",
+    color: Colors.dark.text,
     borderBottomWidth: 1,
-    borderBottomColor: "#00000034",
+    borderBottomColor: "#000000ff",
     paddingStart: 4,
     marginBottom: 4,
   },
   details: {
     marginTop: 4,
     fontSize: 14,
-    color: "#56606bff",
-    opacity: 0.8,
+    color: Colors.dark.text,
+    opacity: 0.95,
   },
 });
 
