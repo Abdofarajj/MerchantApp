@@ -1,10 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import React from "react";
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
   useColorScheme,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -37,7 +37,7 @@ export default function CustomTabBar({
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: Colors.light.bg100,
+      // backgroundColor: Colors.light.bg100,
       borderTopWidth: 1,
       borderTopColor: Colors.light.bg300,
       paddingBottom: insets.bottom,
@@ -72,42 +72,60 @@ export default function CustomTabBar({
   });
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tabContainer}>
-        {tabs.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <TouchableOpacity
-              key={tab.id}
-              style={styles.tabButton}
-              onPress={() => onTabPress(tab.id)}
-              activeOpacity={0.7}
+    <BlurView
+      intensity={100}
+      style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        paddingVertical: 10,
+        paddingBottom: insets.bottom,
+        // backgroundColor: "rgba(255,255,255,0.3)",
+        // borderTopWidth: 1,
+        // borderTopColor: "rgba(0,0,0,0.1)",
+        // backdropFilter: "blur(10px)",
+        alignSelf: "center",
+        maxWidth: 480,
+        width: "100%",
+      }}
+    >
+      {tabs.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <TouchableOpacity
+            key={tab.id}
+            style={styles.tabButton}
+            onPress={() => onTabPress(tab.id)}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name={tab.iconName}
+              size={24}
+              color={
+                isActive ? theme.colors.primary : theme.colors.textSecondary
+              }
+              style={styles.tabIcon}
+            />
+            <Text
+              style={[
+                styles.tabLabel,
+                {
+                  color: isActive
+                    ? theme.colors.primary
+                    : theme.colors.textSecondary,
+                  fontWeight: isActive ? "bold" : "normal",
+                },
+              ]}
             >
-              <Ionicons
-                name={tab.iconName}
-                size={24}
-                color={
-                  isActive ? theme.colors.primary : theme.colors.textSecondary
-                }
-                style={styles.tabIcon}
-              />
-              <Text
-                style={[
-                  styles.tabLabel,
-                  {
-                    color: isActive
-                      ? theme.colors.primary
-                      : theme.colors.textSecondary,
-                    fontWeight: isActive ? "bold" : "normal",
-                  },
-                ]}
-              >
-                {tab.label}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    </View>
+              {tab.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </BlurView>
   );
 }

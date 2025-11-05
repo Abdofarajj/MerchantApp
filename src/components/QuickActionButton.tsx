@@ -7,7 +7,7 @@ import {
   useColorScheme,
 } from "react-native";
 
-import { Colors, darkTheme, lightTheme } from "../theme";
+import { darkTheme, lightTheme } from "../theme";
 
 interface QuickActionButtonProps {
   title: string;
@@ -29,20 +29,19 @@ export default function QuickActionButton({
 
   const styles = StyleSheet.create({
     button: {
-      backgroundColor:
-        colorScheme === "dark" ? Colors.dark.bg100 : Colors.light.bg100,
-      borderRadius: 12,
+      borderRadius: 44,
       padding: 16,
       minHeight: 88,
       alignItems: "center",
       justifyContent: "center",
       flex: 1,
       margin: 6,
+      // backgroundColor: "#FFFFF",
     },
     iconContainer: {
       width: 40,
       height: 40,
-      borderRadius: 20,
+      borderRadius: 50,
       alignItems: "center",
       justifyContent: "center",
       marginBottom: 8,

@@ -21,7 +21,7 @@ export default function UsersScreen() {
   });
 
   return (
-    <Screen centerContent>
+    <Screen useSafeArea={false} centerContent>
       <Text style={styles.text}>Users Screen</Text>
     </Screen>
   );

@@ -1,13 +1,12 @@
 import React from "react";
 import {
   Dimensions,
+  ImageBackground,
   StyleSheet,
   View,
   ViewStyle,
-  useColorScheme,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { darkTheme, lightTheme } from "../theme";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -26,17 +25,16 @@ export default function Screen({
   backgroundColor,
   centerContent = false,
 }: ScreenProps) {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       width: screenWidth,
       height: screenHeight,
-      backgroundColor: backgroundColor || theme.colors.background,
       ...style,
-      marginBottom: 85,
+      paddingBottom: 0,
+    },
+    gradient: {
+      flex: 1,
     },
     content: {
       flex: 1,
@@ -49,11 +47,17 @@ export default function Screen({
 
   return (
     <Container style={styles.container}>
-      {centerContent ? (
-        <View style={styles.content}>{children}</View>
-      ) : (
-        children
-      )}
+      <ImageBackground
+        source={require("../assets/images/background.jpeg")}
+        style={styles.gradient}
+        resizeMode="cover"
+      >
+        {centerContent ? (
+          <View style={styles.content}>{children}</View>
+        ) : (
+          children
+        )}
+      </ImageBackground>
     </Container>
   );
 }

@@ -4,15 +4,84 @@ Purpose: Defines the canonical folder structure, responsibilities, and guideline
 
 Quick Overview
 src/
+├─ assets/
+│ └─ images/ (app icons, logos, splash screens, and other static assets)
 ├─ components/
+│ ├─ CustomTabBar.tsx (custom tab bar component)
+│ ├─ POSCard.tsx (POS device card component)
+│ ├─ QuickActionButton.tsx (quick action button component)
+│ └─ Screen.tsx (base screen wrapper component)
 ├─ config/
+│ ├─ config.base.ts (base configuration with default values)
+│ ├─ config.env.ts (environment variable handling)
+│ └─ index.ts (main config export)
+├─ contexts/
+│ └─ AuthContext.tsx (authentication context provider)
 ├─ hooks/
-├─ navigators/
+│ ├─ use-color-scheme.ts (color scheme hook)
+│ ├─ use-color-scheme.web.ts (web-specific color scheme hook)
+│ ├─ use-theme-color.ts (theme color hook)
+│ ├─ useAppData.ts (app data management hook)
+│ ├─ useFetchData.ts (generic data fetching hook)
+│ ├─ useHomeDetails.ts (home screen data hook with SignalR integration)
+│ └─ useSignalR.ts (SignalR connection management hook)
+├─ navigation/
+│ ├─ AppNavigator.tsx (main app navigation)
+│ ├─ AuthNavigator.tsx (authentication navigation)
+│ └─ RootNavigator.tsx (root navigation container)
 ├─ screens/
+│ ├─ AccountScreen.tsx (user account screen)
+│ ├─ ActivityScreen.tsx (activity/transactions screen)
+│ ├─ HomeScreen.tsx (main dashboard screen)
+│ ├─ index.tsx (screen exports)
+│ ├─ LoginScreen.tsx (login screen)
+│ └─ UsersScreen.tsx (users management screen)
 ├─ services/
+│ ├─ api.ts (axios instance and base API setup)
+│ ├─ index.ts (service exports)
+│ ├─ reactQuery.ts (React Query configuration)
+│ ├─ schema.ts (shared API schemas)
+│ ├─ Accounts/
+│ │ ├─ hook.ts (accounts React hooks)
+│ │ ├─ index.ts (accounts exports)
+│ │ ├─ schema.ts (accounts TypeScript types)
+│ │ └─ service.ts (accounts API functions)
+│ ├─ auth/
+│ │ ├─ hook.ts (auth React hooks)
+│ │ ├─ index.ts (auth exports)
+│ │ ├─ schema.ts (auth TypeScript types)
+│ │ └─ service.ts (auth API functions)
+│ ├─ ChargeOrders/
+│ │ ├─ hook.ts (charge orders React hooks)
+│ │ ├─ index.ts (charge orders exports)
+│ │ ├─ schema.ts (charge orders TypeScript types)
+│ │ └─ service.ts (charge orders API functions)
+│ ├─ Dashboards/
+│ │ ├─ hook.ts (dashboards React hooks)
+│ │ ├─ index.ts (dashboards exports)
+│ │ ├─ schema.ts (dashboards TypeScript types)
+│ │ └─ service.ts (dashboards API functions)
+│ ├─ DeviceMerchants/
+│ │ ├─ hook.ts (device merchants React hooks)
+│ │ ├─ index.ts (device merchants exports)
+│ │ ├─ schema.ts (device merchants TypeScript types)
+│ │ └─ service.ts (device merchants API functions)
+│ ├─ Documents/
+│ │ ├─ hook.ts (documents React hooks)
+│ │ ├─ index.ts (documents exports)
+│ │ ├─ schema.ts (documents TypeScript types)
+│ │ └─ service.ts (documents API functions)
+│ └─ SignalR/
+│ ├─ index.ts (SignalR service exports)
+│ └─ service.ts (SignalR connection management and real-time updates)
 ├─ store/
+│ ├─ authStore.ts (authentication state management with Zustand)
+│ └─ signalR.store.ts (SignalR state management with Zustand)
 ├─ theme/
-├─ utils/
+│ └─ index.ts (design tokens and theme configuration)
+└─ utils/
+├─ logger.ts (logging utilities)
+└─ storage.ts (persistent storage utilities)
 
 Each top-level folder has a focused responsibility. Components use PascalCase; most other files use camelCase or kebab-case consistently.
 
@@ -24,11 +93,11 @@ config/ – App-wide configuration and environment-specific settings.
 
 hooks/ – Reusable React hooks for UI logic, business logic, data fetching, and app lifecycle.
 
-navigators/ – Navigation stacks, routing utilities, and typed route params.
+navigation/ – Navigation stacks, routing utilities, and typed route params.
 
 screens/ – Individual screens for authentication, main flows, profiles, onboarding, support, and utilities.
 
-services/ – API integration and data handling. Contains domain-specific hooks, service logic, schemas, and index files to centralize requests, responses, and type definitions.
+services/ – API integration and data handling. Each service folder contains hook.ts (React hooks), service.ts (API functions), schema.ts (TypeScript types), and index.ts (exports). Main index.ts centralizes all service exports.
 
 store/ – Global state management and persistence using Zustand.
 

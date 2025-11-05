@@ -40,6 +40,11 @@
         }
       ]
     ],
+    "extra": {
+      "API_URL": "https://e-voucher-merchant.zaho.ly:6443/",
+      "SIGNAL_R_URL": "https://e-voucher-merchant.zaho.ly:6443/balanceHub",
+      "TIMEOUT": "60000"
+    },
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
