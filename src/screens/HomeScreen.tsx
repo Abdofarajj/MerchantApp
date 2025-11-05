@@ -458,7 +458,7 @@ export default function HomeScreen() {
           iconName="home"
           iconSize={40}
           iconColor="#fff"
-          buttoncontainerStyle={{ backgroundColor: "#1976D2", padding: 8, borderRadius: 8 }}
+          iconContainerStyle={{ backgroundColor: "#1976D2", padding: 8, borderRadius: 8 }}
           onPress={() => console.log("home pressed")}
         />
       </View>
