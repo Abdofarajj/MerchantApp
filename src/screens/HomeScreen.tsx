@@ -10,7 +10,7 @@ import {
   useColorScheme,
 } from "react-native";
 import ShimmerPlaceholder from "react-native-shimmer-placeholder";
-import { IconComponent } from "../componenets/Icon"; // use lowercase filename
+import { IconComponent } from "../components/Icon"; // use lowercase filename
 import POSCard from "../components/POSCard";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
@@ -187,29 +187,7 @@ export default function HomeScreen() {
     return (
       <View style={styles.errorContainer}>
         <Text style={styles.errorText}>❌ {error}</Text>
-  
-      {/* test 1: IconComponent from your file */}
-      <IconComponent
-        iconName="person"
-        iconSize={40}
-        iconColor="#fff"
-        onPress={() => console.log("profile (IconComponent)")}
-      />
-
-      {/* replacement for direct Ionicons: use IconComponent (text or asset fallback) */}
-      <View style={{ marginTop: 16 }}>
-        <IconComponent
-          iconName="home"
-          iconSize={40}
-          iconColor="#fff"
-          buttoncontainerStyle={{ backgroundColor: "#1976D2", padding: 8, borderRadius: 8 }}
-          onPress={() => console.log("home pressed")}
-        />
       </View>
-
-      {/* test 3: simple fallback box to ensure screen renders */}
-      <View style={{ marginTop: 16, width: 60, height: 60, backgroundColor: "tomato", borderRadius: 30 }} />
-    </View>
     );
   }
 
@@ -466,6 +444,28 @@ export default function HomeScreen() {
           </>
         )}
       </ScrollView>
+      {/* test 1: IconComponent from your file */}
+      <IconComponent
+        iconName="person"
+        iconSize={40}
+        iconColor="#fff"
+        onPress={() => console.log("profile (IconComponent)")}
+      />
+
+      {/* replacement for direct Ionicons: use IconComponent (text or asset fallback) */}
+      <View style={{ marginTop: 16 }}>
+        <IconComponent
+          iconName="home"
+          iconSize={40}
+          iconColor="#fff"
+          buttoncontainerStyle={{ backgroundColor: "#1976D2", padding: 8, borderRadius: 8 }}
+          onPress={() => console.log("home pressed")}
+        />
+      </View>
+
+      {/* test 3: simple fallback box to ensure screen renders */}
+      <View style={{ marginTop: 16, width: 60, height: 60, backgroundColor: "tomato", borderRadius: 30 }} />
+
     </Screen>
   );
 }

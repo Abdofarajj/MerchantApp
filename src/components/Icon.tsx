@@ -1,3 +1,4 @@
+import { MaterialIcons } from "@expo/vector-icons"; // material design icons from expo
 import React from "react";
 import {
     Image,
@@ -49,23 +50,57 @@ export function IconComponent(props: IconProps): React.ReactElement {
         buttoncontainerStyle,
     ];
 
-    // Resolve image source:
-    // 1) number (local require passed in by caller)
-    // 2) http(s) remote uri (string)
-    // 3) lookup in explicit ICON_ASSETS map (string)
+    // 1) If string and present in ICON_ASSETS map -> use that image
+    if (typeof iconName === "string" && ICON_ASSETS[iconName]) {
+        const imageSource = ICON_ASSETS[iconName];
+        return (
+            <TouchableOpacity activeOpacity={0.75} onPress={onPress} style={undefined} {...restProps}>
+                <View style={[containerStyle, { justifyContent: "center", alignItems: "center" }]}>
+                    <Image
+                        source={imageSource}
+                        style={{ width: iconSize * 0.6, height: iconSize * 0.6, tintColor: iconColor }}
+                        resizeMode="contain"
+                    />
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    // 2) Check MaterialIcons glyph map for the name and render MaterialIcons if available
+    let isMaterialIcon = false;
+    if (typeof iconName === "string") {
+        try {
+            // getRawGlyphMap exists on vector icon components; guard in try/catch
+            const glyphMap = (MaterialIcons as any).getRawGlyphMap?.();
+            if (glyphMap && Object.prototype.hasOwnProperty.call(glyphMap, iconName)) {
+                isMaterialIcon = true;
+            }
+        } catch {
+            isMaterialIcon = false;
+        }
+    }
+
+    if (isMaterialIcon) {
+        return (
+            <TouchableOpacity activeOpacity={0.75} onPress={onPress} style={undefined} {...restProps}>
+                <View style={[containerStyle, { justifyContent: "center", alignItems: "center" }]}>
+                    <MaterialIcons name={iconName as any} size={Math.round(iconSize * 0.6)} color={iconColor} />
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    // 3) Other fallback options:
+    // - number (local require passed in by caller)
+    // - http(s) remote uri
+    // - default: render the text of the name
     let imageSource: ImageSourcePropType | undefined;
     if (typeof iconName === "number") {
         imageSource = iconName as number;
     } else if (typeof iconName === "string" && /^https?:\/\//.test(iconName)) {
         imageSource = { uri: iconName as string };
-    } else if (typeof iconName === "string") {
-        // explicit static lookup only — no dynamic require
-        const asset = ICON_ASSETS[iconName];
-        if (asset) {
-            imageSource = asset;
-        } else {
-            imageSource = undefined;
-        }
+    } else {
+        imageSource = undefined;
     }
 
     const inner = imageSource ? (
