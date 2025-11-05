@@ -16,7 +16,7 @@ interface IconProps extends Omit<TouchableOpacityProps, "style"> {
     iconName: string | number;
     iconSize?: number;
     iconColor?: string;
-    buttoncontainerStyle?: StyleProp<ViewStyle>;
+    iconContainerStyle?: StyleProp<ViewStyle>;
     onPress?: TouchableOpacityProps["onPress"];
 }
 
@@ -39,7 +39,7 @@ export function IconComponent(props: IconProps): React.ReactElement {
         iconName,
         iconSize = 24,
         iconColor = "#000",
-        buttoncontainerStyle,
+        iconContainerStyle,
         onPress,
         ...restProps
     } = props;
@@ -47,7 +47,7 @@ export function IconComponent(props: IconProps): React.ReactElement {
     const containerStyle: StyleProp<ViewStyle> = [
         styles.container,
         { width: iconSize, height: iconSize, borderRadius: iconSize / 2 },
-        buttoncontainerStyle,
+        iconContainerStyle,
     ];
 
     // 1) If string and present in ICON_ASSETS map -> use that image
