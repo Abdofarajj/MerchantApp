@@ -21,7 +21,7 @@ export default function AccountScreen() {
   });
 
   return (
-    <Screen centerContent>
+    <Screen useSafeArea={false} centerContent>
       <Text style={styles.text}>Account Screen</Text>
     </Screen>
   );

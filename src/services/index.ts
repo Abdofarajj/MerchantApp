@@ -1,6 +1,8 @@
 // API endpoints index
-// export * from "./Accounts";
-// export * from "./ChargeOrders";
-// export * from "./Dashboards";
-// export * from "./DeviceMerchants";
-// export * from "./Documents";
+// TODO: ensure services are exported consistently for unified imports
+export * from "./Accounts";
+export * from "./ChargeOrders";
+export * from "./Dashboards";
+export * from "./DeviceMerchants";
+export * from "./Documents";
+export * from "./auth";

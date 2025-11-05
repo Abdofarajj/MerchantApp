@@ -1,4 +1,5 @@
-import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { useEffect } from "react";
 import {
   Alert,
   FlatList,
@@ -9,167 +10,27 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import ShimmerPlaceholder from "react-native-shimmer-placeholder";
 import { IconComponent } from "../components/Icon"; // use lowercase filename
 import POSCard from "../components/POSCard";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
-import { useDashboard } from "../hooks/useDashboard";
+import { useHomeDetails } from "../hooks/useHomeDetails";
+import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function HomeScreen() {
-  const { data, isLoading, error } = useDashboard();
+  const { data, isLoading, error, signalRBalance, signalRConnected } =
+    useHomeDetails();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const { userInfo } = useAuthStore();
 
-  const renderShimmerBalanceCard = () => (
-    <View style={styles.balanceCard}>
-      <ShimmerPlaceholder
-        style={[styles.shimmerLine, { width: "80%" }]}
-        shimmerColors={[
-          theme.colors.outline,
-          theme.colors.surface,
-          theme.colors.outline,
-        ]}
-      />
-      <ShimmerPlaceholder
-        style={[styles.shimmerLine, { width: "60%", marginTop: 8 }]}
-        shimmerColors={[
-          theme.colors.outline,
-          theme.colors.surface,
-          theme.colors.outline,
-        ]}
-      />
-      <ShimmerPlaceholder
-        style={[styles.shimmerLine, { width: "40%", height: 2, marginTop: 16 }]}
-        shimmerColors={[
-          theme.colors.outline,
-          theme.colors.surface,
-          theme.colors.outline,
-        ]}
-      />
-      <ShimmerPlaceholder
-        style={[styles.shimmerLine, { width: "50%", marginTop: 8 }]}
-        shimmerColors={[
-          theme.colors.outline,
-          theme.colors.surface,
-          theme.colors.outline,
-        ]}
-      />
-    </View>
-  );
-
-  const renderShimmerQuickActions = () => (
-    <View style={styles.actionsContainer}>
-      <ShimmerPlaceholder
-        style={[
-          styles.shimmerLine,
-          { width: "40%", height: 24, marginBottom: 16 },
-        ]}
-        shimmerColors={[
-          theme.colors.outline,
-          theme.colors.surface,
-          theme.colors.outline,
-        ]}
-      />
-      <View style={styles.actionsGrid}>
-        {[1, 2, 3].map((i) => (
-          <View key={i} style={styles.shimmerActionButton}>
-            <ShimmerPlaceholder
-              style={styles.shimmerCircle}
-              shimmerColors={[
-                theme.colors.outline,
-                theme.colors.surface,
-                theme.colors.outline,
-              ]}
-            />
-            <ShimmerPlaceholder
-              style={[
-                styles.shimmerLine,
-                { width: "60%", height: 16, marginTop: 8 },
-              ]}
-              shimmerColors={[
-                theme.colors.outline,
-                theme.colors.surface,
-                theme.colors.outline,
-              ]}
-            />
-          </View>
-        ))}
-      </View>
-    </View>
-  );
-
-  const renderShimmerPOSDevices = () => (
-    <View>
-      <View style={styles.posHeader}>
-        <ShimmerPlaceholder
-          style={[styles.shimmerLine, { width: "50%", height: 24 }]}
-          shimmerColors={[
-            theme.colors.outline,
-            theme.colors.surface,
-            theme.colors.outline,
-          ]}
-        />
-        <ShimmerPlaceholder
-          style={[styles.shimmerLine, { width: "20%", height: 16 }]}
-          shimmerColors={[
-            theme.colors.outline,
-            theme.colors.surface,
-            theme.colors.outline,
-          ]}
-        />
-      </View>
-      <View
-        style={{ flexDirection: "row", flexWrap: "wrap", paddingHorizontal: 6 }}
-      >
-        {[1, 2, 3, 4].map((i) => (
-          <View key={i} style={styles.shimmerPOSCard}>
-            <ShimmerPlaceholder
-              style={styles.shimmerImage}
-              shimmerColors={[
-                theme.colors.outline,
-                theme.colors.surface,
-                theme.colors.outline,
-              ]}
-            />
-            <View style={{ padding: 12 }}>
-              <ShimmerPlaceholder
-                style={[
-                  styles.shimmerLine,
-                  { width: "80%", height: 12, marginBottom: 8 },
-                ]}
-                shimmerColors={[
-                  theme.colors.outline,
-                  theme.colors.surface,
-                  theme.colors.outline,
-                ]}
-              />
-              <ShimmerPlaceholder
-                style={[
-                  styles.shimmerLine,
-                  { width: "60%", height: 14, marginBottom: 4 },
-                ]}
-                shimmerColors={[
-                  theme.colors.outline,
-                  theme.colors.surface,
-                  theme.colors.outline,
-                ]}
-              />
-              <ShimmerPlaceholder
-                style={[styles.shimmerLine, { width: "70%", height: 12 }]}
-                shimmerColors={[
-                  theme.colors.outline,
-                  theme.colors.surface,
-                  theme.colors.outline,
-                ]}
-              />
-            </View>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
+  // Log userInfo when component mounts or userInfo changes
+  useEffect(() => {
+    if (userInfo) {
+      console.log("HomeScreen: userInfo", userInfo);
+    }
+  }, [userInfo]);
 
   if (error) {
     const styles = StyleSheet.create({
@@ -177,7 +38,7 @@ export default function HomeScreen() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: theme.colors.background,
+        // backgroundColor: theme.colors.background,
       },
       errorText: {
         fontSize: 16,
@@ -242,53 +103,35 @@ export default function HomeScreen() {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: theme.colors.background,
+      // backgroundColor: theme.colors.background,
     },
     errorText: {
       fontSize: 16,
       color: theme.colors.error,
     },
-    shimmerLine: {
-      backgroundColor: theme.colors.outline,
-      borderRadius: 4,
-      height: 16,
+    header: {
+      // backgroundColor: theme.colors.surface,
+      padding: 20,
+      paddingTop: 40,
     },
-    shimmerCircle: {
-      width: 40,
-      height: 40,
-      borderRadius: 20,
-      backgroundColor: theme.colors.outline,
-    },
-    shimmerActionButton: {
-      width: "30%",
+    headerRow: {
+      flexDirection: "row",
       alignItems: "center",
       marginBottom: 16,
     },
-    shimmerImage: {
-      width: "100%",
-      height: 200,
-      backgroundColor: theme.colors.outline,
-      borderRadius: 15,
+    avatar: {
+      width: 50,
+      height: 50,
+      borderRadius: 40,
+      backgroundColor: "rgba(255, 255, 255, 0.2)",
+      justifyContent: "center",
+      alignItems: "center",
+      marginRight: 12,
+      // borderWidth: 1,
+      // borderColor: "rgba(255, 255, 255, 0.3)",
     },
-    shimmerPOSCard: {
-      flex: 1,
-      margin: 6,
-      backgroundColor: theme.colors.surface,
-      borderRadius: 15,
-      shadowColor: "#000000ff",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 10,
-      elevation: 5,
-      overflow: "hidden",
-      minHeight: 290,
-    },
-    header: {
-      backgroundColor: theme.colors.surface,
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
-      padding: 20,
-      paddingTop: 40,
+    greeting: {
+      flexDirection: "column",
     },
     headerTitle: {
       fontSize: 24,
@@ -298,19 +141,11 @@ export default function HomeScreen() {
     headerSubtitle: {
       fontSize: 16,
       color: theme.colors.textSecondary,
-      marginTop: 4,
+      // marginTop: 4,
     },
     balanceCard: {
-      borderRadius: 12,
-      padding: 20,
-      marginTop: 80,
       marginHorizontal: 16,
-      elevation: 8,
-      shadowColor: "#b11313ff",
-      shadowOffset: { width: 0, height: 20 },
-      shadowOpacity: 1,
-      shadowRadius: 1,
-      overflow: "hidden",
+      backgroundColor: "none",
     },
     balanceLabel: {
       fontSize: 16,
@@ -372,77 +207,79 @@ export default function HomeScreen() {
   return (
     <Screen
       useSafeArea={false}
-      style={{ backgroundColor: theme.colors.surface }}
+      // style={{ backgroundColor: theme.colors.surface }}
     >
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Balance Card */}
-        {isLoading ? (
-          renderShimmerBalanceCard()
-        ) : (
-          <LinearGradient
-            colors={[theme.colors.primary, theme.colors.secondary]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.balanceCard}
-          >
-            <Text style={styles.balanceLabel}>Available Balance</Text>
-            <Text style={styles.balanceAmount}>
-              {data.currency} {data.balance.toLocaleString()}
-            </Text>
-            <View
-              style={{
-                height: 1,
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-              }}
-            />
-            <Text style={styles.pendingLabel}>Pending Requests</Text>
-            <Text style={styles.pendingValue}>{data.pendingRequests}</Text>
-          </LinearGradient>
-        )}
-
-        {/* Quick Actions */}
-        {isLoading ? (
-          renderShimmerQuickActions()
-        ) : (
-          <View style={styles.actionsContainer}>
-            <Text style={styles.actionsTitle}>Quick Actions</Text>
-            <View style={styles.actionsGrid}>
-              {quickActions.map((action) => (
-                <QuickActionButton
-                  key={action.id}
-                  title={action.label}
-                  icon={action.icon}
-                  iconColor={action.iconColor}
-                  iconBg={action.iconBg}
-                  onPress={() => handleQuickAction(action.label)}
-                />
-              ))}
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerRow}>
+            <View style={styles.avatar}>
+              <Ionicons name="person" size={20} color="white" />
+            </View>
+            <View style={styles.greeting}>
+              <Text style={{ fontSize: 18, color: "white", fontWeight: "600" }}>
+                Good day
+              </Text>
+              <Text style={{ fontSize: 16, color: "white", opacity: 0.8 }}>
+                {userInfo?.displayName || "User"}
+              </Text>
             </View>
           </View>
-        )}
+        </View>
+
+        {/* Balance Card */}
+        <View style={styles.balanceCard}>
+          <Text style={styles.balanceLabel}>
+            Current Balance{signalRConnected}
+          </Text>
+          <Text style={styles.balanceAmount}>
+            {data.currency} {(signalRBalance ?? data.balance).toLocaleString()}
+          </Text>
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
+            }}
+          />
+          <Text style={styles.pendingLabel}>Pending Requests</Text>
+          <Text style={styles.pendingValue}>{data.pendingRequests}</Text>
+        </View>
+
+        {/* Quick Actions */}
+        <View style={styles.actionsContainer}>
+          <Text style={styles.actionsTitle}>Quick Actions</Text>
+          <View style={styles.actionsGrid}>
+            {quickActions.map((action) => (
+              <QuickActionButton
+                key={action.id}
+                title={action.label}
+                icon={action.icon}
+                iconColor={action.iconColor}
+                iconBg={action.iconBg}
+                onPress={() => handleQuickAction(action.label)}
+              />
+            ))}
+          </View>
+        </View>
 
         {/* POS Devices */}
-        {isLoading ? (
-          renderShimmerPOSDevices()
-        ) : (
-          <>
-            <View style={styles.posHeader}>
-              <Text style={styles.sectionTitle}>Your POS Devices</Text>
-              <TouchableOpacity
-                onPress={() => Alert.alert("Devices", "View all devices")}
-              >
-                <Text style={styles.viewAllText}>View All</Text>
-              </TouchableOpacity>
-            </View>
-            <FlatList
-              data={data.devices}
-              renderItem={renderPOSDevice}
-              keyExtractor={(item) => item.id}
-              numColumns={2}
-              scrollEnabled={false}
-            />
-          </>
-        )}
+        <>
+          <View style={styles.posHeader}>
+            <Text style={styles.sectionTitle}>Your POS Devices</Text>
+            <TouchableOpacity
+              onPress={() => Alert.alert("Devices", "View all devices")}
+            >
+              <Text style={styles.viewAllText}>View All</Text>
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={data.devices}
+            renderItem={renderPOSDevice}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            scrollEnabled={false}
+          />
+        </>
       </ScrollView>
       {/* test 1: IconComponent from your file */}
       <IconComponent

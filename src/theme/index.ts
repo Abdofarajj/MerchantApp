@@ -16,7 +16,7 @@ const lightColors = {
   background: "#FFFFFF",
   surface: "#F7FAF8",
   surfaceVariant: "#F0F4F2",
-  text: "#0F172A",
+  text: "#ffffffff",
   textSecondary: "#334155",
   outline: "#E0E0E0",
   success: "#10B981",

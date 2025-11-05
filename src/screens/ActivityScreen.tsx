@@ -10,7 +10,7 @@ export default function ActivityScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.colors.background,
+      // backgroundColor: theme.colors.background,
       justifyContent: "center",
       alignItems: "center",
     },
@@ -21,7 +21,7 @@ export default function ActivityScreen() {
   });
 
   return (
-    <Screen centerContent>
+    <Screen useSafeArea={false} centerContent>
       <Text style={styles.text}>Activity Screen</Text>
     </Screen>
   );
