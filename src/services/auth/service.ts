@@ -1,6 +1,7 @@
+import * as SecureStore from "expo-secure-store";
 import { useAuthStore } from "../../store/authStore";
-import api from "../api";
 import { accountsService } from "../Accounts/service";
+import api from "../api";
 
 // TODO: ADD ENDPOINT HERE — e.g. '/auth/login'
 // NOTE: refresh() must update tokens in authStore
@@ -15,16 +16,27 @@ export const handleLoginSuccess = async () => {
   }
 };
 
-export const login = async (username: string, password: string) => {
+export const login = async (username: string, password: string, rememberMe: boolean = false) => {
   const response = await api.post("/Accounts/Login", {
     userName: username,
     password,
-    isRemmeber: true,
+    isRemmeber: rememberMe,
   });
+
   // Update store with tokens
   useAuthStore.getState().setToken(response.data.accessToken);
   useAuthStore.getState().setRefreshToken(response.data.refreshToken);
   useAuthStore.getState().setSignedIn(true);
+  useAuthStore.getState().setRememberMe(rememberMe);
+
+  // Store refresh token securely if remember me is enabled
+  if (rememberMe) {
+    try {
+      await SecureStore.setItemAsync("refreshToken", response.data.refreshToken);
+    } catch (error) {
+      console.warn("Failed to store refresh token:", error);
+    }
+  }
 
   // Fetch and set user info after successful login
   await handleLoginSuccess();
@@ -54,5 +66,5 @@ export const refresh = async () => {
 export const logout = async () => {
   await api.post("/Accounts/Logout");
   // Clear store on logout
-  useAuthStore.getState().logout();
+  await useAuthStore.getState().logout();
 };

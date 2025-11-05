@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { accountsService } from "../services/Accounts/service";
+import { useDeviceMerchants } from "../services/DeviceMerchants/hook";
+import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 import { createSignalRConnection } from "../services/SignalR";
 import { useAuthStore } from "../store/authStore";
 import { useSignalRStore } from "../store/signalR.store";
@@ -8,15 +10,7 @@ export interface DashboardData {
   balance: number;
   currency: string;
   pendingRequests: number;
-  devices: POSDevice[];
-}
-
-export interface POSDevice {
-  id: string;
-  serialNumber: string;
-  model: string;
-  addressName?: string;
-  status: "active" | "inactive" | "maintenance" | "offline";
+  devices: DeviceMerchant[];
 }
 
 export const useHomeDetails = () => {
@@ -26,6 +20,13 @@ export const useHomeDetails = () => {
   const signalRBalance = useSignalRStore((state) => state.balance);
   const signalRConnected = useSignalRStore((state) => state.connected);
   const { userInfo, setUserInfo, token } = useAuthStore();
+
+  // Fetch device merchants data
+  const {
+    data: deviceMerchants,
+    isLoading: devicesLoading,
+    error: devicesError,
+  } = useDeviceMerchants();
 
   useEffect(() => {
     if (!userInfo && token) {
@@ -57,41 +58,12 @@ export const useHomeDetails = () => {
         // Mock API call for other data - replace with actual API
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Mock data
+        // Mock data - devices will be populated from API
         const mockData: DashboardData = {
           balance: 1500, // Mock balance value
           currency: "$",
           pendingRequests: 12,
-          devices: [
-            {
-              id: "POS-001",
-              serialNumber: "SN123456789",
-              model: "A75 Pro",
-              addressName: "Store #5, Downtown",
-              status: "active",
-            },
-            {
-              id: "POS-002",
-              serialNumber: "SN987654321",
-              model: "C500",
-              addressName: "Store #12, Mall",
-              status: "active",
-            },
-            {
-              id: "POS-003",
-              serialNumber: "SN555666777",
-              model: "A75 Pro",
-              addressName: "Store #8, Uptown",
-              status: "active",
-            },
-            {
-              id: "POS-004",
-              serialNumber: "SN111222333",
-              model: "C500",
-              addressName: "Store #8, Uptown",
-              status: "inactive",
-            },
-          ],
+          devices: [],
         };
 
         setData(mockData);
@@ -104,6 +76,16 @@ export const useHomeDetails = () => {
 
     fetchDashboard();
   }, []);
+
+  // Update devices when deviceMerchants data is available
+  useEffect(() => {
+    if (deviceMerchants && data && deviceMerchants.length > 0) {
+      setData((prevData) => ({
+        ...prevData!,
+        devices: deviceMerchants,
+      }));
+    }
+  }, [deviceMerchants]);
 
   return { data, isLoading, error, signalRBalance, signalRConnected };
 };

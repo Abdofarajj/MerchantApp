@@ -35,6 +35,7 @@ export default function Screen({
     },
     gradient: {
       flex: 1,
+      paddingBottom: 80,
     },
     content: {
       flex: 1,

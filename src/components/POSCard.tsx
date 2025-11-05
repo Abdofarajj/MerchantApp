@@ -1,47 +1,43 @@
 import { Image } from "expo-image";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from "react-native";
+import { darkTheme, lightTheme } from "../theme";
+
+import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 
 interface POSCardProps {
-  id: string;
-  serialNumber: string;
-  model: string;
-  addressName?: string;
-  status: "active" | "inactive";
+  device: DeviceMerchant;
   onPress?: () => void;
 }
 
-export default function POSCard({
-  serialNumber,
-  model,
-  addressName,
-  status,
-  onPress,
-}: POSCardProps) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "active":
-        return "#4CAF50";
-      case "inactive":
-        return "#9E9E9E";
-      default:
-        return "#9E9E9E";
-    }
+export default function POSCard({ device, onPress }: POSCardProps) {
+  const {
+    serialNumber,
+    deviceName: model,
+    addressName,
+    isActive: status,
+  } = device;
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+
+  const getStatusColor = (isActive: boolean) => {
+    return isActive ? theme.colors.success : theme.colors.textSecondary;
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "active":
-        return "Active";
-      case "inactive":
-        return "Inactive";
-      default:
-        return "Unknown";
-    }
+  const getStatusText = (isActive: boolean) => {
+    return isActive ? "Active" : "Inactive";
   };
 
-  // Mock POS device image - replace with actual image path
-  const posImage = require("@/assets/images/A75Pro.png");
+  // Use device image if available, otherwise no image
+  const posImage = null; // DeviceMerchant doesn't have imageUri field
+
+  const styles = getStyles(theme);
 
   return (
     <TouchableOpacity
@@ -50,25 +46,27 @@ export default function POSCard({
       activeOpacity={0.8}
     >
       <View style={styles.card}>
+        {/* Status indicator at top right */}
+        <View style={styles.statusContainer}>
+          <View
+            style={[
+              styles.statusPill,
+              { backgroundColor: getStatusColor(status) },
+            ]}
+          >
+            <Text style={styles.statusText}>{getStatusText(status)}</Text>
+          </View>
+        </View>
+
         {/* POS Image */}
         <Image source={posImage} style={styles.posImage} contentFit="contain" />
 
         {/* Info Section */}
         <View style={styles.infoSection}>
-          {/* Top row: serial + status */}
-          <View style={styles.topRow}>
-            <Text style={styles.serialNumber} numberOfLines={1}>
-              {serialNumber}
-            </Text>
-            <View
-              style={[
-                styles.statusPill,
-                { backgroundColor: getStatusColor(status) },
-              ]}
-            >
-              <Text style={styles.statusText}>{getStatusText(status)}</Text>
-            </View>
-          </View>
+          {/* Serial number */}
+          <Text style={styles.serialNumber} numberOfLines={1}>
+            {serialNumber}
+          </Text>
 
           {/* Model */}
           <Text style={styles.model} numberOfLines={1}>
@@ -87,63 +85,59 @@ export default function POSCard({
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    margin: 6,
-  },
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 15,
-    shadowColor: "#000000ff",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5,
-    overflow: "hidden",
-    minHeight: 290,
-  },
-  posImage: {
-    width: "100%",
-    height: 200,
-  },
-  infoSection: {
-    padding: 12,
-  },
-  topRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  serialNumber: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#333",
-    flex: 1,
-    marginRight: 8,
-  },
-  statusPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    minWidth: 50,
-    alignItems: "center",
-  },
-  statusText: {
-    color: "#fff",
-    fontSize: 10,
-    fontWeight: "bold",
-  },
-  model: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 4,
-  },
-  addressName: {
-    fontSize: 12,
-    color: "#666",
-    lineHeight: 16,
-  },
-});
+const getStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      margin: 6,
+    },
+    card: {
+      backgroundColor: "transparent",
+      borderRadius: 15,
+      overflow: "hidden",
+      minHeight: 290,
+    },
+    posImage: {
+      width: "100%",
+      height: 200,
+    },
+    infoSection: {
+      padding: 12,
+    },
+    serialNumber: {
+      fontSize: 12,
+      fontWeight: "600",
+      color: theme.colors.text,
+      flex: 1,
+      marginRight: 8,
+    },
+    statusPill: {
+      paddingHorizontal: 8,
+      paddingVertical: 4,
+      borderRadius: 12,
+      minWidth: 50,
+      alignItems: "center",
+    },
+    statusText: {
+      color: "#fff",
+      fontSize: 10,
+      fontWeight: "bold",
+    },
+    model: {
+      fontSize: 14,
+      fontWeight: "bold",
+      color: theme.colors.text,
+      marginBottom: 4,
+    },
+    addressName: {
+      fontSize: 12,
+      color: theme.colors.textSecondary,
+      lineHeight: 16,
+    },
+    statusContainer: {
+      position: "absolute",
+      top: 10,
+      left: 10,
+      zIndex: 1,
+    },
+  });

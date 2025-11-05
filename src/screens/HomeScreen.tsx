@@ -86,13 +86,9 @@ export default function HomeScreen() {
 
   const renderPOSDevice = ({ item }: { item: any }) => (
     <POSCard
-      id={item.id}
-      serialNumber={item.serialNumber}
-      model={item.model}
-      addressName={item.addressName}
-      status={item.status}
+      device={item}
       onPress={() =>
-        Alert.alert("Device", `Navigating to ${item.model} details`)
+        Alert.alert("Device", `Navigating to ${item.deviceName} details`)
       }
     />
   );
@@ -217,7 +213,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.greeting}>
               <Text style={{ fontSize: 18, color: "white", fontWeight: "600" }}>
-                Good day
+                مرحبا
               </Text>
               <Text style={{ fontSize: 16, color: "white", opacity: 0.8 }}>
                 {userInfo?.displayName || "User"}
@@ -274,7 +270,7 @@ export default function HomeScreen() {
           <FlatList
             data={data.devices}
             renderItem={renderPOSDevice}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.id.toString()}
             numColumns={2}
             scrollEnabled={false}
           />

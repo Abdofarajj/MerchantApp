@@ -19,7 +19,7 @@ export default function RootNavigator(props: NavigationProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NavigationContainer ref={navigationRef} direction="ltr" {...props}>
+      <NavigationContainer ref={navigationRef} direction="rtl" {...props}>
         {isSignedIn ? <AppNavigator /> : <AuthNavigator />}
       </NavigationContainer>
     </QueryClientProvider>
