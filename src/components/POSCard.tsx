@@ -31,11 +31,11 @@ export default function POSCard({ device, onPress }: POSCardProps) {
   };
 
   const getStatusText = (isActive: boolean) => {
-    return isActive ? "Active" : "Inactive";
+    return isActive ? "مفعلة" : "غير مفعلة";
   };
 
-  // Use device image if available, otherwise no image
-  const posImage = null; // DeviceMerchant doesn't have imageUri field
+  // Use hardcoded A75Pro image for all POS devices
+  const posImage = require("../assets/images/A75Pro.png");
 
   const styles = getStyles(theme);
 
@@ -88,17 +88,17 @@ export default function POSCard({ device, onPress }: POSCardProps) {
 const getStyles = (theme: any) =>
   StyleSheet.create({
     container: {
-      flex: 1,
-      margin: 6,
+      width: "50%", // Set width to exactly 50% for half screen
     },
     card: {
-      backgroundColor: "transparent",
+      // backgroundColor: theme.colors.surface,
       borderRadius: 15,
       overflow: "hidden",
       minHeight: 290,
+      margin: 6, // Move margin to card level
     },
     posImage: {
-      width: "100%",
+      width: "70%",
       height: 200,
     },
     infoSection: {
@@ -109,7 +109,8 @@ const getStyles = (theme: any) =>
       fontWeight: "600",
       color: theme.colors.text,
       flex: 1,
-      marginRight: 8,
+      marginLeft: 8,
+      textAlign: "right", // Always RTL text alignment
     },
     statusPill: {
       paddingHorizontal: 8,
@@ -122,22 +123,25 @@ const getStyles = (theme: any) =>
       color: "#fff",
       fontSize: 10,
       fontWeight: "bold",
+      textAlign: "center", // Center align status text
     },
     model: {
       fontSize: 14,
       fontWeight: "bold",
       color: theme.colors.text,
       marginBottom: 4,
+      textAlign: "right", // Always RTL text alignment
     },
     addressName: {
       fontSize: 12,
-      color: theme.colors.textSecondary,
+      color: theme.colors.text,
       lineHeight: 16,
+      textAlign: "right", // Always RTL text alignment
     },
     statusContainer: {
       position: "absolute",
       top: 10,
-      left: 10,
+      right: 10, // Fixed RTL positioning
       zIndex: 1,
     },
   });

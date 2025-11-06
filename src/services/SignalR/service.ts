@@ -157,64 +157,79 @@ export const createSignalRConnection = async (): Promise<HubConnection> => {
     return connection;
   }
 
-  try {
-    await getAccessToken();
+  const maxRetries = 5;
+  let retryCount = 0;
 
-    connection = new HubConnectionBuilder()
-      .withUrl(Config.SIGNAL_R_URL, {
-        accessTokenFactory: async () => {
-          try {
-            return await getAccessToken();
-          } catch {
-            // Token expired, try refresh
-            return await refreshAccessToken();
-          }
-        },
-      })
-      .withAutomaticReconnect()
-      .configureLogging(LogLevel.Information)
-      .build();
+  while (retryCount < maxRetries) {
+    try {
+      await getAccessToken();
 
-    setupEventHandlers();
+      connection = new HubConnectionBuilder()
+        .withUrl(Config.SIGNAL_R_URL, {
+          accessTokenFactory: async () => {
+            try {
+              return await getAccessToken();
+            } catch {
+              // Token expired, try refresh
+              return await refreshAccessToken();
+            }
+          },
+        })
+        .withAutomaticReconnect()
+        .configureLogging(LogLevel.Information)
+        .build();
 
-    await connection.start();
-    logger.log("SignalR connected successfully");
+      setupEventHandlers();
 
-    useSignalRStore.getState().setConnected(true);
+      await connection.start();
+      logger.log("SignalR connected successfully");
 
-    // Join group
-    const entityId = await getEntityId();
-    await joinGroup(entityId);
+      useSignalRStore.getState().setConnected(true);
 
-    // Setup app state listener
-    AppState.addEventListener("change", handleAppStateChange);
+      // Join group
+      const entityId = await getEntityId();
+      await joinGroup(entityId);
 
-    return connection;
-  } catch (error) {
-    logger.error("SignalR connection failed:", error);
-    useSignalRStore.getState().setConnected(false);
+      // Setup app state listener
+      AppState.addEventListener("change", handleAppStateChange);
 
-    // If auth error, try refresh and retry once
-    if (
-      error &&
-      typeof error === "object" &&
-      "message" in error &&
-      typeof error.message === "string" &&
-      (error.message.includes("401") || error.message.includes("403"))
-    ) {
-      try {
-        await refreshAccessToken();
-        return createSignalRConnection(); // Retry with new token
-      } catch (refreshError) {
-        logger.error("Token refresh failed:", refreshError);
-        // Clear tokens and logout
-        useAuthStore.getState().logout();
-        throw new Error("Authentication failed, please login again");
+      return connection;
+    } catch (error) {
+      logger.error(`SignalR connection failed (attempt ${retryCount + 1}/${maxRetries}):`, error);
+      useSignalRStore.getState().setConnected(false);
+
+      // If auth error, try refresh and retry once
+      if (
+        error &&
+        typeof error === "object" &&
+        "message" in error &&
+        typeof error.message === "string" &&
+        (error.message.includes("401") || error.message.includes("403"))
+      ) {
+        try {
+          await refreshAccessToken();
+          return createSignalRConnection(); // Retry with new token
+        } catch (refreshError) {
+          logger.error("Token refresh failed:", refreshError);
+          // Clear tokens and logout
+          useAuthStore.getState().logout();
+          throw new Error("Authentication failed, please login again");
+        }
+      }
+
+      retryCount++;
+      if (retryCount < maxRetries) {
+        const delay = Math.min(1000 * Math.pow(2, retryCount), 30000); // Exponential backoff, max 30s
+        logger.log(`Retrying SignalR connection in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      } else {
+        logger.error("Max retries reached for SignalR connection");
+        throw error;
       }
     }
-
-    throw error;
   }
+
+  throw new Error("Failed to establish SignalR connection after retries");
 };
 
 export const stopSignalRConnection = async (): Promise<void> => {

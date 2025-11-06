@@ -28,11 +28,14 @@ const lightColors = {
 const darkColors = {
   primary: "#10B981",
   onPrimary: "#FFFFFF",
+  primaryContainer: "#6EE7B7",
+  secondary: "#098761ff",
   background: "#071122",
   surface: "#0B1220",
   surfaceVariant: "#0F1829",
   text: "#E6EEF2",
   textSecondary: "#94A3B8",
+  outline: "#E0E0E0",
   success: "#10B981",
   warning: "#F59E0B",
   error: "#EF4444",
@@ -109,6 +112,8 @@ export const lightTheme = {
     md: 8,
     lg: 12,
     xl: 16,
+    xxl:24,
+    xxxl:30,
   },
 };
 

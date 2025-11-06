@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { accountsService } from "../services/Accounts/service";
-import { useDeviceMerchants } from "../services/DeviceMerchants/hook";
-import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 import { createSignalRConnection } from "../services/SignalR";
 import { useAuthStore } from "../store/authStore";
 import { useSignalRStore } from "../store/signalR.store";
@@ -10,7 +8,6 @@ export interface DashboardData {
   balance: number;
   currency: string;
   pendingRequests: number;
-  devices: DeviceMerchant[];
 }
 
 export const useHomeDetails = () => {
@@ -20,13 +17,6 @@ export const useHomeDetails = () => {
   const signalRBalance = useSignalRStore((state) => state.balance);
   const signalRConnected = useSignalRStore((state) => state.connected);
   const { userInfo, setUserInfo, token } = useAuthStore();
-
-  // Fetch device merchants data
-  const {
-    data: deviceMerchants,
-    isLoading: devicesLoading,
-    error: devicesError,
-  } = useDeviceMerchants();
 
   useEffect(() => {
     if (!userInfo && token) {
@@ -63,7 +53,6 @@ export const useHomeDetails = () => {
           balance: 1500, // Mock balance value
           currency: "$",
           pendingRequests: 12,
-          devices: [],
         };
 
         setData(mockData);
@@ -76,16 +65,6 @@ export const useHomeDetails = () => {
 
     fetchDashboard();
   }, []);
-
-  // Update devices when deviceMerchants data is available
-  useEffect(() => {
-    if (deviceMerchants && data && deviceMerchants.length > 0) {
-      setData((prevData) => ({
-        ...prevData!,
-        devices: deviceMerchants,
-      }));
-    }
-  }, [deviceMerchants]);
 
   return { data, isLoading, error, signalRBalance, signalRConnected };
 };

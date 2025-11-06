@@ -49,7 +49,7 @@ export default function Screen({
   return (
     <Container style={styles.container}>
       <ImageBackground
-        source={require("../assets/images/background.jpeg")}
+        source={require("../assets/images/background.jpg")}
         style={styles.gradient}
         resizeMode="cover"
       >

@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useEffect } from "react";
 import {
   Alert,
@@ -10,16 +9,23 @@ import {
   View,
   useColorScheme,
 } from "react-native";
+import Avatar from "../components/Avatar";
 import POSCard from "../components/POSCard";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
 import { useHomeDetails } from "../hooks/useHomeDetails";
+import { usePosDetails } from "../hooks/usePosDetails";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function HomeScreen() {
   const { data, isLoading, error, signalRBalance, signalRConnected } =
     useHomeDetails();
+  const {
+    data: posData,
+    isLoading: posLoading,
+    error: posError,
+  } = usePosDetails();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { userInfo } = useAuthStore();
@@ -114,17 +120,6 @@ export default function HomeScreen() {
       alignItems: "center",
       marginBottom: 16,
     },
-    avatar: {
-      width: 50,
-      height: 50,
-      borderRadius: 40,
-      backgroundColor: "rgba(255, 255, 255, 0.2)",
-      justifyContent: "center",
-      alignItems: "center",
-      marginRight: 12,
-      // borderWidth: 1,
-      // borderColor: "rgba(255, 255, 255, 0.3)",
-    },
     greeting: {
       flexDirection: "column",
     },
@@ -208,9 +203,7 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <View style={styles.avatar}>
-              <Ionicons name="person" size={20} color="white" />
-            </View>
+            <Avatar />
             <View style={styles.greeting}>
               <Text style={{ fontSize: 18, color: "white", fontWeight: "600" }}>
                 مرحبا
@@ -242,7 +235,6 @@ export default function HomeScreen() {
 
         {/* Quick Actions */}
         <View style={styles.actionsContainer}>
-          <Text style={styles.actionsTitle}>Quick Actions</Text>
           <View style={styles.actionsGrid}>
             {quickActions.map((action) => (
               <QuickActionButton
@@ -258,7 +250,7 @@ export default function HomeScreen() {
         </View>
 
         {/* POS Devices */}
-        <>
+        <View>
           <View style={styles.posHeader}>
             <Text style={styles.sectionTitle}>Your POS Devices</Text>
             <TouchableOpacity
@@ -267,14 +259,58 @@ export default function HomeScreen() {
               <Text style={styles.viewAllText}>View All</Text>
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={data.devices}
-            renderItem={renderPOSDevice}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            scrollEnabled={false}
-          />
-        </>
+
+          {/* Loading state */}
+          {posLoading && (
+            <Text
+              style={{
+                textAlign: "center",
+                color: theme.colors.textSecondary,
+                marginVertical: 20,
+              }}
+            >
+              Loading POS devices...
+            </Text>
+          )}
+
+          {/* Error state */}
+          {posError && (
+            <Text
+              style={{
+                textAlign: "center",
+                color: theme.colors.error,
+                marginVertical: 20,
+              }}
+            >
+              Failed to load POS devices
+            </Text>
+          )}
+
+          {/* Devices list */}
+          {posData && posData.length > 0 && (
+            <FlatList
+              data={posData}
+              renderItem={renderPOSDevice}
+              keyExtractor={(item) => item.id.toString()}
+              numColumns={2}
+              scrollEnabled={false}
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+            />
+          )}
+
+          {/* Empty state */}
+          {posData && posData.length === 0 && !posLoading && (
+            <Text
+              style={{
+                textAlign: "center",
+                color: theme.colors.textSecondary,
+                marginVertical: 20,
+              }}
+            >
+              No POS devices found
+            </Text>
+          )}
+        </View>
       </ScrollView>
     </Screen>
   );
