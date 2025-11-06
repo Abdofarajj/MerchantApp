@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TouchableOpacityProps,
   View,
-  ViewStyle
+  ViewStyle,
 } from "react-native";
 
 import Text from "../components/Text";
@@ -73,7 +73,6 @@ export default function UserCard(props: UserCardProps) {
       {...restProps}
       {...touchableProps}
     >
-        
       <View style={styles.card}>
         {/* Right side: content */}
         <View style={styles.content}>
@@ -119,8 +118,7 @@ export default function UserCard(props: UserCardProps) {
 const CARD_BG = "#25367523"; // off-white greenish
 
 const styles = StyleSheet.create({
-  wrapper: {
-  },
+  wrapper: {},
   card: {
     direction: "rtl",
     flexDirection: "row",
@@ -173,4 +171,3 @@ const styles = StyleSheet.create({
     opacity: 0.95,
   },
 });
-

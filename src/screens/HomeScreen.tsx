@@ -304,14 +304,25 @@ export default function HomeScreen() {
           iconName="home"
           iconSize={40}
           iconColor="#fff"
-          iconContainerStyle={{ backgroundColor: "#1976D2", padding: 8, borderRadius: 8 }}
+          iconContainerStyle={{
+            backgroundColor: "#1976D2",
+            padding: 8,
+            borderRadius: 8,
+          }}
           onPress={() => console.log("home pressed")}
         />
       </View>
 
       {/* test 3: simple fallback box to ensure screen renders */}
-      <View style={{ marginTop: 16, width: 60, height: 60, backgroundColor: "tomato", borderRadius: 30 }} />
-
+      <View
+        style={{
+          marginTop: 16,
+          width: 60,
+          height: 60,
+          backgroundColor: "tomato",
+          borderRadius: 30,
+        }}
+      />
     </Screen>
   );
 }

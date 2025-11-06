@@ -29,13 +29,12 @@ const fontMap: Record<FontWeight, string> = {
   black: "AlexandriaBlack",
 };
 
-export default function Text({ weight = "regular", style, ...props }: CustomTextProps) {
+export default function Text({
+  weight = "regular",
+  style,
+  ...props
+}: CustomTextProps) {
   const fontFamily = fontMap[weight];
 
-  return (
-    <RNText
-      {...props}
-      style={[style, { fontFamily: "Alexandria" }]}
-    />
-  );
+  return <RNText {...props} style={[style, { fontFamily: "Alexandria" }]} />;
 }

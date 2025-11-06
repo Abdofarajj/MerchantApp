@@ -2,8 +2,7 @@ import { useFonts } from "expo-font";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-  
-const [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     AlexandriaThin: require("../assets/fonts/Alexandria-Thin.ttf"),
     AlexandriaExtraLight: require("../assets/fonts/Alexandria-ExtraLight.ttf"),
     AlexandriaLight: require("../assets/fonts/Alexandria-Light.ttf"),

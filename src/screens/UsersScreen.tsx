@@ -9,8 +9,18 @@ export default function UsersScreen() {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
   const users = [
-    { id: "1", name: "أحمد علي", phoneNumber: "+966512345678", email: "ahmed@example.com" },
-    { id: "2", name: "سارة محمد", phoneNumber: "+966598765432", email: "sara@example.com" },
+    {
+      id: "1",
+      name: "أحمد علي",
+      phoneNumber: "+966512345678",
+      email: "ahmed@example.com",
+    },
+    {
+      id: "2",
+      name: "سارة محمد",
+      phoneNumber: "+966598765432",
+      email: "sara@example.com",
+    },
     { id: "3", name: "خالد حسن", phoneNumber: "+966500112233" },
   ];
 
