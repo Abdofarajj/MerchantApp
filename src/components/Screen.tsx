@@ -1,22 +1,16 @@
-import React from "react";
-import {
-  Dimensions,
-  StyleSheet,
-  View,
-  ViewStyle,
-  useColorScheme,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { darkTheme, lightTheme } from "../theme";
+import type React from "react"
+import { Dimensions, StyleSheet, View, type ViewStyle, useColorScheme } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { darkTheme, lightTheme } from "../theme"
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
+const { width: screenWidth, height: screenHeight } = Dimensions.get("window")
 
 interface ScreenProps {
-  children: React.ReactNode;
-  style?: ViewStyle;
-  useSafeArea?: boolean;
-  backgroundColor?: string;
-  centerContent?: boolean;
+  children: React.ReactNode
+  style?: ViewStyle
+  useSafeArea?: boolean
+  backgroundColor?: string
+  centerContent?: boolean
 }
 
 export default function Screen({
@@ -26,8 +20,8 @@ export default function Screen({
   backgroundColor,
   centerContent = false,
 }: ScreenProps) {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const colorScheme = useColorScheme()
+  const theme = colorScheme === "dark" ? darkTheme : lightTheme
 
   const styles = StyleSheet.create({
     container: {
@@ -43,20 +37,17 @@ export default function Screen({
       justifyContent: "center",
       alignItems: "center",
     },
-  });
+  })
 
-  const Container = useSafeArea ? SafeAreaView : View;
+  const Container = useSafeArea ? SafeAreaView : View
 
   return (
     <Container style={styles.container}>
-      {centerContent ? (
-        <View style={styles.content}>{children}</View>
-      ) : (
-        children
-      )}
+      {centerContent ? <View style={styles.content}>{children}</View> : children}
     </Container>
-  );
+  )
 }
 
 // Export screen dimensions for use in other components
-export { screenHeight, screenWidth };
+export { screenHeight, screenWidth }
+

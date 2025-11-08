@@ -1,54 +1,43 @@
-import { Image } from "expo-image";
-import React from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image } from "expo-image"
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native"
 
 interface POSCardProps {
-  id: string;
-  serialNumber: string;
-  model: string;
-  addressName?: string;
-  status: "active" | "inactive";
-  onPress?: () => void;
+  id: string
+  serialNumber: string
+  model: string
+  addressName?: string
+  status: "active" | "inactive"
+  onPress?: () => void
 }
 
-export default function POSCard({
-  serialNumber,
-  model,
-  addressName,
-  status,
-  onPress,
-}: POSCardProps) {
+export default function POSCard({ serialNumber, model, addressName, status, onPress }: POSCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "#4CAF50";
+        return "#4CAF50"
       case "inactive":
-        return "#9E9E9E";
+        return "#9E9E9E"
       default:
-        return "#9E9E9E";
+        return "#9E9E9E"
     }
-  };
+  }
 
   const getStatusText = (status: string) => {
     switch (status) {
       case "active":
-        return "Active";
+        return "Active"
       case "inactive":
-        return "Inactive";
+        return "Inactive"
       default:
-        return "Unknown";
+        return "Unknown"
     }
-  };
+  }
 
   // Mock POS device image - replace with actual image path
-  const posImage = require("@/assets/images/A75Pro.png");
+  const posImage = require("@/assets/images/A75Pro.png")
 
   return (
-    <TouchableOpacity
-      style={styles.container}
-      onPress={onPress}
-      activeOpacity={0.8}
-    >
+    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.card}>
         {/* POS Image */}
         <Image source={posImage} style={styles.posImage} contentFit="contain" />
@@ -60,12 +49,7 @@ export default function POSCard({
             <Text style={styles.serialNumber} numberOfLines={1}>
               {serialNumber}
             </Text>
-            <View
-              style={[
-                styles.statusPill,
-                { backgroundColor: getStatusColor(status) },
-              ]}
-            >
+            <View style={[styles.statusPill, { backgroundColor: getStatusColor(status) }]}>
               <Text style={styles.statusText}>{getStatusText(status)}</Text>
             </View>
           </View>
@@ -84,7 +68,7 @@ export default function POSCard({
         </View>
       </View>
     </TouchableOpacity>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -146,4 +130,4 @@ const styles = StyleSheet.create({
     color: "#666",
     lineHeight: 16,
   },
-});
+})

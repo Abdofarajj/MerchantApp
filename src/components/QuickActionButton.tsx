@@ -1,36 +1,22 @@
-import React from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, useColorScheme } from "react-native"
 
-import { Colors, darkTheme, lightTheme } from "../theme";
+import { Colors, darkTheme, lightTheme } from "../theme"
 
 interface QuickActionButtonProps {
-  title: string;
-  icon: string;
-  iconColor: string;
-  iconBg: string;
-  onPress: () => void;
+  title: string
+  icon: string
+  iconColor: string
+  iconBg: string
+  onPress: () => void
 }
 
-export default function QuickActionButton({
-  title,
-  icon,
-  iconColor,
-  iconBg,
-  onPress,
-}: QuickActionButtonProps) {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+export default function QuickActionButton({ title, icon, iconColor, iconBg, onPress }: QuickActionButtonProps) {
+  const colorScheme = useColorScheme()
+  const theme = colorScheme === "dark" ? darkTheme : lightTheme
 
   const styles = StyleSheet.create({
     button: {
-      backgroundColor:
-        colorScheme === "dark" ? Colors.dark.bg100 : Colors.light.bg100,
+      backgroundColor: colorScheme === "dark" ? Colors.dark.bg100 : Colors.light.bg100,
       borderRadius: 12,
       padding: 16,
       minHeight: 88,
@@ -58,18 +44,14 @@ export default function QuickActionButton({
       color: theme.colors.text,
       textAlign: "center",
     },
-  });
+  })
 
   return (
-    <TouchableOpacity
-      style={styles.button}
-      onPress={onPress}
-      activeOpacity={0.8}
-    >
+    <TouchableOpacity style={styles.button} onPress={onPress} activeOpacity={0.8}>
       <View style={styles.iconContainer}>
         <Text style={styles.icon}>{icon}</Text>
       </View>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
-  );
+  )
 }
