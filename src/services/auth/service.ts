@@ -11,8 +11,10 @@ export const handleLoginSuccess = async () => {
   try {
     const data = await accountsService.getUserInfo();
     setUserInfo(data);
+    return data;
   } catch (error) {
     console.warn("Failed to fetch user info:", error);
+    return null;
   }
 };
 
@@ -39,9 +41,18 @@ export const login = async (username: string, password: string, rememberMe: bool
   }
 
   // Fetch and set user info after successful login
-  await handleLoginSuccess();
+  const userInfo = await handleLoginSuccess();
 
-  return response.data;
+  // Store userId securely if remember me is enabled
+  if (rememberMe && userInfo?.id) {
+    try {
+      await SecureStore.setItemAsync("userId", userInfo.id.toString());
+    } catch (error) {
+      console.warn("Failed to store userId:", error);
+    }
+  }
+
+  return { ...response.data, userInfo };
 };
 
 export const refresh = async () => {

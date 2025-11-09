@@ -17,6 +17,7 @@ interface UserInfo {
 
 interface AuthState {
   isSignedIn: boolean;
+  isLoading: boolean;
   username: string;
   token: string;
   refreshToken: string;
@@ -24,12 +25,14 @@ interface AuthState {
   userInfo: UserInfo | null;
   rememberMe: boolean;
   setSignedIn: (signedIn: boolean) => void;
+  setLoading: (loading: boolean) => void;
   setUsername: (username: string) => void;
   setToken: (token: string) => void;
   setRefreshToken: (refreshToken: string) => void;
   setUserId: (userId: string) => void;
   setUserInfo: (info: UserInfo | null) => void;
   setRememberMe: (remember: boolean) => void;
+  setTokens: (tokens: { accessToken: string; refreshToken: string }) => void;
   login: (username: string, password: string) => Promise<void>; // Deprecated
   logout: () => void;
   signOut: () => void;
@@ -38,6 +41,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   isSignedIn: false,
+  isLoading: false,
   username: "",
   token: "",
   refreshToken: "",
@@ -48,6 +52,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setSignedIn: (signedIn: boolean) => {
     set({ isSignedIn: signedIn });
     console.log("AuthStore: isSignedIn set to", signedIn);
+  },
+
+  setLoading: (loading: boolean) => {
+    set({ isLoading: loading });
   },
 
   setUsername: (username: string) => {
@@ -64,6 +72,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   setUserId: (userId: string) => {
     set({ userId });
+  },
+
+  setTokens: (tokens: { accessToken: string; refreshToken: string }) => {
+    set({
+      token: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+    });
   },
 
   setUserInfo: (info: UserInfo | null) => {

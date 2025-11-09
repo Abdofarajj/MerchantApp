@@ -1,7 +1,10 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { useAuthStore } from "../store/authStore";
+import { useAutoLogin } from "../services/auth/hook";
 
 interface AuthContextType {
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: () => void;
   logout: () => void;
 }
@@ -21,7 +24,15 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  const { isSignedIn, isLoading } = useAuthStore();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Use auto-login hook to handle authentication on app start
+  useAutoLogin();
+
+  useEffect(() => {
+    setIsAuthenticated(isSignedIn);
+  }, [isSignedIn]);
 
   const login = () => {
     console.log("AuthContext: User logged in");
@@ -35,6 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const value = {
     isAuthenticated,
+    isLoading,
     login,
     logout,
   };
