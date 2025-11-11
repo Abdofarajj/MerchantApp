@@ -1,1 +1,4 @@
-// TODO: Add exports here when dashboard API is implemented
+// Dashboards API service
+export * from "./hook";
+export * from "./service";
+export * from "./schema";

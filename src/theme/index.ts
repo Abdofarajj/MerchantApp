@@ -17,12 +17,16 @@ const lightColors = {
   surface: "#F7FAF8",
   surfaceVariant: "#F0F4F2",
   text: "#ffffffff",
+    text2: "#000000ff",
+
   textSecondary: "#334155",
   outline: "#E0E0E0",
   success: "#10B981",
   warning: "#F59E0B",
   error: "#EF4444",
   info: "#3B82F6",
+  white:"#FFFFFF",
+  black:"#000000"
 };
 
 const darkColors = {
@@ -34,12 +38,16 @@ const darkColors = {
   surface: "#0B1220",
   surfaceVariant: "#0F1829",
   text: "#E6EEF2",
+      text2: "#000000ff",
+
   textSecondary: "#94A3B8",
   outline: "#E0E0E0",
   success: "#10B981",
   warning: "#F59E0B",
   error: "#EF4444",
   info: "#3B82F6",
+    white:"#FFFFFF",
+  black:"#000000"
 };
 
 export const lightTheme = {

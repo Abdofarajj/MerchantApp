@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Dimensions,
-  ImageBackground,
-  StyleSheet,
-  View,
-  ViewStyle,
-} from "react-native";
+import { Dimensions, StyleSheet, View, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
@@ -30,12 +24,9 @@ export default function Screen({
       flex: 1,
       width: screenWidth,
       height: screenHeight,
+      backgroundColor: backgroundColor || "#000000",
       ...style,
       paddingBottom: 0,
-    },
-    gradient: {
-      flex: 1,
-      paddingBottom: 80,
     },
     content: {
       flex: 1,
@@ -48,17 +39,11 @@ export default function Screen({
 
   return (
     <Container style={styles.container}>
-      <ImageBackground
-        source={require("../assets/images/background.jpg")}
-        style={styles.gradient}
-        resizeMode="cover"
-      >
-        {centerContent ? (
-          <View style={styles.content}>{children}</View>
-        ) : (
-          children
-        )}
-      </ImageBackground>
+      {centerContent ? (
+        <View style={styles.content}>{children}</View>
+      ) : (
+        children
+      )}
     </Container>
   );
 }

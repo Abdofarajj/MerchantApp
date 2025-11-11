@@ -13,20 +13,15 @@ import { darkTheme, lightTheme } from "../theme";
 export default function AccountScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  const navigation = useNavigation();
 
   // Get user info from auth store
   const { userInfo } = useAuthStore();
-
-  // Initialize home details (which will fetch user info if needed)
-  const { data: dashboardData, isLoading, error } = useHomeDetails();
 
   // Logout mutation
   const logoutMutation = useLogoutMutation();
 
   // User info is now ready to use (from auth store)
   const userData = userInfo;
-  const balanceData = dashboardData;
 
   const handleLogout = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [

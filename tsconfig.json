@@ -3,6 +3,9 @@
   "compilerOptions": {
     "strict": true,
     "jsx": "react-native",
+    "module": "ESNext",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./*"]
     }

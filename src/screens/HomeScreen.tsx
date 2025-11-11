@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   Alert,
   FlatList,
@@ -10,6 +10,10 @@ import {
   useColorScheme,
 } from "react-native";
 import Avatar from "../components/Avatar";
+import {
+  RechargeBottomSheet,
+  RechargeBottomSheetRef,
+} from "../components/BottomSheet";
 import POSCard from "../components/POSCard";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
@@ -29,6 +33,9 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { userInfo } = useAuthStore();
+
+  // Bottom sheet refs
+  const rechargeSheetRef = useRef<RechargeBottomSheetRef>(null);
 
   // Log userInfo when component mounts or userInfo changes
   useEffect(() => {
@@ -60,7 +67,11 @@ export default function HomeScreen() {
   if (!data) return null;
 
   const handleQuickAction = (action: string) => {
-    Alert.alert("Quick Action", `${action} feature coming soon!`);
+    if (action === "Recharge") {
+      rechargeSheetRef.current?.present();
+    } else {
+      Alert.alert("Quick Action", `${action} feature coming soon!`);
+    }
   };
 
   const quickActions = [
@@ -68,25 +79,17 @@ export default function HomeScreen() {
       id: "recharge",
       label: "Recharge",
       icon: "+",
-      iconColor: theme.colors.primary,
-      iconBg: `${theme.colors.primary}1A`, // 10% opacity
+      iconColor: theme.colors.black,
+      iconBg: theme.colors.primary,
       navigateTo: "requests",
     },
     {
       id: "collect",
       label: "Collect",
       icon: "$",
-      iconColor: theme.colors.success,
-      iconBg: `${theme.colors.success}1A`, // 10% opacity
+      iconColor: theme.colors.black,
+      iconBg: theme.colors.success,
       navigateTo: "devices",
-    },
-    {
-      id: "refund",
-      label: "Refund",
-      icon: "×",
-      iconColor: theme.colors.warning,
-      iconBg: `${theme.colors.warning}1A`, // 10% opacity
-      navigateTo: "requests",
     },
   ];
 
@@ -147,17 +150,6 @@ export default function HomeScreen() {
       fontWeight: "bold",
       color: "white",
       marginBottom: 16,
-    },
-    pendingLabel: {
-      fontSize: 14,
-      color: "white",
-      opacity: 0.8,
-      marginTop: 5,
-    },
-    pendingValue: {
-      fontSize: 18,
-      fontWeight: "bold",
-      color: "white",
     },
     actionsContainer: {
       paddingHorizontal: 16,
@@ -229,8 +221,6 @@ export default function HomeScreen() {
               backgroundColor: "rgba(255, 255, 255, 0.2)",
             }}
           />
-          <Text style={styles.pendingLabel}>Pending Requests</Text>
-          <Text style={styles.pendingValue}>{data.pendingRequests}</Text>
         </View>
 
         {/* Quick Actions */}
@@ -312,6 +302,9 @@ export default function HomeScreen() {
           )}
         </View>
       </ScrollView>
+
+      {/* Recharge Bottom Sheet */}
+      <RechargeBottomSheet ref={rechargeSheetRef} />
     </Screen>
   );
 }

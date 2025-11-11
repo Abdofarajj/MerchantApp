@@ -39,8 +39,8 @@ export default function QuickActionButton({
       // backgroundColor: "#FFFFF",
     },
     iconContainer: {
-      width: 40,
-      height: 40,
+      width: 60,
+      height: 60,
       borderRadius: 50,
       alignItems: "center",
       justifyContent: "center",

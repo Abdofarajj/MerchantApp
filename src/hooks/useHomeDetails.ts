@@ -7,7 +7,6 @@ import { useSignalRStore } from "../store/signalR.store";
 export interface DashboardData {
   balance: number;
   currency: string;
-  pendingRequests: number;
 }
 
 export const useHomeDetails = () => {
@@ -52,7 +51,6 @@ export const useHomeDetails = () => {
         const mockData: DashboardData = {
           balance: 1500, // Mock balance value
           currency: "$",
-          pendingRequests: 12,
         };
 
         setData(mockData);
