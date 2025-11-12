@@ -21,6 +21,7 @@ import { useHomeDetails } from "../hooks/useHomeDetails";
 import { usePosDetails } from "../hooks/usePosDetails";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
+import Text from "../components/Text";
 
 export default function HomeScreen() {
   const navigation = useNavigation();

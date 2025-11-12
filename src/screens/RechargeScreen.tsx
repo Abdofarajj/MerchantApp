@@ -3,7 +3,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   View,
   useColorScheme,
@@ -12,6 +11,7 @@ import { Button } from "react-native-paper";
 import type { ConfirmationModalRef } from "../components/Modal";
 import { ConfirmationModal } from "../components/Modal";
 import Screen from "../components/Screen";
+import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
 import { useCreateChargeOrderMutation } from "../services/ChargeOrders";
 import { darkTheme, lightTheme } from "../theme";

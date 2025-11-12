@@ -5,11 +5,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import Text from "../components/Text";
 import { Button } from "react-native-paper";
 import type { ConfirmationModalRef } from "../components/Modal";
 import { ConfirmationModal } from "../components/Modal";

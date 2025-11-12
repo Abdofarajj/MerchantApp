@@ -6,13 +6,13 @@ import {
   FlatList,
   RefreshControl,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
 import RequestPreview from "../components/RequestPreview";
 import Screen from "../components/Screen";
+import Text from "../components/Text";
 import { useGetChargeOrdersByMerchantQuery } from "../services/ChargeOrders";
 import { useDeleteChargeOrderMutation } from "../services/ChargeOrders/hook";
 import {

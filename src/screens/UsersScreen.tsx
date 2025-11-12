@@ -1,6 +1,7 @@
 import React from "react";
-import { StyleSheet, Text, useColorScheme } from "react-native";
+import { StyleSheet, useColorScheme } from "react-native";
 import Screen from "../components/Screen";
+import Text from "../components/Text";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {

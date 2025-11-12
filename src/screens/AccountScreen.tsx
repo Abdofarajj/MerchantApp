@@ -1,9 +1,10 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Alert, StyleSheet, useColorScheme, View } from "react-native";
 import { Button } from "react-native-paper";
 import Avatar from "../components/Avatar";
 import Screen from "../components/Screen";
+import Text from "../components/Text";
 // import { useHomeDetails } from "../hooks/useHomeDetails";
 import { useLogoutMutation } from "../services/Accounts";
 import { useAuthStore } from "../store/authStore";

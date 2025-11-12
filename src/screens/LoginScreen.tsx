@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { Alert, StyleSheet, View, useColorScheme } from "react-native";
+import Text from "../components/Text";
 import {
   Button,
   Checkbox,
