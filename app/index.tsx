@@ -1,6 +1,19 @@
+import { useFonts } from "expo-font";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
+  const [fontsLoaded] = useFonts({
+    AlexandriaThin: require("../assets/fonts/Alexandria-Thin.ttf"),
+    AlexandriaExtraLight: require("../assets/fonts/Alexandria-ExtraLight.ttf"),
+    AlexandriaLight: require("../assets/fonts/Alexandria-Light.ttf"),
+    AlexandriaRegular: require("../assets/fonts/Alexandria-Regular.ttf"),
+    AlexandriaMedium: require("../assets/fonts/Alexandria-Medium.ttf"),
+    AlexandriaSemiBold: require("../assets/fonts/Alexandria-SemiBold.ttf"),
+    AlexandriaBold: require("../assets/fonts/Alexandria-Bold.ttf"),
+    AlexandriaExtraBold: require("../assets/fonts/Alexandria-ExtraBold.ttf"),
+    AlexandriaBlack: require("../assets/fonts/Alexandria-Black.ttf"),
+  });
+
   return (
     <View style={styles.container}>
       <View style={styles.main}>

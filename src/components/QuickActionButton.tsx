@@ -1,11 +1,12 @@
 import React from "react";
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   useColorScheme,
 } from "react-native";
+
+import Text from "../components/Text";
 
 import { darkTheme, lightTheme } from "../theme";
 
