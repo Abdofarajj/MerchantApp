@@ -24,8 +24,8 @@ const lightColors = {
   warning: "#F59E0B",
   error: "#EF4444",
   info: "#3B82F6",
-  white:"#FFFFFF",
-  black:"#000000"
+  white: "#FFFFFF",
+  black: "#000000",
 };
 
 const darkColors = {
@@ -37,7 +37,7 @@ const darkColors = {
   surface: "#0B1220",
   surfaceVariant: "#0F1829",
   text: "#E6EEF2",
-      text2: "#000000ff",
+  text2: "#000000ff",
 
   textSecondary: "#94A3B8",
   outline: "#E0E0E0",
@@ -45,8 +45,8 @@ const darkColors = {
   warning: "#F59E0B",
   error: "#EF4444",
   info: "#3B82F6",
-    white:"#FFFFFF",
-  black:"#000000"
+  white: "#FFFFFF",
+  black: "#000000",
 };
 
 export const lightTheme = {
@@ -119,8 +119,8 @@ export const lightTheme = {
     md: 8,
     lg: 12,
     xl: 16,
-    xxl:24,
-    xxxl:30,
+    xxl: 24,
+    xxxl: 30,
   },
 };
 
