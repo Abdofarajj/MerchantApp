@@ -1,4 +1,3 @@
-import { logger } from "../../utils/logger";
 import api from "../api";
 import {
   CreateChargeOrderRequest,
@@ -17,57 +16,35 @@ export const chargeOrdersService = {
   getChargeOrdersByMerchant: async (
     data: GetChargeOrdersByMerchantRequest
   ): Promise<GetChargeOrdersByMerchantResponse> => {
-    logger.log("ChargeOrdersService: getChargeOrdersByMerchant request", data);
-    try {
-      const response = await api.post("/ChargeOrders/GetByMerchant", data);
-      logger.log("ChargeOrdersService: getChargeOrdersByMerchant response", response.data);
-      return response.data;
-    } catch (error) {
-      logger.error("ChargeOrdersService: getChargeOrdersByMerchant error", error);
-      throw error;
-    }
+    // TODO: ADD ENDPOINT HERE — e.g. '/ChargeOrders/GetByMerchant'
+    const response = await api.post("/ChargeOrders/GetByMerchant", data);
+    return response.data;
   },
 
   // Get Charge Order by ID
-  getChargeOrderById: async (id: number): Promise<GetChargeOrderByIdResponse> => {
-    logger.log("ChargeOrdersService: getChargeOrderById request", { id });
-    try {
-      const response = await api.get(`/ChargeOrders/GetById/${id}`);
-      logger.log("ChargeOrdersService: getChargeOrderById response", response.data);
-      return response.data;
-    } catch (error) {
-      logger.error("ChargeOrdersService: getChargeOrderById error", error);
-      throw error;
-    }
+  getChargeOrderById: async (
+    id: number
+  ): Promise<GetChargeOrderByIdResponse> => {
+    // TODO: ADD ENDPOINT HERE — e.g. '/ChargeOrders/GetById/{id}'
+    const response = await api.get(`/ChargeOrders/GetById/${id}`);
+    return response.data;
   },
 
   // Create Charge Order
   createChargeOrder: async (
     data: CreateChargeOrderRequest
   ): Promise<CreateChargeOrderResponse> => {
-    logger.log("ChargeOrdersService: createChargeOrder request", data);
-    try {
-      const response = await api.post("/ChargeOrders/Create", data);
-      logger.log("ChargeOrdersService: createChargeOrder response", response.data);
-      return response.data;
-    } catch (error) {
-      logger.error("ChargeOrdersService: createChargeOrder error", error);
-      throw error;
-    }
+    // TODO: ADD ENDPOINT HERE — e.g. '/ChargeOrders/Create'
+    const response = await api.post("/ChargeOrders/Create", data);
+    return response.data;
   },
 
   // Delete Charge Order
   deleteChargeOrder: async (
     data: DeleteChargeOrderRequest
   ): Promise<DeleteChargeOrderResponse> => {
-    logger.log("ChargeOrdersService: deleteChargeOrder request", data);
-    try {
-      const response = await api.post("/ChargeOrders/Delete", data);
-      logger.log("ChargeOrdersService: deleteChargeOrder response", response.data);
-      return response.data;
-    } catch (error) {
-      logger.error("ChargeOrdersService: deleteChargeOrder error", error);
-      throw error;
-    }
+    // TODO: ADD ENDPOINT HERE — e.g. '/ChargeOrders/Delete'
+    const response = await api.post("/ChargeOrders/Delete", data);
+    return response.data;
   },
 };

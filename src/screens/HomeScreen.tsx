@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useRef } from "react";
 import {
   Alert,
@@ -23,8 +24,8 @@ import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function HomeScreen() {
-  const { data, isLoading, error, signalRBalance, signalRConnected } =
-    useHomeDetails();
+  const navigation = useNavigation();
+  const { data, error, signalRBalance, signalRConnected } = useHomeDetails();
   const {
     data: posData,
     isLoading: posLoading,
@@ -68,7 +69,11 @@ export default function HomeScreen() {
 
   const handleQuickAction = (action: string) => {
     if (action === "Recharge") {
-      rechargeSheetRef.current?.present();
+      // Navigate to RechargeScreen
+      navigation.navigate("Recharge" as never);
+    } else if (action === "Collect") {
+      // Navigate to CollectScreen
+      navigation.navigate("Collect" as never);
     } else {
       Alert.alert("Quick Action", `${action} feature coming soon!`);
     }
@@ -79,7 +84,7 @@ export default function HomeScreen() {
       id: "recharge",
       label: "Recharge",
       icon: "+",
-      iconColor: theme.colors.black,
+      iconColor: theme.colors.white,
       iconBg: theme.colors.primary,
       navigateTo: "requests",
     },
@@ -87,8 +92,8 @@ export default function HomeScreen() {
       id: "collect",
       label: "Collect",
       icon: "$",
-      iconColor: theme.colors.black,
-      iconBg: theme.colors.success,
+      iconColor: theme.colors.white,
+      iconBg: theme.colors.primary,
       navigateTo: "devices",
     },
   ];
@@ -142,13 +147,13 @@ export default function HomeScreen() {
     },
     balanceLabel: {
       fontSize: 16,
-      color: "white",
+      // color: "white",
       marginBottom: 8,
     },
     balanceAmount: {
       fontSize: 32,
       fontWeight: "bold",
-      color: "white",
+      // color: "white",
       marginBottom: 16,
     },
     actionsContainer: {
@@ -191,16 +196,19 @@ export default function HomeScreen() {
       useSafeArea={false}
       // style={{ backgroundColor: theme.colors.surface }}
     >
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <Avatar />
             <View style={styles.greeting}>
-              <Text style={{ fontSize: 18, color: "white", fontWeight: "600" }}>
+              <Text style={{ fontSize: 18, color: "black", fontWeight: "600" }}>
                 مرحبا
               </Text>
-              <Text style={{ fontSize: 16, color: "white", opacity: 0.8 }}>
+              <Text style={{ fontSize: 16, color: "black", opacity: 0.8 }}>
                 {userInfo?.displayName || "User"}
               </Text>
             </View>

@@ -19,12 +19,20 @@ export const receiptChargeItemSchema = z.object({
 });
 
 // Get Receipt Charge by State Response Schema
-export const getReceiptChargeByStateResponseSchema = z.array(receiptChargeItemSchema);
+export const getReceiptChargeByStateResponseSchema = z.array(
+  receiptChargeItemSchema
+);
 
 // Get Receipt Re-Charge by State Response Schema
-export const getReceiptReChargeByStateResponseSchema = z.array(receiptChargeItemSchema);
+export const getReceiptReChargeByStateResponseSchema = z.array(
+  receiptChargeItemSchema
+);
 
 // Type exports
 export type ReceiptChargeItem = z.infer<typeof receiptChargeItemSchema>;
-export type GetReceiptChargeByStateResponse = z.infer<typeof getReceiptChargeByStateResponseSchema>;
-export type GetReceiptReChargeByStateResponse = z.infer<typeof getReceiptReChargeByStateResponseSchema>;
+export type GetReceiptChargeByStateResponse = z.infer<
+  typeof getReceiptChargeByStateResponseSchema
+>;
+export type GetReceiptReChargeByStateResponse = z.infer<
+  typeof getReceiptReChargeByStateResponseSchema
+>;

@@ -195,7 +195,10 @@ export const createSignalRConnection = async (): Promise<HubConnection> => {
 
       return connection;
     } catch (error) {
-      logger.error(`SignalR connection failed (attempt ${retryCount + 1}/${maxRetries}):`, error);
+      logger.error(
+        `SignalR connection failed (attempt ${retryCount + 1}/${maxRetries}):`,
+        error
+      );
       useSignalRStore.getState().setConnected(false);
 
       // If auth error, try refresh and retry once
@@ -221,7 +224,7 @@ export const createSignalRConnection = async (): Promise<HubConnection> => {
       if (retryCount < maxRetries) {
         const delay = Math.min(1000 * Math.pow(2, retryCount), 30000); // Exponential backoff, max 30s
         logger.log(`Retrying SignalR connection in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       } else {
         logger.error("Max retries reached for SignalR connection");
         throw error;

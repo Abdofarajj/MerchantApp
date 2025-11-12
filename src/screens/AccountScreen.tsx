@@ -1,11 +1,10 @@
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { Button } from "react-native-paper";
 import Avatar from "../components/Avatar";
 import Screen from "../components/Screen";
-import { useHomeDetails } from "../hooks/useHomeDetails";
+// import { useHomeDetails } from "../hooks/useHomeDetails";
 import { useLogoutMutation } from "../services/Accounts";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
@@ -58,6 +57,7 @@ export default function AccountScreen() {
       // backgroundColor: theme.colors.background,
       paddingTop: 60,
       paddingHorizontal: theme.spacing[4],
+      paddingBottom: 100,
     },
     profileCard: {
       width: "100%",

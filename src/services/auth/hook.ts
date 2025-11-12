@@ -33,7 +33,8 @@ export const useLogout = () => {
 };
 
 export const useAutoLogin = () => {
-  const { setTokens, setUserInfo, setSignedIn, setLoading, logout } = useAuthStore();
+  const { setTokens, setUserInfo, setSignedIn, setLoading, logout } =
+    useAuthStore();
 
   const autoLogin = async () => {
     try {
@@ -80,7 +81,7 @@ export const useAutoLogin = () => {
 
   useEffect(() => {
     autoLogin();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { autoLogin };
 };

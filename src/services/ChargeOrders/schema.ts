@@ -62,10 +62,24 @@ export const deleteChargeOrderResponseSchema = z.object({
 
 // Type exports
 export type ChargeOrderItem = z.infer<typeof chargeOrderItemSchema>;
-export type GetChargeOrdersByMerchantRequest = z.infer<typeof getChargeOrdersByMerchantRequestSchema>;
-export type GetChargeOrdersByMerchantResponse = z.infer<typeof getChargeOrdersByMerchantResponseSchema>;
-export type GetChargeOrderByIdResponse = z.infer<typeof getChargeOrderByIdResponseSchema>;
-export type CreateChargeOrderRequest = z.infer<typeof createChargeOrderRequestSchema>;
-export type CreateChargeOrderResponse = z.infer<typeof createChargeOrderResponseSchema>;
-export type DeleteChargeOrderRequest = z.infer<typeof deleteChargeOrderRequestSchema>;
-export type DeleteChargeOrderResponse = z.infer<typeof deleteChargeOrderResponseSchema>;
+export type GetChargeOrdersByMerchantRequest = z.infer<
+  typeof getChargeOrdersByMerchantRequestSchema
+>;
+export type GetChargeOrdersByMerchantResponse = z.infer<
+  typeof getChargeOrdersByMerchantResponseSchema
+>;
+export type GetChargeOrderByIdResponse = z.infer<
+  typeof getChargeOrderByIdResponseSchema
+>;
+export type CreateChargeOrderRequest = z.infer<
+  typeof createChargeOrderRequestSchema
+>;
+export type CreateChargeOrderResponse = z.infer<
+  typeof createChargeOrderResponseSchema
+>;
+export type DeleteChargeOrderRequest = z.infer<
+  typeof deleteChargeOrderRequestSchema
+>;
+export type DeleteChargeOrderResponse = z.infer<
+  typeof deleteChargeOrderResponseSchema
+>;

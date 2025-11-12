@@ -18,7 +18,11 @@ export const handleLoginSuccess = async () => {
   }
 };
 
-export const login = async (username: string, password: string, rememberMe: boolean = false) => {
+export const login = async (
+  username: string,
+  password: string,
+  rememberMe: boolean = false
+) => {
   const response = await api.post("/Accounts/Login", {
     userName: username,
     password,
@@ -34,7 +38,10 @@ export const login = async (username: string, password: string, rememberMe: bool
   // Store refresh token securely if remember me is enabled
   if (rememberMe) {
     try {
-      await SecureStore.setItemAsync("refreshToken", response.data.refreshToken);
+      await SecureStore.setItemAsync(
+        "refreshToken",
+        response.data.refreshToken
+      );
     } catch (error) {
       console.warn("Failed to store refresh token:", error);
     }

@@ -1,9 +1,10 @@
+import { Ionicons } from "@expo/vector-icons";
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import {
   ActivityIndicator,
-  Alert,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
@@ -49,7 +50,7 @@ export const ConfirmationModal = forwardRef<
           setLoading(false);
           setSuccess(false);
           setIsVisible(false);
-          Alert.alert("Error", "Request failed: " + (error as Error).message);
+          // Error is now handled by the centralized toast system
         });
     },
     dismiss: () => {
@@ -76,11 +77,32 @@ export const ConfirmationModal = forwardRef<
       margin: theme.spacing[4],
       minWidth: 280,
       alignItems: "center",
-      elevation: 5,
-      shadowColor: "#000",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 4,
+      // elevation: 5,
+      // shadowColor: "#000",
+      // shadowOffset: { width: 0, height: 2 },
+      // shadowOpacity: 0.25,
+      // shadowRadius: 4,
+    },
+    closeButton: {
+      position: "absolute",
+      top: theme.spacing[3],
+      right: theme.spacing[3],
+      padding: theme.spacing[2],
+      borderRadius: 20,
+      backgroundColor: "transparent",
+    },
+    successIconContainer: {
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: theme.spacing[2],
+    },
+    successIcon: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: "#4CAF50",
+      alignItems: "center",
+      justifyContent: "center",
     },
     loadingContainer: {
       alignItems: "center",
@@ -112,6 +134,14 @@ export const ConfirmationModal = forwardRef<
       backdropOpacity={0.5}
     >
       <View style={styles.container}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setIsVisible(false)}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="close" size={20} color="rgba(128, 128, 128, 0.7)" />
+        </TouchableOpacity>
+
         {loading && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={theme.colors.primary} />
@@ -120,6 +150,11 @@ export const ConfirmationModal = forwardRef<
 
         {success && (
           <View style={styles.successContainer}>
+            <View style={styles.successIconContainer}>
+              <View style={styles.successIcon}>
+                <Ionicons name="checkmark" size={24} color="white" />
+              </View>
+            </View>
             <Text style={styles.message}>{message}</Text>
           </View>
         )}

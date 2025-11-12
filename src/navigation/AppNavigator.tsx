@@ -2,11 +2,14 @@ import {
   BottomTabScreenProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import CustomTabBar from "../components/CustomTabBar";
 import AccountScreen from "../screens/AccountScreen";
 import ActivityScreen from "../screens/ActivityScreen";
+import CollectScreen from "../screens/CollectScreen";
 import HomeScreen from "../screens/HomeScreen";
+import RechargeScreen from "../screens/RechargeScreen";
 import UsersScreen from "../screens/UsersScreen";
 
 export type TabParamList = {
@@ -21,7 +24,14 @@ export type TabScreenProps<T extends keyof TabParamList> = BottomTabScreenProps<
   T
 >;
 
+export type RootStackParamList = {
+  Tabs: undefined;
+  Recharge: undefined;
+  Collect: undefined;
+};
+
 const Tab = createBottomTabNavigator<TabParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const tabs = [
   { id: "Home", label: "Home", iconName: "home-outline" as const },
@@ -30,7 +40,8 @@ const tabs = [
   { id: "Account", label: "Account", iconName: "person-outline" as const },
 ];
 
-export default function AppNavigator() {
+// Tab Navigator (navbar screens only)
+function Tabs() {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -54,5 +65,16 @@ export default function AppNavigator() {
       <Tab.Screen name="Activity" component={ActivityScreen} />
       <Tab.Screen name="Account" component={AccountScreen} />
     </Tab.Navigator>
+  );
+}
+
+// Root Stack Navigator
+export default function AppNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Tabs" component={Tabs} />
+      <Stack.Screen name="Recharge" component={RechargeScreen} />
+      <Stack.Screen name="Collect" component={CollectScreen} />
+    </Stack.Navigator>
   );
 }

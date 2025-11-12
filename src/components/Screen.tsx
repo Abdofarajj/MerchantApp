@@ -24,7 +24,7 @@ export default function Screen({
       flex: 1,
       width: screenWidth,
       height: screenHeight,
-      backgroundColor: backgroundColor || "#000000",
+      backgroundColor: backgroundColor || "white",
       ...style,
       paddingBottom: 0,
     },

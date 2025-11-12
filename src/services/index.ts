@@ -6,3 +6,4 @@ export * from "./Dashboards";
 export * from "./DeviceMerchants";
 export * from "./Documents";
 export * from "./auth";
+export * from "./errorHandler";

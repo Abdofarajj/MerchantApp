@@ -9,16 +9,15 @@ import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 import { Platform } from "react-native";
 
 const lightColors = {
-  primary: "#10B981",
+  primary: "#007AFF",
   onPrimary: "#FFFFFF",
-  primaryContainer: "#6EE7B7",
-  secondary: "#098761ff",
+  primaryContainer: "#007AFF",
+  secondary: "#2776caff",
   background: "#FFFFFF",
   surface: "#F7FAF8",
   surfaceVariant: "#F0F4F2",
-  text: "#ffffffff",
-    text2: "#000000ff",
-
+  text: "#000000ff",
+  text2: "#000000ff",
   textSecondary: "#334155",
   outline: "#E0E0E0",
   success: "#10B981",

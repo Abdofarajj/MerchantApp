@@ -13,6 +13,7 @@ export default function UsersScreen() {
       backgroundColor: theme.colors.background,
       justifyContent: "center",
       alignItems: "center",
+      paddingBottom: 100,
     },
     text: {
       fontSize: 24,
