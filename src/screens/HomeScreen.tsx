@@ -5,6 +5,7 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
   useColorScheme,
