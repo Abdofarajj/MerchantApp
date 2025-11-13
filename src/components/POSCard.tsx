@@ -2,13 +2,13 @@ import { Image } from "expo-image";
 import React from "react";
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   useColorScheme,
 } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
 
+import Text from "../components/Text";
 import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 
 interface POSCardProps {
@@ -106,7 +106,6 @@ const getStyles = (theme: any) =>
     },
     serialNumber: {
       fontSize: 12,
-      fontWeight: "600",
       color: theme.colors.text,
       flex: 1,
       marginLeft: 8,
@@ -122,12 +121,10 @@ const getStyles = (theme: any) =>
     statusText: {
       color: "#fff",
       fontSize: 10,
-      fontWeight: "bold",
       textAlign: "center", // Center align status text
     },
     model: {
       fontSize: 14,
-      fontWeight: "bold",
       color: theme.colors.text,
       marginBottom: 4,
       textAlign: "right", // Always RTL text alignment

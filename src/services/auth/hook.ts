@@ -60,6 +60,12 @@ export const useAutoLogin = () => {
           refreshToken: response.data.refreshToken,
         });
 
+        // Store the new refresh token securely
+        await SecureStore.setItemAsync(
+          "refreshToken",
+          response.data.refreshToken
+        );
+
         // Fetch user info
         const userInfo = await accountsService.getUserInfo();
         setUserInfo(userInfo);

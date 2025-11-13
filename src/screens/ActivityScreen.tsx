@@ -10,7 +10,7 @@ import {
   useColorScheme,
   View,
 } from "react-native";
-import RequestPreview from "../components/RequestPreview";
+import ActivityCard from "../components/ActivityCard";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useGetChargeOrdersByMerchantQuery } from "../services/ChargeOrders";
@@ -28,9 +28,9 @@ const tabWidth = (tabBarWidth - 12) / 4; // 4 tabs with 3 gaps
 export default function ActivityScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  const [activeTab, setActiveTab] = useState<
-    "all" | "recharge" | "pay" | "collect"
-  >("all");
+  const [activeTab, setActiveTab] = useState<"الكل" | "شحن" | "دفع" | "تحصيل">(
+    "الكل"
+  );
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -76,7 +76,7 @@ export default function ActivityScreen() {
     let items: any[] = [];
 
     switch (activeTab) {
-      case "all":
+      case "الكل":
         items = [
           ...(rechargeData?.items || []).map((item) => ({
             ...item,
@@ -89,19 +89,19 @@ export default function ActivityScreen() {
           })),
         ];
         break;
-      case "recharge":
+      case "شحن":
         items = (rechargeData?.items || []).map((item) => ({
           ...item,
           type: "recharge",
         }));
         break;
-      case "pay":
+      case "دفع":
         items = (payData?.items || []).map((item) => ({
           ...item,
           type: "pay",
         }));
         break;
-      case "collect":
+      case "تحصيل":
         items = (collectData?.items || []).map((item) => ({
           ...item,
           type: "collect",
@@ -139,10 +139,10 @@ export default function ActivityScreen() {
     // This can be enhanced later with proper pagination per tab
   };
 
-  const handleTabPress = (tab: "all" | "recharge" | "pay" | "collect") => {
+  const handleTabPress = (tab: "الكل" | "شحن" | "دفع" | "تحصيل") => {
     if (tab !== activeTab) {
       setActiveTab(tab);
-      const tabIndex = ["all", "recharge", "pay", "collect"].indexOf(tab);
+      const tabIndex = ["الكل", "شحن", "دفع", "تحصيل"].indexOf(tab);
       const targetPosition = tabIndex * tabWidth;
 
       Animated.timing(tabIndicatorPosition, {
@@ -291,7 +291,7 @@ export default function ActivityScreen() {
             ]}
           />
 
-          {["all", "recharge", "pay", "collect"].map((tab, index) => (
+          {["الكل", "شحن", "دفع", "تحصيل"].map((tab, index) => (
             <TouchableOpacity
               key={tab}
               style={styles.tab}
@@ -306,7 +306,7 @@ export default function ActivityScreen() {
                     : styles.inactiveTabText,
                 ]}
               >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                {tab}
               </Text>
             </TouchableOpacity>
           ))}
@@ -317,7 +317,7 @@ export default function ActivityScreen() {
           data={combinedData}
           keyExtractor={(item) => `${item.type}-${item.id}`}
           renderItem={({ item }) => (
-            <RequestPreview
+            <ActivityCard
               item={item}
               onPress={() => handleItemPress(item)}
               theme={theme}
@@ -359,7 +359,6 @@ const activityScreenStyles = (theme: any) =>
     },
     header: {
       fontSize: 24,
-      fontWeight: "bold",
       color: theme.colors.text2,
       textAlign: "center",
       marginVertical: 20,
@@ -367,7 +366,7 @@ const activityScreenStyles = (theme: any) =>
     tabBar: {
       flexDirection: "row",
       backgroundColor: theme.colors.surfaceVariant,
-      borderRadius: theme.radius.lg,
+      borderRadius: theme.radius.lg * 5,
       marginHorizontal: theme.spacing[4],
       marginBottom: theme.spacing[4],
       padding: theme.spacing[1],
@@ -376,7 +375,7 @@ const activityScreenStyles = (theme: any) =>
     },
     tab: {
       flex: 1,
-      paddingVertical: theme.spacing[3],
+      paddingVertical: theme.spacing[2],
       alignItems: "center",
       borderRadius: theme.radius.md,
       zIndex: 2,
@@ -388,11 +387,10 @@ const activityScreenStyles = (theme: any) =>
       left: theme.spacing[1],
       width: tabWidth - theme.spacing[1] + 4,
       backgroundColor: theme.colors.primary,
-      borderRadius: theme.radius.md,
+      borderRadius: theme.radius.lg * 5,
     },
     tabText: {
       fontSize: 14,
-      fontWeight: "600",
     },
     activeTabText: {
       color: "white",

@@ -2,6 +2,7 @@ import { useFonts } from "expo-font";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [fontsLoaded] = useFonts({
     AlexandriaThin: require("../assets/fonts/Alexandria-Thin.ttf"),
     AlexandriaExtraLight: require("../assets/fonts/Alexandria-ExtraLight.ttf"),
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 64,
-    fontWeight: "bold",
   },
   subtitle: {
     fontSize: 36,

@@ -3,12 +3,12 @@ import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
   useColorScheme,
 } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
+import Text from "./Text";
 
 export interface HeaderProps {
   title: string;
@@ -61,7 +61,6 @@ export default function Header({
     },
     title: {
       fontSize: 18,
-      fontWeight: "600",
       color: "black",
       textAlign: "center",
       position: "absolute",

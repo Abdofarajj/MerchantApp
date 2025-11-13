@@ -54,7 +54,6 @@ export default function QuickActionButton({
     },
     text: {
       fontSize: 14,
-      fontWeight: "600",
       color: theme.colors.text,
       textAlign: "center",
     },

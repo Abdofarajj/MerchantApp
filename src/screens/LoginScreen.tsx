@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Alert, StyleSheet, View, useColorScheme } from "react-native";
-import Text from "../components/Text";
 import {
   Button,
   Checkbox,
   TextInput as PaperTextInput,
 } from "react-native-paper";
+import Text from "../components/Text";
 import { useLogin } from "../services/auth/hook";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
@@ -59,7 +59,6 @@ export default function LoginScreen() {
     },
     title: {
       fontSize: 32,
-      fontWeight: "bold",
       textAlign: "center",
       marginBottom: 10,
       color: theme.colors.text,

@@ -68,7 +68,6 @@ const styles = StyleSheet.create({
   },
   deviceName: {
     fontSize: 14,
-    fontWeight: "600",
     color: "#333",
     flex: 1,
   },

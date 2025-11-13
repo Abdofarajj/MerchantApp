@@ -1,16 +1,32 @@
 Project Structure — Reference for AI Assistant
 
-Purpose: Defines the canonical folder structure, responsibilities, and guidelines for the ride‑sharing mobile app. This helps the AI assistant and team members understand where code and utilities are located.
+Purpose: Defines the canonical folder structure, responsibilities, and guidelines for the merchant mobile app. This helps the AI assistant and team members understand where code and utilities are located.
 
 Quick Overview
 src/
 ├─ assets/
+│ ├─ fonts/ (font files for the app)
 │ └─ images/ (app icons, logos, splash screens, and other static assets)
 ├─ components/
+│ ├─ ActivityCard.tsx (activity card component)
+│ ├─ Avatar.tsx (user avatar component)
 │ ├─ CustomTabBar.tsx (custom tab bar component)
+│ ├─ DeviceCard.tsx (device card component)
+│ ├─ Header.tsx (header component)
+│ ├─ Icon.tsx (icon component)
 │ ├─ POSCard.tsx (POS device card component)
+│ ├─ POSDevicesSection.tsx (POS devices section component)
 │ ├─ QuickActionButton.tsx (quick action button component)
-│ └─ Screen.tsx (base screen wrapper component)
+│ ├─ Screen.tsx (base screen wrapper component)
+│ ├─ Text.tsx (text component)
+│ ├─ Toast.tsx (toast notification component)
+│ ├─ UserCard.tsx (user card component)
+│ ├─ BottomSheet/
+│ │ ├─ index.ts (bottom sheet exports)
+│ │ └─ RechargeBottomSheet.tsx (recharge bottom sheet component)
+│ └─ Modal/
+│ ├─ ConfirmationModal.tsx (confirmation modal component)
+│ └─ index.ts (modal exports)
 ├─ config/
 │ ├─ config.base.ts (base configuration with default values)
 │ ├─ config.env.ts (environment variable handling)
@@ -23,7 +39,9 @@ src/
 │ ├─ use-theme-color.ts (theme color hook)
 │ ├─ useAppData.ts (app data management hook)
 │ ├─ useFetchData.ts (generic data fetching hook)
+│ ├─ useHeader.ts (header management hook)
 │ ├─ useHomeDetails.ts (home screen data hook with SignalR integration)
+│ ├─ usePosDetails.ts (POS details hook)
 │ └─ useSignalR.ts (SignalR connection management hook)
 ├─ navigation/
 │ ├─ AppNavigator.tsx (main app navigation)
@@ -32,12 +50,15 @@ src/
 ├─ screens/
 │ ├─ AccountScreen.tsx (user account screen)
 │ ├─ ActivityScreen.tsx (activity/transactions screen)
+│ ├─ CollectScreen.tsx (collection screen)
 │ ├─ HomeScreen.tsx (main dashboard screen)
 │ ├─ index.tsx (screen exports)
 │ ├─ LoginScreen.tsx (login screen)
+│ ├─ RechargeScreen.tsx (recharge screen)
 │ └─ UsersScreen.tsx (users management screen)
 ├─ services/
 │ ├─ api.ts (axios instance and base API setup)
+│ ├─ errorHandler.ts (error handling utilities)
 │ ├─ index.ts (service exports)
 │ ├─ reactQuery.ts (React Query configuration)
 │ ├─ schema.ts (shared API schemas)
@@ -80,8 +101,10 @@ src/
 ├─ theme/
 │ └─ index.ts (design tokens and theme configuration)
 └─ utils/
+├─ apiProblem.ts (API problem utilities)
 ├─ logger.ts (logging utilities)
-└─ storage.ts (persistent storage utilities)
+├─ storage.ts (persistent storage utilities)
+└─ toast.ts (toast utilities)
 
 Each top-level folder has a focused responsibility. Components use PascalCase; most other files use camelCase or kebab-case consistently.
 

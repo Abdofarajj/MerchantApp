@@ -3,7 +3,6 @@ import React, { forwardRef, useImperativeHandle, useState } from "react";
 import {
   ActivityIndicator,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useColorScheme,
   View,
@@ -11,6 +10,7 @@ import {
 import Modal from "react-native-modal";
 
 import { darkTheme, lightTheme } from "../../theme";
+import Text from "../Text";
 
 interface ConfirmationModalProps {
   message: string;
@@ -116,7 +116,6 @@ export const ConfirmationModal = forwardRef<
     },
     message: {
       fontSize: 16,
-      fontWeight: "500",
       color: theme.colors.text2,
       textAlign: "center",
       marginTop: theme.spacing[3],

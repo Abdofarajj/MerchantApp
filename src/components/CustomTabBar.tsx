@@ -1,14 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, darkTheme, lightTheme } from "../theme";
+import Text from "./Text";
 
 interface TabItem {
   id: string;
@@ -49,8 +45,6 @@ export default function CustomTabBar({
       flexDirection: "row",
       justifyContent: "space-around",
       alignItems: "center",
-      // paddingVertical: 8,
-      // borderTopColor: Colors.light.bg300,
     },
     tabButton: {
       flexDirection: "column",
@@ -60,7 +54,6 @@ export default function CustomTabBar({
       paddingVertical: 8,
       minWidth: 60,
       minHeight: 44,
-      // borderRadius: 8,
     },
     tabIcon: {
       marginBottom: 4,
@@ -84,10 +77,6 @@ export default function CustomTabBar({
         alignItems: "center",
         paddingVertical: 10,
         paddingBottom: insets.bottom,
-        // backgroundColor: "rgba(255,255,255,0.3)",
-        // borderTopWidth: 1,
-        // borderTopColor: "rgba(0,0,0,0.1)",
-        // backdropFilter: "blur(10px)",
         alignSelf: "center",
         maxWidth: 480,
         width: "100%",
@@ -117,7 +106,6 @@ export default function CustomTabBar({
                   color: isActive
                     ? theme.colors.primary
                     : theme.colors.textSecondary,
-                  fontWeight: isActive ? "bold" : "normal",
                 },
               ]}
             >

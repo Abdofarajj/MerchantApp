@@ -64,13 +64,11 @@ export default function RechargeScreen() {
     },
     currencyLabel: {
       fontSize: 24,
-      fontWeight: "bold",
       marginRight: theme.spacing[2],
       opacity: isAmountValid ? 1 : 0.5,
     },
     input: {
       fontSize: 24,
-      fontWeight: "bold",
       textAlign: "left",
       borderWidth: 0,
       backgroundColor: "transparent",
@@ -97,7 +95,7 @@ export default function RechargeScreen() {
         <View style={styles.container}>
           <View style={styles.inputContainer}>
             <View style={styles.inputLine}>
-              <Text style={styles.currencyLabel}>LYD</Text>
+              <Text style={styles.currencyLabel}>د.ل</Text>
               <TextInput
                 ref={textInputRef}
                 value={amount}
@@ -156,7 +154,7 @@ export default function RechargeScreen() {
 
         <ConfirmationModal
           ref={confirmationModalRef}
-          message="Success!"
+          message="تم ارسال الطلب!"
           onRequest={async () => {
             // Modal is only shown after successful API call, so just resolve
             return Promise.resolve();

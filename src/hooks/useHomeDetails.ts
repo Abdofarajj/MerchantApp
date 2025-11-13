@@ -44,25 +44,27 @@ export const useHomeDetails = () => {
           // Don't fail the whole dashboard load if SignalR fails
         }
 
-        // Mock API call for other data - replace with actual API
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Mock data - devices will be populated from API
-        const mockData: DashboardData = {
-          balance: 1500, // Mock balance value
-          currency: "$",
-        };
-
-        setData(mockData);
+        // Wait for userInfo to be available
+        if (userInfo) {
+          const realData: DashboardData = {
+            balance: userInfo.cardBalance,
+            currency: "د.ل",
+          };
+          setData(realData);
+        } else {
+          setError("معلومات المستخدم غير متوفرة");
+        }
       } catch {
-        setError("Failed to fetch dashboard data");
+        setError("فشل في جلب بيانات لوحة التحكم");
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchDashboard();
-  }, []);
+    if (userInfo) {
+      fetchDashboard();
+    }
+  }, [userInfo]);
 
   return { data, isLoading, error, signalRBalance, signalRConnected };
 };

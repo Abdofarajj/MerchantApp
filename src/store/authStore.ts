@@ -1,5 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 import { create } from "zustand";
+import { refresh } from "../services/auth/service";
 
 interface UserInfo {
   id: string;
@@ -96,11 +97,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   },
 
   logout: async () => {
-    // Clear stored refresh token if it exists
+    // Clear stored tokens if they exist
     try {
       await SecureStore.deleteItemAsync("refreshToken");
+      await SecureStore.deleteItemAsync("userId");
     } catch (error) {
-      console.warn("Failed to clear stored refresh token:", error);
+      console.warn("Failed to clear stored tokens:", error);
     }
 
     set({
@@ -122,21 +124,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   initializeAuth: async () => {
     try {
       const storedRefreshToken = await SecureStore.getItemAsync("refreshToken");
-      if (storedRefreshToken) {
-        // Attempt to refresh the token
-        const response = await fetch("/Accounts/RefreshToken", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: get().userId || "",
-            refreshToken: storedRefreshToken,
-          }),
+      const storedUserId = await SecureStore.getItemAsync("userId");
+      if (storedRefreshToken && storedUserId) {
+        // Set the stored values in the store temporarily for refresh
+        set({
+          refreshToken: storedRefreshToken,
+          userId: storedUserId,
         });
 
-        if (response.ok) {
-          const data = await response.json();
+        try {
+          // Attempt to refresh the token
+          const data = await refresh();
           set({
             token: data.accessToken,
             refreshToken: data.refreshToken,
@@ -144,14 +142,19 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             rememberMe: true,
           });
           console.log("AuthStore: Auto-login successful");
-        } else {
-          // Token refresh failed, clear stored token
+        } catch (error) {
+          // Token refresh failed, clear stored tokens
           await SecureStore.deleteItemAsync("refreshToken");
-          console.log("AuthStore: Auto-login failed, clearing stored token");
+          await SecureStore.deleteItemAsync("userId");
+          set({
+            refreshToken: "",
+            userId: "",
+          });
+          console.log("AuthStore: Auto-login failed, clearing stored tokens");
         }
       }
-    } catch (error) {
-      console.warn("AuthStore: Failed to initialize auth:", error);
+    } catch {
+      console.warn("AuthStore: Failed to initialize auth");
     }
   },
 }));

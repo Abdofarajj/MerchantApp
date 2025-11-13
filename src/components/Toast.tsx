@@ -3,11 +3,11 @@ import React, { useEffect, useRef } from "react";
 import {
   Animated,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useColorScheme,
 } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
+import Text from "./Text";
 
 export type ToastType = "error" | "success" | "info";
 
@@ -96,7 +96,6 @@ export default function Toast({
       flex: 1,
       color: "white",
       fontSize: 14,
-      fontWeight: "500",
       textAlign: "right",
     },
     dismissButton: {

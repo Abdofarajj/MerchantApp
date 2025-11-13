@@ -1,5 +1,5 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { Alert, StyleSheet, Text, View, useColorScheme } from "react-native";
+import { Alert, StyleSheet, Text, useColorScheme, View } from "react-native";
 import Modal from "react-native-modal";
 import { Button, TextInput } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -69,7 +69,6 @@ export const RechargeBottomSheet = forwardRef<RechargeBottomSheetRef>(
       },
       header: {
         fontSize: 20,
-        fontWeight: "bold",
         color: theme.colors.text,
         textAlign: "center",
         marginBottom: theme.spacing[4],

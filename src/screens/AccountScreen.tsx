@@ -7,6 +7,7 @@ import Screen from "../components/Screen";
 import Text from "../components/Text";
 // import { useHomeDetails } from "../hooks/useHomeDetails";
 import { useLogoutMutation } from "../services/Accounts";
+import { queryClient } from "../services/reactQuery";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 
@@ -24,26 +25,29 @@ export default function AccountScreen() {
   const userData = userInfo;
 
   const handleLogout = () => {
-    Alert.alert("Logout", "Are you sure you want to logout?", [
+    Alert.alert("تسجيل الخروج", "هل أنت متأكد أنك تريد تسجيل الخروج؟", [
       {
-        text: "Cancel",
+        text: "إلغاء",
         style: "cancel",
       },
       {
-        text: "Logout",
+        text: "تسجيل الخروج",
         style: "destructive",
         onPress: () => {
           logoutMutation.mutate(undefined, {
             onSuccess: () => {
-              // Clear all user cache and navigate to login
+              // Clear auth store and secure storage
+              useAuthStore.getState().logout();
+              // Clear all user cache
+              queryClient.clear();
               console.log("Logged out successfully");
               // Navigation will happen automatically through auth store changes
               // The RootNavigator will switch to AuthNavigator when isSignedIn becomes false
             },
             onError: (error) => {
               Alert.alert(
-                "Error",
-                "Failed to logout: " + (error as Error).message
+                "خطأ",
+                "فشل في تسجيل الخروج: " + (error as Error).message
               );
             },
           });
@@ -72,7 +76,6 @@ export default function AccountScreen() {
     },
     displayName: {
       fontSize: 28,
-      fontWeight: "bold",
       color: theme.colors.text,
     },
     mainContent: {

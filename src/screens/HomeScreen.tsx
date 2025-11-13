@@ -1,27 +1,31 @@
 import { useNavigation } from "@react-navigation/native";
-import { useEffect, useRef } from "react";
-import {
-  Alert,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Avatar from "../components/Avatar";
 import {
   RechargeBottomSheet,
   RechargeBottomSheetRef,
 } from "../components/BottomSheet";
-import POSCard from "../components/POSCard";
+import POSDevicesSection from "../components/POSDevicesSection";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
+import Text from "../components/Text";
+import { useColorScheme } from "../hooks/use-color-scheme";
 import { useHomeDetails } from "../hooks/useHomeDetails";
 import { usePosDetails } from "../hooks/usePosDetails";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
-import Text from "../components/Text";
+import { logger } from "../utils/logger";
+import { useToast } from "../utils/toast";
+
+type QuickAction = {
+  id: string;
+  label: string;
+  icon: string;
+  iconColor: string;
+  iconBg: string;
+  navigateTo: string;
+};
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -34,6 +38,7 @@ export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { userInfo } = useAuthStore();
+  const toast = useToast();
 
   // Bottom sheet refs
   const rechargeSheetRef = useRef<RechargeBottomSheetRef>(null);
@@ -41,9 +46,48 @@ export default function HomeScreen() {
   // Log userInfo when component mounts or userInfo changes
   useEffect(() => {
     if (userInfo) {
-      console.log("HomeScreen: userInfo", userInfo);
+      logger.log("HomeScreen: userInfo", userInfo);
     }
   }, [userInfo]);
+
+  const handleQuickAction = useCallback(
+    (action: string) => {
+      if (action === "شحن") {
+        // Navigate to RechargeScreen
+        navigation.navigate("Recharge" as never);
+      } else if (action === "تحصيل") {
+        // Navigate to CollectScreen
+        navigation.navigate("Collect" as never);
+      } else {
+        toast.info(`ميزة ${action} قادمة قريباً!`);
+      }
+    },
+    [navigation, toast]
+  );
+
+  const quickActions = useMemo<QuickAction[]>(
+    () => [
+      {
+        id: "recharge",
+        label: "شحن",
+        icon: "+",
+        iconColor: theme.colors.white,
+        iconBg: theme.colors.primary,
+        navigateTo: "requests",
+      },
+      {
+        id: "collect",
+        label: "تحصيل",
+        icon: "$",
+        iconColor: theme.colors.white,
+        iconBg: theme.colors.primary,
+        navigateTo: "devices",
+      },
+    ],
+    [theme.colors.white, theme.colors.primary]
+  );
+
+  if (!data) return null;
 
   if (error) {
     const styles = StyleSheet.create({
@@ -65,48 +109,6 @@ export default function HomeScreen() {
     );
   }
 
-  if (!data) return null;
-
-  const handleQuickAction = (action: string) => {
-    if (action === "Recharge") {
-      // Navigate to RechargeScreen
-      navigation.navigate("Recharge" as never);
-    } else if (action === "Collect") {
-      // Navigate to CollectScreen
-      navigation.navigate("Collect" as never);
-    } else {
-      Alert.alert("Quick Action", `${action} feature coming soon!`);
-    }
-  };
-
-  const quickActions = [
-    {
-      id: "recharge",
-      label: "Recharge",
-      icon: "+",
-      iconColor: theme.colors.white,
-      iconBg: theme.colors.primary,
-      navigateTo: "requests",
-    },
-    {
-      id: "collect",
-      label: "Collect",
-      icon: "$",
-      iconColor: theme.colors.white,
-      iconBg: theme.colors.primary,
-      navigateTo: "devices",
-    },
-  ];
-
-  const renderPOSDevice = ({ item }: { item: any }) => (
-    <POSCard
-      device={item}
-      onPress={() =>
-        Alert.alert("Device", `Navigating to ${item.deviceName} details`)
-      }
-    />
-  );
-
   const styles = StyleSheet.create({
     errorContainer: {
       flex: 1,
@@ -117,31 +119,31 @@ export default function HomeScreen() {
     errorText: {
       fontSize: 16,
       color: theme.colors.error,
+      textAlign: "right",
     },
     header: {
-      // backgroundColor: theme.colors.surface,
-      padding: 20,
-      paddingTop: 40,
+      paddingHorizontal: 10,
+      paddingTop: 50,
+      paddingBottom: 10,
     },
     headerRow: {
-      flexDirection: "row",
+      flexDirection: "row-reverse",
       alignItems: "center",
       marginBottom: 16,
     },
     greeting: {
       flexDirection: "column",
+      marginRight: 16,
     },
     headerTitle: {
       fontSize: 24,
-      fontFamily: "Alexandria",
-      fontWeight: "bold",
       color: theme.colors.text,
+      textAlign: "right",
     },
     headerSubtitle: {
       fontSize: 16,
-      fontFamily: "Alexandria",
       color: theme.colors.textSecondary,
-      // marginTop: 4,
+      textAlign: "right",
     },
     balanceCard: {
       marginHorizontal: 16,
@@ -149,49 +151,26 @@ export default function HomeScreen() {
     },
     balanceLabel: {
       fontSize: 16,
-      // color: "white",
       marginBottom: 8,
-      fontFamily: "Alexandria",
+      textAlign: "right",
     },
     balanceAmount: {
       fontSize: 32,
-      fontWeight: "bold",
-      // color: "white",
       marginBottom: 16,
+      textAlign: "right",
+    },
+    balanceDecimal: {
+      color: theme.colors.outline,
+      fontSize: 28,
     },
     actionsContainer: {
       paddingHorizontal: 16,
       marginTop: 24,
     },
-    actionsTitle: {
-      fontSize: 20,
-      fontWeight: "bold",
-      color: theme.colors.text,
-      marginBottom: 16,
-    },
     actionsGrid: {
       flexDirection: "row",
       flexWrap: "wrap",
       justifyContent: "space-between",
-    },
-    posHeader: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      marginBottom: 16,
-      marginHorizontal: 16,
-      marginTop: 20,
-    },
-    sectionTitle: {
-      fontSize: 20,
-      fontWeight: "bold",
-      fontFamily: "Alexandria",
-      color: theme.colors.text,
-    },
-    viewAllText: {
-      color: theme.colors.primary,
-      fontSize: 14,
-      fontWeight: "600",
     },
   });
 
@@ -209,10 +188,23 @@ export default function HomeScreen() {
           <View style={styles.headerRow}>
             <Avatar />
             <View style={styles.greeting}>
-              <Text style={{ fontSize: 18, color: "black", fontWeight: "600" }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "black",
+                  textAlign: "right",
+                }}
+              >
                 مرحبا
               </Text>
-              <Text style={{ fontSize: 16, color: "black", opacity: 0.8 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "black",
+                  opacity: 0.8,
+                  textAlign: "right",
+                }}
+              >
                 {userInfo?.displayName || "User"}
               </Text>
             </View>
@@ -222,10 +214,27 @@ export default function HomeScreen() {
         {/* Balance Card */}
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>
-            Current Balance{signalRConnected}
+            الرصيد الحالي{signalRConnected}
           </Text>
           <Text style={styles.balanceAmount}>
-            {data.currency} {(signalRBalance ?? data.balance).toLocaleString()}
+            {(() => {
+              const balanceStr = (
+                signalRBalance ?? data.balance
+              ).toLocaleString();
+              const parts = balanceStr.split(".");
+              return (
+                <>
+                  {parts[0]}
+                  {parts[1] && (
+                    <>
+                      <Text style={styles.balanceAmount}>.</Text>
+                      <Text style={styles.balanceDecimal}>{parts[1]}</Text>
+                    </>
+                  )}{" "}
+                  {data.currency}
+                </>
+              );
+            })()}
           </Text>
           <View
             style={{
@@ -252,67 +261,11 @@ export default function HomeScreen() {
         </View>
 
         {/* POS Devices */}
-        <View>
-          <View style={styles.posHeader}>
-            <Text style={styles.sectionTitle}>Your POS Devices</Text>
-            <TouchableOpacity
-              onPress={() => Alert.alert("Devices", "View all devices")}
-            >
-              <Text style={styles.viewAllText}>View All</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Loading state */}
-          {posLoading && (
-            <Text
-              style={{
-                textAlign: "center",
-                color: theme.colors.textSecondary,
-                marginVertical: 20,
-              }}
-            >
-              Loading POS devices...
-            </Text>
-          )}
-
-          {/* Error state */}
-          {posError && (
-            <Text
-              style={{
-                textAlign: "center",
-                color: theme.colors.error,
-                marginVertical: 20,
-              }}
-            >
-              Failed to load POS devices
-            </Text>
-          )}
-
-          {/* Devices list */}
-          {posData && posData.length > 0 && (
-            <FlatList
-              data={posData}
-              renderItem={renderPOSDevice}
-              keyExtractor={(item) => item.id.toString()}
-              numColumns={2}
-              scrollEnabled={false}
-              contentContainerStyle={{ paddingHorizontal: 16 }}
-            />
-          )}
-
-          {/* Empty state */}
-          {posData && posData.length === 0 && !posLoading && (
-            <Text
-              style={{
-                textAlign: "center",
-                color: theme.colors.textSecondary,
-                marginVertical: 20,
-              }}
-            >
-              No POS devices found
-            </Text>
-          )}
-        </View>
+        <POSDevicesSection
+          posData={posData}
+          posLoading={posLoading}
+          posError={posError}
+        />
       </ScrollView>
 
       {/* Recharge Bottom Sheet */}

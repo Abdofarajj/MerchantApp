@@ -19,7 +19,7 @@ const lightColors = {
   text: "#000000ff",
   text2: "#000000ff",
   textSecondary: "#334155",
-  outline: "#E0E0E0",
+  outline: "#afafafff",
   success: "#10B981",
   warning: "#F59E0B",
   error: "#EF4444",

@@ -9,11 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Text from "../components/Text";
 import { Button } from "react-native-paper";
 import type { ConfirmationModalRef } from "../components/Modal";
 import { ConfirmationModal } from "../components/Modal";
 import Screen from "../components/Screen";
+import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
 import { useReceiptCharge, useReceiptReCharge } from "../services/Documents";
 import { useAuthStore } from "../store/authStore";
@@ -42,7 +42,7 @@ export default function CollectScreen() {
   const tabBackgroundPosition = useRef(new Animated.Value(0)).current;
 
   useHeader({
-    title: "Collect Payment",
+    title: "تحصيل",
     showBackButton: true,
   });
 
@@ -122,7 +122,7 @@ export default function CollectScreen() {
           {/* Input Section */}
           <View style={styles.inputContainer}>
             <View style={styles.inputLine}>
-              <Text style={styles.currencyLabel}>LYD</Text>
+              <Text style={styles.currencyLabel}>د.ل</Text>
               <TextInput
                 ref={textInputRef}
                 value={amount}
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#007AFF",
     borderRadius: 12,
   },
-  tabText: { fontSize: 16, fontWeight: "600" },
+  tabText: { fontSize: 16 },
   activeTabText: { color: "white" },
   inactiveTabText: { color: "#9E9E9E" },
   inputContainer: { flex: 1, marginTop: 50 },
@@ -257,13 +257,11 @@ const styles = StyleSheet.create({
   },
   currencyLabel: {
     fontSize: 24,
-    fontWeight: "bold",
     marginRight: 8,
     opacity: 1,
   },
   input: {
     fontSize: 24,
-    fontWeight: "bold",
     textAlign: "left",
     borderWidth: 0,
     backgroundColor: "transparent",
