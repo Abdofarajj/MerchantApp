@@ -21,13 +21,14 @@ export const handleLoginSuccess = async () => {
 export const login = async (
   username: string,
   password: string,
-  rememberMe: boolean = false
+  rememberMe: boolean = false,
+  signal?: AbortSignal
 ) => {
   const response = await api.post("/Accounts/Login", {
     userName: username,
     password,
     isRemmeber: rememberMe,
-  });
+  }, { signal });
 
   // Update store with tokens
   useAuthStore.getState().setToken(response.data.accessToken);

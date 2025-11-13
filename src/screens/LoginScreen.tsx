@@ -1,14 +1,20 @@
+import { Ionicons } from "@expo/vector-icons";
+import NetInfo from "@react-native-community/netinfo";
+import { AxiosError } from "axios";
 import React, { useState } from "react";
-import { Alert, StyleSheet, View, useColorScheme } from "react-native";
 import {
-  Button,
-  Checkbox,
-  TextInput as PaperTextInput,
-} from "react-native-paper";
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from "react-native";
+import { Button, Checkbox } from "react-native-paper";
 import Text from "../components/Text";
 import { useLogin } from "../services/auth/hook";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
+import { useToast } from "../utils/toast";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
@@ -18,23 +24,37 @@ export default function LoginScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { setToken, setRefreshToken, setSignedIn } = useAuthStore();
+  const { error } = useToast();
 
   const loginMutation = useLogin();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
-      Alert.alert("Error", "Please enter both username and password");
+      error("يرجى إدخال اسم المستخدم وكلمة المرور");
       return;
     }
+
+    const netInfo = await NetInfo.fetch();
+    if (!netInfo.isConnected) {
+      error("لا يوجد اتصال بالإنترنت");
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 5000);
 
     loginMutation.mutate(
       {
         username,
         password,
         rememberMe: isRemember,
+        signal: controller.signal,
       },
       {
         onSuccess: (response) => {
+          clearTimeout(timeoutId);
           // Store tokens and user info in auth store
           setToken(response.accessToken);
           setRefreshToken(response.refreshToken);
@@ -43,8 +63,18 @@ export default function LoginScreen() {
           // setUserId(response.userId); // If available in response
           // Navigation happens automatically through auth store changes
         },
-        onError: (error) => {
-          Alert.alert("Error", "Login failed: " + (error as Error).message);
+        onError: (loginError) => {
+          clearTimeout(timeoutId);
+          if (loginError.name === "AbortError") {
+            error("انتهت مهلة تسجيل الدخول");
+          } else if (
+            (loginError as AxiosError).request &&
+            !(loginError as AxiosError).response
+          ) {
+            error("لا يوجد اتصال بالإنترنت");
+          } else {
+            error("فشل تسجيل الدخول");
+          }
         },
       }
     );
@@ -71,6 +101,24 @@ export default function LoginScreen() {
     },
     input: {
       marginBottom: 15,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      borderRadius: 12,
+      padding: 10,
+      // backgroundColor: theme.colors.surface,
+      color: theme.colors.text,
+      textAlign: "right",
+    },
+    passwordInput: {
+      marginBottom: 15,
+      borderWidth: 1,
+      borderColor: theme.colors.outline,
+      borderRadius: 12,
+      padding: 10,
+      paddingLeft: 40,
+      // backgroundColor: theme.colors.surface,
+      color: theme.colors.text,
+      textAlign: "right",
     },
     checkboxContainer: {
       flexDirection: "row",
@@ -88,32 +136,37 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Merchant App</Text>
-      <Text style={styles.subtitle}>Login to your account</Text>
+      <Text style={styles.title}>تطبيق التاجر</Text>
+      <Text style={styles.subtitle}>تسجيل الدخول إلى حسابك</Text>
 
-      <PaperTextInput
-        style={styles.input}
-        label="Username"
+      <TextInput
+        style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+        placeholder="اسم المستخدم"
         value={username}
         onChangeText={setUsername}
         autoCapitalize="none"
-        mode="outlined"
       />
 
-      <PaperTextInput
-        style={styles.input}
-        label="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry={!showPassword}
-        mode="outlined"
-        right={
-          <PaperTextInput.Icon
-            icon={showPassword ? "eye-off" : "eye"}
-            onPress={() => setShowPassword(!showPassword)}
+      <View style={{ position: "relative" }}>
+        <TextInput
+          style={[styles.passwordInput, { fontFamily: "AlexandriaRegular" }]}
+          placeholder="كلمة المرور"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry={!showPassword}
+          autoCapitalize="none"
+        />
+        <TouchableOpacity
+          style={{ position: "absolute", left: 10, top: 12 }}
+          onPress={() => setShowPassword(!showPassword)}
+        >
+          <Ionicons
+            name={showPassword ? "eye" : "eye-off"}
+            size={24}
+            color={theme.colors.text}
           />
-        }
-      />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.checkboxContainer}>
         <Checkbox
@@ -121,7 +174,7 @@ export default function LoginScreen() {
           onPress={() => setIsRemember(!isRemember)}
           color={theme.colors.primary}
         />
-        <Text style={styles.checkboxLabel}>Remember me</Text>
+        <Text style={styles.checkboxLabel}>تذكرني</Text>
       </View>
 
       <Button
@@ -131,8 +184,9 @@ export default function LoginScreen() {
         onPress={handleLogin}
         loading={loginMutation.isPending}
         disabled={loginMutation.isPending}
+        labelStyle={{ fontFamily: "AlexandriaRegular" }}
       >
-        {loginMutation.isPending ? "Logging in..." : "Login"}
+        {loginMutation.isPending ? "جاري تسجيل الدخول" : "تسجيل الدخول"}
       </Button>
     </View>
   );

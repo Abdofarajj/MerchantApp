@@ -12,11 +12,13 @@ export const useLogin = () => {
       username,
       password,
       rememberMe,
+      signal,
     }: {
       username: string;
       password: string;
       rememberMe?: boolean;
-    }) => login(username, password, rememberMe),
+      signal?: AbortSignal;
+    }) => login(username, password, rememberMe, signal),
   });
 };
 

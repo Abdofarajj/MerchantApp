@@ -29,7 +29,7 @@ export default function RechargeScreen() {
 
   // Configure header
   useHeader({
-    title: "Enter Amount",
+    title: "ادخل قيمة",
     showBackButton: true,
   });
 
