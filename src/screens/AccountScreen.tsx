@@ -3,6 +3,7 @@ import React from "react";
 import { Alert, StyleSheet, useColorScheme, View } from "react-native";
 import { Button } from "react-native-paper";
 import Avatar from "../components/Avatar";
+import Header from "../components/Header";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 // import { useHomeDetails } from "../hooks/useHomeDetails";
@@ -59,8 +60,7 @@ export default function AccountScreen() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      // backgroundColor: theme.colors.background,
-      paddingTop: 60,
+      // backgroundColor: "black",
       paddingHorizontal: theme.spacing[4],
       paddingBottom: 100,
     },
@@ -96,6 +96,7 @@ export default function AccountScreen() {
 
   return (
     <Screen useSafeArea={false}>
+      <Header title="الحساب" />
       <View style={styles.container}>
         <LinearGradient
           colors={[

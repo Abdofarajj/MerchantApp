@@ -124,7 +124,7 @@ const getStyles = (theme: any, type: string) =>
     },
     amountText: {
       textAlign: "right",
-      fontSize: 14,
+      fontSize: 17,
       color: type === "collect" ? "green" : theme.colors.text,
     },
     rightBox: {

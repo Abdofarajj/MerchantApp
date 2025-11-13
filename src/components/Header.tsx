@@ -45,7 +45,7 @@ export default function Header({
       paddingHorizontal: theme.spacing[4],
       paddingVertical: theme.spacing[3],
       backgroundColor: "white",
-      minHeight: 150,
+      minHeight: 100,
     },
     leftSection: {
       flexDirection: "row",
@@ -55,6 +55,7 @@ export default function Header({
     backButton: {
       position: "absolute",
       left: theme.spacing[4],
+      bottom: 0,
       zIndex: 1,
       padding: theme.spacing[2],
       borderRadius: theme.radius.md,
@@ -66,6 +67,7 @@ export default function Header({
       position: "absolute",
       left: 0,
       right: 0,
+      bottom: 0,
     },
     rightSection: {
       flexDirection: "row",
@@ -74,6 +76,7 @@ export default function Header({
     rightButton: {
       position: "absolute",
       right: theme.spacing[4],
+      top: 20,
       zIndex: 1,
       padding: theme.spacing[2],
       borderRadius: theme.radius.md,

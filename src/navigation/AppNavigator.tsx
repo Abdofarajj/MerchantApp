@@ -16,7 +16,6 @@ export type TabParamList = {
   Home: undefined;
   Users: undefined;
   Activity: undefined;
-  Account: undefined;
 };
 
 export type TabScreenProps<T extends keyof TabParamList> = BottomTabScreenProps<
@@ -28,6 +27,7 @@ export type RootStackParamList = {
   Tabs: undefined;
   Recharge: undefined;
   Collect: undefined;
+  Account: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -37,7 +37,7 @@ const tabs = [
   { id: "Home", label: "Home", iconName: "home-outline" as const },
   { id: "Users", label: "Users", iconName: "people-outline" as const },
   { id: "Activity", label: "Activity", iconName: "card-outline" as const },
-  { id: "Account", label: "Account", iconName: "person-outline" as const },
+  // { id: "Account", label: "Account", iconName: "person-outline" as const },
 ];
 
 // Tab Navigator (navbar screens only)
@@ -63,7 +63,7 @@ function Tabs() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Users" component={UsersScreen} />
       <Tab.Screen name="Activity" component={ActivityScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      {/* <Tab.Screen name="Account" component={AccountScreen} /> */}
     </Tab.Navigator>
   );
 }
@@ -75,6 +75,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Tabs" component={Tabs} />
       <Stack.Screen name="Recharge" component={RechargeScreen} />
       <Stack.Screen name="Collect" component={CollectScreen} />
+      <Stack.Screen name="Account" component={AccountScreen} />
     </Stack.Navigator>
   );
 }

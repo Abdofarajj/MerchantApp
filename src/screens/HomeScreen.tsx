@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import Avatar from "../components/Avatar";
 import {
   RechargeBottomSheet,
@@ -186,7 +186,11 @@ export default function HomeScreen() {
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <Avatar />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Account" as never)}
+            >
+              <Avatar />
+            </TouchableOpacity>
             <View style={styles.greeting}>
               <Text
                 style={{
