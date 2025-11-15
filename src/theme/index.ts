@@ -26,6 +26,7 @@ const lightColors = {
   info: "#3B82F6",
   white: "#FFFFFF",
   black: "#000000",
+  disabled: "#474747ff",
 };
 
 const darkColors = {
@@ -47,6 +48,8 @@ const darkColors = {
   info: "#3B82F6",
   white: "#FFFFFF",
   black: "#000000",
+    disabled: "#181717ff",
+
 };
 
 export const lightTheme = {

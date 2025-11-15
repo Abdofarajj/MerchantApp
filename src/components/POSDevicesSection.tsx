@@ -15,26 +15,23 @@ interface POSDevicesSectionProps {
   posData: any[] | undefined;
   posLoading: boolean;
   posError: any;
+  onDevicePress?: (device: any) => void;
 }
 
 export default function POSDevicesSection({
   posData,
   posLoading,
   posError,
+  onDevicePress,
 }: POSDevicesSectionProps) {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
   const renderPOSDevice = useCallback(
     ({ item }: { item: any }) => (
-      <POSCard
-        device={item}
-        onPress={() =>
-          Alert.alert("الجهاز", `التنقل إلى تفاصيل ${item.deviceName}`)
-        }
-      />
+      <POSCard device={item} onPress={() => onDevicePress?.(item)} />
     ),
-    []
+    [onDevicePress]
   );
 
   const styles = StyleSheet.create({

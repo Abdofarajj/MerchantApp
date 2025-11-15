@@ -5,8 +5,8 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { useAuthStore } from "../store/authStore";
 import { useAutoLogin } from "../services/auth/hook";
+import { useAuthStore } from "../store/authStore";
 
 interface AuthContextType {
   isAuthenticated: boolean;

@@ -43,7 +43,7 @@ export default function LoginScreen() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
       controller.abort();
-    }, 5000);
+    }, 7000);
 
     loginMutation.mutate(
       {

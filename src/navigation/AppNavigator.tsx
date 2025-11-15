@@ -9,6 +9,7 @@ import AccountScreen from "../screens/AccountScreen";
 import ActivityScreen from "../screens/ActivityScreen";
 import CollectScreen from "../screens/CollectScreen";
 import HomeScreen from "../screens/HomeScreen";
+import POSManagement from "../screens/POSManagement";
 import RechargeScreen from "../screens/RechargeScreen";
 import UsersScreen from "../screens/UsersScreen";
 
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   Recharge: undefined;
   Collect: undefined;
   Account: undefined;
+  POSManagement: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -76,6 +78,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Recharge" component={RechargeScreen} />
       <Stack.Screen name="Collect" component={CollectScreen} />
       <Stack.Screen name="Account" component={AccountScreen} />
+      <Stack.Screen name="POSManagement" component={POSManagement} />
     </Stack.Navigator>
   );
 }

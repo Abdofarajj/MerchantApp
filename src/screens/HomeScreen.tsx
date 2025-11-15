@@ -269,6 +269,7 @@ export default function HomeScreen() {
           posData={posData}
           posLoading={posLoading}
           posError={posError}
+          onDevicePress={(device) => (navigation as any).navigate("POSManagement", { device })}
         />
       </ScrollView>
 
