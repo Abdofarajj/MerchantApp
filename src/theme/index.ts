@@ -14,6 +14,7 @@ const lightColors = {
   primaryContainer: "#007AFF",
   secondary: "#2776caff",
   background: "#FFFFFF",
+  background2: "#e4e4e4ff",
   surface: "#F7FAF8",
   surfaceVariant: "#F0F4F2",
   text: "#000000ff",
@@ -35,6 +36,7 @@ const darkColors = {
   primaryContainer: "#6EE7B7",
   secondary: "#098761ff",
   background: "#071122",
+  background2: "#e4e4e4ff",
   surface: "#0B1220",
   surfaceVariant: "#0F1829",
   text: "#E6EEF2",
@@ -48,8 +50,7 @@ const darkColors = {
   info: "#3B82F6",
   white: "#FFFFFF",
   black: "#000000",
-    disabled: "#181717ff",
-
+  disabled: "#181717ff",
 };
 
 export const lightTheme = {

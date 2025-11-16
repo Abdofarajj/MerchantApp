@@ -53,31 +53,38 @@ export function IconComponent(props: IconProps): React.ReactElement {
   // 1) If string and present in ICON_ASSETS map -> use that image
   if (typeof iconName === "string" && ICON_ASSETS[iconName]) {
     const imageSource = ICON_ASSETS[iconName];
-    return (
-      <TouchableOpacity
-        activeOpacity={0.75}
-        onPress={onPress}
-        style={undefined}
-        {...restProps}
+    const iconElement = (
+      <View
+        style={[
+          containerStyle,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
       >
-        <View
-          style={[
-            containerStyle,
-            { justifyContent: "center", alignItems: "center" },
-          ]}
-        >
-          <Image
-            source={imageSource}
-            style={{
-              width: iconSize * 0.6,
-              height: iconSize * 0.6,
-              tintColor: iconColor,
-            }}
-            resizeMode="contain"
-          />
-        </View>
-      </TouchableOpacity>
+        <Image
+          source={imageSource}
+          style={{
+            width: iconSize * 0.6,
+            height: iconSize * 0.6,
+            tintColor: iconColor,
+          }}
+          resizeMode="contain"
+        />
+      </View>
     );
+    if (onPress) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.75}
+          onPress={onPress}
+          style={undefined}
+          {...restProps}
+        >
+          {iconElement}
+        </TouchableOpacity>
+      );
+    } else {
+      return iconElement;
+    }
   }
 
   // 2) Check MaterialIcons glyph map for the name and render MaterialIcons if available
@@ -98,27 +105,34 @@ export function IconComponent(props: IconProps): React.ReactElement {
   }
 
   if (isMaterialIcon) {
-    return (
-      <TouchableOpacity
-        activeOpacity={0.75}
-        onPress={onPress}
-        style={undefined}
-        {...restProps}
+    const iconElement = (
+      <View
+        style={[
+          containerStyle,
+          { justifyContent: "center", alignItems: "center" },
+        ]}
       >
-        <View
-          style={[
-            containerStyle,
-            { justifyContent: "center", alignItems: "center" },
-          ]}
-        >
-          <MaterialIcons
-            name={iconName as any}
-            size={Math.round(iconSize * 0.6)}
-            color={iconColor}
-          />
-        </View>
-      </TouchableOpacity>
+        <MaterialIcons
+          name={iconName as any}
+          size={Math.round(iconSize * 0.6)}
+          color={iconColor}
+        />
+      </View>
     );
+    if (onPress) {
+      return (
+        <TouchableOpacity
+          activeOpacity={0.75}
+          onPress={onPress}
+          style={undefined}
+          {...restProps}
+        >
+          {iconElement}
+        </TouchableOpacity>
+      );
+    } else {
+      return iconElement;
+    }
   }
 
   // 3) Other fallback options:
@@ -158,23 +172,30 @@ export function IconComponent(props: IconProps): React.ReactElement {
     </Text>
   );
 
-  return (
-    <TouchableOpacity
-      activeOpacity={0.75}
-      onPress={onPress}
-      style={undefined}
-      {...restProps}
+  const iconElement = (
+    <View
+      style={[
+        containerStyle,
+        { justifyContent: "center", alignItems: "center" },
+      ]}
     >
-      <View
-        style={[
-          containerStyle,
-          { justifyContent: "center", alignItems: "center" },
-        ]}
-      >
-        {inner}
-      </View>
-    </TouchableOpacity>
+      {inner}
+    </View>
   );
+  if (onPress) {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.75}
+        onPress={onPress}
+        style={undefined}
+        {...restProps}
+      >
+        {iconElement}
+      </TouchableOpacity>
+    );
+  } else {
+    return iconElement;
+  }
 }
 
 const styles = StyleSheet.create({

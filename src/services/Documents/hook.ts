@@ -21,7 +21,9 @@ export const useGetByAccount = (data: GetByAccountRequest) => {
   return useQuery({
     queryKey: ["documents", "byAccount", data],
     queryFn: () => documentsService.getByAccount(data),
+    enabled: !!data.deviceId,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    placeholderData: (previousData) => previousData,
   });
 };
 

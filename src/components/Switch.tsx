@@ -1,13 +1,13 @@
 import React from "react";
-import { Switch, View, useColorScheme } from "react-native";
+import { Switch as RN_Switch, View, useColorScheme } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
 
-interface CustomSwitchProps {
+interface SwitchProps {
   value: boolean;
   onValueChange: (value: boolean) => void;
 }
 
-const CustomSwitch = ({ value, onValueChange }: CustomSwitchProps) => {
+const Switch = ({ value, onValueChange }: SwitchProps) => {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
@@ -19,16 +19,16 @@ const CustomSwitch = ({ value, onValueChange }: CustomSwitchProps) => {
         backgroundColor: value ? theme.colors.primary : theme.colors.disabled,
         borderRadius: 30,
         justifyContent: "center",
-        padding: 2, // Space so thumb doesn't touch edges
+        padding: 4, // Space so thumb doesn't touch edges
       }}
     >
-      <Switch
+      <RN_Switch
         value={value}
         onValueChange={onValueChange}
         trackColor={{ false: "transparent", true: "transparent" }}
         thumbColor="#000000ff"
         style={{
-          transform: [{ scale: 1.2 }], // shrink thumb slightly if needed
+          transform: [{ scale: 1.3 }], // shrink thumb slightly if needed
           alignSelf: value ? "flex-end" : "flex-start",
         }}
       />
@@ -36,4 +36,4 @@ const CustomSwitch = ({ value, onValueChange }: CustomSwitchProps) => {
   );
 };
 
-export default CustomSwitch;
+export default Switch;

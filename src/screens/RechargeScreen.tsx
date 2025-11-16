@@ -7,9 +7,9 @@ import {
   View,
   useColorScheme,
 } from "react-native";
-import { Button } from "react-native-paper";
-import type { ConfirmationModalRef } from "../components/Modal";
-import { ConfirmationModal } from "../components/Modal";
+import Button from "../components/Button";
+import type { SuccessModalRef } from "../components/Modal";
+import { SuccessModal } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
@@ -23,7 +23,7 @@ export default function RechargeScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const textInputRef = useRef<TextInput>(null);
-  const confirmationModalRef = useRef<ConfirmationModalRef>(null);
+  const confirmationModalRef = useRef<SuccessModalRef>(null);
   const createChargeOrderMutation = useCreateChargeOrderMutation();
   const { error: showErrorToast } = useToast();
 
@@ -74,15 +74,6 @@ export default function RechargeScreen() {
       backgroundColor: "transparent",
       opacity: isAmountValid ? 1 : 0.5,
     },
-    confirmButton: {
-      height: 60,
-    },
-    confirmButtonContent: {
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      height: "100%",
-    },
   });
 
   return (
@@ -112,7 +103,6 @@ export default function RechargeScreen() {
 
           <View>
             <Button
-              mode="contained"
               onPress={async () => {
                 const numAmount = parseFloat(amount);
                 if (numAmount >= 1) {
@@ -140,19 +130,14 @@ export default function RechargeScreen() {
               }}
               loading={isLoading}
               disabled={!isAmountValid || isLoading}
-              buttonColor={
-                isAmountValid ? "#333333" : "rgba(255, 255, 255, 0.1)"
-              }
-              textColor={isAmountValid ? "white" : "rgba(0, 0, 0, 0.2)"}
-              style={styles.confirmButton}
-              contentStyle={styles.confirmButtonContent}
-            >
-              {isLoading ? "Processing..." : "Confirm"}
-            </Button>
+              backgroundColor={isAmountValid ? "#333333" : "#CCCCCC"}
+              text={isLoading ? "جاري المعالجة..." : "تأكيد"}
+              height={60}
+            />
           </View>
         </View>
 
-        <ConfirmationModal
+        <SuccessModal
           ref={confirmationModalRef}
           message="تم ارسال الطلب!"
           onRequest={async () => {

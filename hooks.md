@@ -134,25 +134,48 @@ Purpose: Similar to useEffect, but runs synchronously after DOM mutations and be
 
 Example: measure element size before rendering something dependent on it.
 
-🔹 9. useFetch (custom hook pattern)
+🔹 9. Custom Hooks Pattern
 
-Purpose: A custom hook pattern (not built-in) to handle API calls consistently.
+Purpose: Create reusable hooks for complex logic, API calls, or state management.
 
-Example idea:
+Examples in this project:
 
-const useFetch = (url) => {
-const [data, setData] = useState(null);
-useEffect(() => {
-fetch(url).then(res => res.json()).then(setData);
-}, [url]);
-return data;
+- **useDeviceActivation**: Manages device toggle state with optimistic updates and React Query cache synchronization
+- **usePosDetails**: Fetches POS device data with React Query
+- **useHomeDetails**: Handles home screen data with SignalR integration
+
+Example pattern:
+
+const useCustomHook = (params) => {
+const [state, setState] = useState(initial);
+const queryClient = useQueryClient();
+
+// Business logic here
+const performAction = async () => {
+// Optimistic update
+setState(newState);
+
+    try {
+      await apiCall();
+      // Sync global cache
+      queryClient.setQueryData(['key'], updateFn);
+    } catch (error) {
+      // Revert on failure
+      setState(oldState);
+    }
+
+};
+
+return { state, performAction };
 };
 
 ✅ Use When:
 
 You want reusable logic (like fetching, validating, or connecting to APIs).
 
-Keeps your components clean and readable.
+Combining multiple built-in hooks for specific business logic.
+
+Maintaining data consistency across screens with cache updates.
 
 ⚙️ Summary Table
 Hook Use For Causes Re-render Typical Use Case

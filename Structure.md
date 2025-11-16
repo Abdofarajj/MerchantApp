@@ -14,10 +14,12 @@ src/
 │ ├─ DeviceCard.tsx (device card component)
 │ ├─ Header.tsx (header component)
 │ ├─ Icon.tsx (icon component)
+│ ├─ Button.tsx (button component)
 │ ├─ POSCard.tsx (POS device card component)
 │ ├─ POSDevicesSection.tsx (POS devices section component)
 │ ├─ QuickActionButton.tsx (quick action button component)
 │ ├─ Screen.tsx (base screen wrapper component)
+│ ├─ Switch.tsx (custom switch component)
 │ ├─ Text.tsx (text component)
 │ ├─ Toast.tsx (toast notification component)
 │ ├─ UserCard.tsx (user card component)
@@ -25,7 +27,8 @@ src/
 │ │ ├─ index.ts (bottom sheet exports)
 │ │ └─ RechargeBottomSheet.tsx (recharge bottom sheet component)
 │ └─ Modal/
-│ ├─ ConfirmationModal.tsx (confirmation modal component)
+│ ├─ confirmationModal.tsx (confirmation modal component)
+│ ├─ successModal.tsx (success modal component)
 │ └─ index.ts (modal exports)
 ├─ config/
 │ ├─ config.base.ts (base configuration with default values)

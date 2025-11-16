@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Button } from "react-native-paper";
-import type { ConfirmationModalRef } from "../components/Modal";
-import { ConfirmationModal } from "../components/Modal";
+import Button from "../components/Button";
+import type { SuccessModalRef } from "../components/Modal";
+import { SuccessModal } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
@@ -31,7 +31,7 @@ export default function CollectScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useAuthStore();
   const textInputRef = useRef<TextInput>(null);
-  const confirmationModalRef = useRef<ConfirmationModalRef>(null);
+  const confirmationModalRef = useRef<SuccessModalRef>(null);
 
   // API hooks
   const receiptChargeMutation = useReceiptCharge();
@@ -140,7 +140,6 @@ export default function CollectScreen() {
           {/* Confirm Button */}
           <View>
             <Button
-              mode="contained"
               onPress={async () => {
                 const numAmount = parseFloat(amount);
                 if (numAmount >= 1) {
@@ -186,23 +185,20 @@ export default function CollectScreen() {
               }}
               loading={isLoading}
               disabled={!isAmountValid || isLoading}
-              buttonColor={
-                isAmountValid ? "#333333" : "rgba(255, 255, 255, 0.1)"
+              backgroundColor={isAmountValid ? "#333333" : "#CCCCCC"}
+              text={
+                isLoading
+                  ? "جاري المعالجة..."
+                  : activeTab === "pay"
+                    ? "دفع المبلغ"
+                    : "تحصيل المبلغ"
               }
-              textColor={isAmountValid ? "white" : "rgba(0, 0, 0, 0.2)"}
-              style={styles.confirmButton}
-              contentStyle={styles.confirmButtonContent}
-            >
-              {isLoading
-                ? "Processing..."
-                : activeTab === "pay"
-                  ? "Pay Amount"
-                  : "Collect Amount"}
-            </Button>
+              height={60}
+            />
           </View>
         </View>
 
-        <ConfirmationModal
+        <SuccessModal
           ref={confirmationModalRef}
           message="Request Sent!"
           onRequest={async () => {
@@ -266,12 +262,5 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "transparent",
     opacity: 1,
-  },
-  confirmButton: { height: 60 },
-  confirmButtonContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    height: "100%",
   },
 });

@@ -1,14 +1,20 @@
 import { useRoute } from "@react-navigation/native";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-import CustomSwitch from "../components/CustomSwitch";
+import { Linking, ScrollView, StyleSheet, View } from "react-native";
+import DeviceActivityCard from "../components/DeviceActivityCard";
 import Header from "../components/Header";
+import { IconComponent } from "../components/Icon";
+import Pagination from "../components/Pagination";
 import Screen from "../components/Screen";
+import SecurityDepositCard from "../components/SecurityDepositCard";
+import Switch from "../components/Switch";
 import Text from "../components/Text";
 import { useColorScheme } from "../hooks/use-color-scheme";
+import useDeviceActivation from "../hooks/useDeviceActivation";
 import { DeviceMerchant } from "../services/DeviceMerchants/schema";
+import { useGetByAccount } from "../services/Documents";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function POSManagement() {
@@ -16,19 +22,50 @@ export default function POSManagement() {
   const { device } = route.params as { device: DeviceMerchant };
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  const [isEnabled, setIsEnabled] = useState(false);
+  const { isEnabled, toggleDevice } = useDeviceActivation(device);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: deviceActivities, isLoading: activitiesLoading } =
+    useGetByAccount({
+      deviceId: device?.id || 0,
+      pageSize: 10,
+      pageNumber: currentPage,
+    });
+  const openLocationInMaps = () => {
+    const latitude = device?.linthtude;
+    const longitude = device?.longtude;
+    if (latitude && longitude) {
+      const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
+      Linking.openURL(url);
+    }
+  };
+
+  const callPhoneNumber = () => {
+    const phoneNumber = deviceActivities?.items?.[0]?.phoneNumber;
+    if (phoneNumber) {
+      const url = `tel:${phoneNumber}`;
+      Linking.openURL(url);
+    }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  // Calculate security deposit values
+  const securityDeposit = device?.amountTax || 0;
+  const paidSecurityDeposit = device?.deptAmountTax || 0;
+  const remainingSecurityDeposit = securityDeposit - paidSecurityDeposit;
 
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       paddingHorizontal: theme.spacing[4],
-      // paddingBottom: 100,
       marginTop: 30,
     },
     content: {
       flex: 1,
-      // justifyContent: "center",
       alignItems: "center",
+      gap: 10,
     },
     title: {
       fontSize: 24,
@@ -65,73 +102,205 @@ export default function POSManagement() {
     },
     gradientContainer: {
       width: "100%",
-      height: 250,
+      height: 300,
       borderRadius: 30,
+      padding: theme.spacing[4],
+      overflow: "hidden",
+    },
+    topSection: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: theme.spacing[4],
+    },
+    deviceName: {
+      fontSize: 18,
+      color: "white",
+      textAlign: "right",
+    },
+    bottomSection: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      flex: 1,
+    },
+    leftInfo: {
+      flex: 1,
+      alignItems: "flex-end",
+      justifyContent: "flex-end",
+    },
+    deviceId: {
+      fontSize: 20,
+      color: "white",
+      textAlign: "right",
+      marginBottom: theme.spacing[1],
+    },
+    serialNumber: {
+      fontSize: 14,
+      color: "white",
+      textAlign: "right",
+    },
+    deviceImage: {
+      width: 150,
+      height: 250,
+      borderRadius: theme.radius.md,
+    },
+    securityDepositContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      padding: theme.spacing[4],
+      backgroundColor: "white",
+      borderRadius: 16,
+      marginVertical: 8,
+      width: "100%",
+    },
+    iconsContainer: {
+      flexDirection: "column",
+      alignItems: "center",
+      gap: theme.spacing[6],
+    },
+    icon: {
+      width: 40,
+      height: 40,
+      backgroundColor: "#1a1a1a",
+      borderRadius: 24, // Make it circular
+      justifyContent: "center",
+      alignItems: "center",
     },
   });
 
   return (
     <Screen useSafeArea={false}>
-      <Header title={device ? ` ${device.deviceName}` : "إدارة أجهزة POS"} />
-      <View style={styles.container}>
-        <View style={styles.content}>
-          {device && (
-            <>
-              <LinearGradient
-                colors={["#1a1a1a", "#202020", "#252525", "#2c2c2c"]}
-                style={styles.gradientContainer}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-              >
-                <View style={{ padding: theme.spacing[3] }}>
-                  <CustomSwitch
-                    value={isEnabled}
-                    onValueChange={setIsEnabled}
+      <Header title={"إدارة الجهاز"} />
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.container}>
+          <View style={styles.content}>
+            {device && (
+              <>
+                <LinearGradient
+                  colors={["#1a1a1a", "#2e2e2eff"]}
+                  style={styles.gradientContainer}
+                  start={{ x: 1, y: 0 }}
+                  end={{ x: 0, y: 1 }}
+                >
+                  {/* Top horizontal section */}
+                  <View style={styles.topSection}>
+                    <Switch value={isEnabled} onValueChange={toggleDevice} />
+                    <Text style={styles.deviceName}>{device.deviceName}</Text>
+                  </View>
+
+                  {/* Bottom horizontal section */}
+                  <View style={styles.bottomSection}>
+                    <Image
+                      source={require("../assets/images/A75Pro.png")}
+                      style={styles.deviceImage}
+                      contentFit="contain"
+                    />
+                    <View style={styles.leftInfo}>
+                      <Text style={styles.deviceId} weight="bold">
+                        ID : {device.id}
+                      </Text>
+                      <Text style={styles.serialNumber} weight="extraLight">
+                        SN : {device.serialNumber}
+                      </Text>
+                    </View>
+                  </View>
+                </LinearGradient>
+
+                <View style={styles.securityDepositContainer}>
+                  <View style={styles.iconsContainer}>
+                    <View style={styles.icon}>
+                      <IconComponent
+                        iconName="location-on"
+                        iconSize={40}
+                        iconColor="white"
+                        onPress={openLocationInMaps}
+                      />
+                    </View>
+                    <View style={styles.icon}>
+                      <IconComponent
+                        iconName="phone"
+                        iconSize={40}
+                        iconColor="white"
+                        onPress={callPhoneNumber}
+                      />
+                    </View>
+                  </View>
+                  <SecurityDepositCard
+                    totalDeposit={securityDeposit}
+                    remainingBalance={remainingSecurityDeposit}
                   />
                 </View>
-              </LinearGradient>
-
-              {device.longtude && device.linthtude && (
-                <View style={styles.mapContainer}>
-                  <MapView
-                    style={styles.map}
-                    initialRegion={{
-                      latitude: 32.832063,
-                      longitude: 13.047228,
-                      latitudeDelta: 0.01,
-                      longitudeDelta: 0.01,
-                    }}
-                  >
-                    <Marker
-                      coordinate={{
-                        latitude: 32.832063,
-                        longitude: 13.047228,
-                      }}
-                      title={device.deviceName}
-                      description={device.addressName}
-                    />
-                  </MapView>
-                </View>
-              )}
-              <View style={styles.deviceInfo}>
-                <Text style={styles.deviceDetail}>
-                  الرقم التسلسلي: {device.serialNumber}
-                </Text>
-
-                <Text style={styles.deviceDetail}>
-                  العنوان: {device.addressName || "غير محدد"}
-                </Text>
-                <Text style={styles.deviceDetail}>
-                  الحالة: {device.isActive ? "مفعل" : "غير مفعل"}
-                </Text>
-              </View>
-            </>
-          )}
-          <Text style={styles.subtitle}>
-            هذه الشاشة مخصصة لإدارة جهاز نقاط البيع المحدد
-          </Text>
+              </>
+            )}
+          </View>
         </View>
-      </View>
+
+        {/* Device Activities - Full Width */}
+        <View style={{ backgroundColor: theme.colors.background }}>
+          {deviceActivities?.items && deviceActivities.items.length > 0 ? (
+            deviceActivities.items.map((activity, index) => (
+              <DeviceActivityCard
+                key={activity.id}
+                item={activity}
+                theme={theme}
+              />
+            ))
+          ) : !activitiesLoading ? (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                padding: theme.spacing[4],
+                minHeight: 200,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: theme.colors.textSecondary,
+                  textAlign: "center",
+                }}
+              >
+                لا توجد أنشطة
+              </Text>
+            </View>
+          ) : (
+            <View
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                padding: theme.spacing[4],
+                minHeight: 200,
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: theme.colors.textSecondary,
+                }}
+              >
+                جاري التحميل...
+              </Text>
+            </View>
+          )}
+
+          {/* Pagination */}
+          {deviceActivities?.items && deviceActivities.items.length > 0 && (
+            <Pagination
+              currentPage={deviceActivities.pageIndex}
+              hasNextPage={deviceActivities.hasNextPage}
+              hasPreviousPage={deviceActivities.hasPreviousPage}
+              onPageChange={handlePageChange}
+              theme={theme}
+            />
+          )}
+        </View>
+      </ScrollView>
     </Screen>
   );
 }

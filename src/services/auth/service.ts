@@ -24,11 +24,15 @@ export const login = async (
   rememberMe: boolean = false,
   signal?: AbortSignal
 ) => {
-  const response = await api.post("/Accounts/Login", {
-    userName: username,
-    password,
-    isRemmeber: rememberMe,
-  }, { signal });
+  const response = await api.post(
+    "/Accounts/Login",
+    {
+      userName: username,
+      password,
+      isRemmeber: rememberMe,
+    },
+    { signal }
+  );
 
   // Update store with tokens
   useAuthStore.getState().setToken(response.data.accessToken);

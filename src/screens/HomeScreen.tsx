@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import Avatar from "../components/Avatar";
@@ -34,6 +34,7 @@ export default function HomeScreen() {
     data: posData,
     isLoading: posLoading,
     error: posError,
+    refetch: refetchPosData,
   } = usePosDetails();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
@@ -49,6 +50,13 @@ export default function HomeScreen() {
       logger.log("HomeScreen: userInfo", userInfo);
     }
   }, [userInfo]);
+
+  // Fallback: refetch on screen focus (optional, but recommended)
+  useFocusEffect(
+    useCallback(() => {
+      refetchPosData();
+    }, [refetchPosData])
+  );
 
   const handleQuickAction = useCallback(
     (action: string) => {
@@ -269,7 +277,9 @@ export default function HomeScreen() {
           posData={posData}
           posLoading={posLoading}
           posError={posError}
-          onDevicePress={(device) => (navigation as any).navigate("POSManagement", { device })}
+          onDevicePress={(device) =>
+            (navigation as any).navigate("POSManagement", { device })
+          }
         />
       </ScrollView>
 

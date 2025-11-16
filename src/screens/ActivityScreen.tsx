@@ -11,8 +11,13 @@ import {
   View,
 } from "react-native";
 import ActivityCard from "../components/ActivityCard";
+import {
+  ConfirmationModal,
+  ConfirmationModalRef,
+} from "../components/Modal/confirmationModal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
+import Toast, { ToastType } from "../components/Toast";
 import { useGetChargeOrdersByMerchantQuery } from "../services/ChargeOrders";
 import { useDeleteChargeOrderMutation } from "../services/ChargeOrders/hook";
 import {
@@ -33,6 +38,15 @@ export default function ActivityScreen() {
   );
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
+
+  const confirmationModalRef = useRef<ConfirmationModalRef>(null);
+  const [modalDesc, setModalDesc] = useState("");
+  const [modalOnConfirm, setModalOnConfirm] = useState<() => void>(() => {});
+  const [modalOnCancel, setModalOnCancel] = useState<() => void>(() => {});
+
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<ToastType>("info");
 
   // Animation for tab indicator
   const tabIndicatorPosition = useRef(new Animated.Value(0)).current;
@@ -229,39 +243,32 @@ export default function ActivityScreen() {
 
   const handleDeleteChargeOrder = (item: any) => {
     if (item.type === "recharge") {
-      Alert.alert(
-        "Delete Charge Order",
-        `Are you sure you want to delete this charge order for $${item.amount}?`,
-        [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Delete",
-            style: "destructive",
-            onPress: async () => {
-              try {
-                await deleteChargeOrderMutation.mutateAsync({
-                  id: item.id,
-                  updateToken: item.updateToken,
-                });
-                Alert.alert("Success", "Charge order deleted successfully");
-                // Refresh the list
-                refetchRecharge();
-              } catch (error: any) {
-                Alert.alert(
-                  "Error",
-                  error.response?.data?.message ||
-                    "Failed to delete charge order"
-                );
-              }
-            },
-          },
-        ]
-      );
+      setModalDesc(`الغاء طلب الشحن ${item.amount} د.ل ؟`);
+      setModalOnConfirm(() => async () => {
+        try {
+          const response = await deleteChargeOrderMutation.mutateAsync({
+            id: item.id,
+            updateToken: item.updateToken,
+          });
+          setToastMessage(response.messageName);
+          setToastType("success");
+          setToastVisible(true);
+          // Refresh the list
+          refetchRecharge();
+        } catch (error: any) {
+          setToastMessage(
+            error.response?.data?.messageName || "Failed to delete charge order"
+          );
+          setToastType("error");
+          setToastVisible(true);
+        }
+      });
+      setModalOnCancel(() => () => {});
+      confirmationModalRef.current?.present();
     } else {
-      Alert.alert(
-        "Cannot Delete",
-        "This item cannot be deleted from this view."
-      );
+      setToastMessage("This item cannot be deleted from this view.");
+      setToastType("error");
+      setToastVisible(true);
     }
   };
 
@@ -346,6 +353,19 @@ export default function ActivityScreen() {
             ) : null
           }
         />
+        <ConfirmationModal
+          ref={confirmationModalRef}
+          desc={modalDesc}
+          onConfirm={modalOnConfirm}
+          onCancel={modalOnCancel}
+        />
+        {toastVisible && (
+          <Toast
+            message={toastMessage}
+            type={toastType}
+            onDismiss={() => setToastVisible(false)}
+          />
+        )}
       </View>
     </Screen>
   );
