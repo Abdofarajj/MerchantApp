@@ -1,2 +1,2 @@
-export * from "./confirmationModal";
+export * from "./ConfirmationModal";
 export * from "./successModal";

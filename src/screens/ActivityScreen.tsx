@@ -14,7 +14,7 @@ import ActivityCard from "../components/ActivityCard";
 import {
   ConfirmationModal,
   ConfirmationModalRef,
-} from "../components/Modal/confirmationModal";
+} from "../components/Modal/ConfirmationModal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import Toast, { ToastType } from "../components/Toast";
