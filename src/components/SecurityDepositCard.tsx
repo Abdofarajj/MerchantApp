@@ -58,7 +58,7 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
         onPress={() => confirmationModalRef.current?.present()}
         gradientColors={["#1a1a1a", "#424242ff"]}
         iconName="undo"
-        iconSize={30}
+        iconSize={40}
         iconColor="white"
         height={40}
         width={100}

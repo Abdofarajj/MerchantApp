@@ -160,16 +160,16 @@ export default function HomeScreen() {
     balanceLabel: {
       fontSize: 16,
       marginBottom: 8,
-      textAlign: "right",
+      textAlign: "center",
     },
     balanceAmount: {
-      fontSize: 32,
-      marginBottom: 16,
-      textAlign: "right",
+      fontSize: 52,
+      marginBottom: 20,
+      textAlign: "center",
     },
     balanceDecimal: {
       color: theme.colors.outline,
-      fontSize: 28,
+      fontSize: 40,
     },
     actionsContainer: {
       paddingHorizontal: 16,
@@ -183,10 +183,7 @@ export default function HomeScreen() {
   });
 
   return (
-    <Screen
-      useSafeArea={false}
-      // style={{ backgroundColor: theme.colors.surface }}
-    >
+    <Screen useSafeArea={false}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
