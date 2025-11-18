@@ -1,4 +1,8 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import Avatar from "../components/Avatar";
@@ -13,8 +17,10 @@ import Text from "../components/Text";
 import { useColorScheme } from "../hooks/use-color-scheme";
 import { useHomeDetails } from "../hooks/useHomeDetails";
 import { usePosDetails } from "../hooks/usePosDetails";
+import type { RootStackParamList } from "../navigation/AppNavigator";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
+import { AccountSnapshot } from "../types/account";
 import { logger } from "../utils/logger";
 import { useToast } from "../utils/toast";
 
@@ -28,7 +34,7 @@ type QuickAction = {
 };
 
 export default function HomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { data, error, signalRBalance, signalRConnected } = useHomeDetails();
   const {
     data: posData,
@@ -93,6 +99,31 @@ export default function HomeScreen() {
       },
     ],
     [theme.colors.white, theme.colors.primary]
+  );
+
+  const accountSnapshot = useMemo<AccountSnapshot>(
+    () => ({
+      balance: signalRBalance ?? data?.balance ?? userInfo?.cardBalance,
+      reservedAmount: userInfo?.amount,
+      currency: data?.currency ?? "د.ل",
+      displayName: userInfo?.displayName,
+      accountName: userInfo?.accountName,
+      userName: userInfo?.userName,
+      phoneNumber: userInfo?.phoneNumber,
+      email: userInfo?.email,
+    }),
+    [
+      data?.balance,
+      data?.currency,
+      signalRBalance,
+      userInfo?.accountName,
+      userInfo?.amount,
+      userInfo?.cardBalance,
+      userInfo?.displayName,
+      userInfo?.email,
+      userInfo?.phoneNumber,
+      userInfo?.userName,
+    ]
   );
 
   if (!data) return null;
@@ -192,7 +223,9 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Account" as never)}
+              onPress={() =>
+                navigation.navigate("Account", { snapshot: accountSnapshot })
+              }
             >
               <Avatar />
             </TouchableOpacity>
