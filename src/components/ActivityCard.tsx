@@ -95,7 +95,7 @@ const getStyles = (theme: any, type: string) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",
-      backgroundColor: "white",
+      backgroundColor: theme.colors.surface,
       borderRadius: 12,
       padding: 15,
       marginVertical: 5,

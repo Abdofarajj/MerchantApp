@@ -100,12 +100,12 @@ const getStyles = (theme: any) =>
       width: "50%",
     },
     card: {
-      backgroundColor: "#ffffff",
+      backgroundColor: theme.colors.surface,
       borderRadius: 15,
       overflow: "hidden",
       // margin: 6,
-      borderWidth: 1,
-      borderColor: "#e0e0e0", // Simple light gray border
+      // borderWidth: 1,
+      borderColor: theme.colors.outline,
       padding: 8,
       minHeight: 120, // Increased to accommodate proper spacing
     },

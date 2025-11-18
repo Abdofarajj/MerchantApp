@@ -1,6 +1,8 @@
 import React from "react";
 import { Dimensions, StyleSheet, View, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useColorScheme } from "../hooks/use-color-scheme";
+import { darkTheme, lightTheme } from "../theme";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
@@ -19,12 +21,15 @@ export default function Screen({
   backgroundColor,
   centerContent = false,
 }: ScreenProps) {
+  const colorScheme = useColorScheme();
+  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       width: screenWidth,
       height: screenHeight,
-      backgroundColor: backgroundColor || "white",
+      backgroundColor: backgroundColor || theme.colors.background,
       ...style,
       paddingBottom: 0,
     },

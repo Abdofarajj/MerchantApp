@@ -9,49 +9,65 @@ import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 import { Platform } from "react-native";
 
 const lightColors = {
-  primary: "#007AFF",
-  onPrimary: "#FFFFFF",
-  primaryContainer: "#007AFF",
-  secondary: "#2776caff",
-  background: "#FFFFFF",
-  background2: "#e4e4e4ff",
-  surface: "#F7FAF8",
-  surfaceVariant: "#F0F4F2",
-  text: "#000000ff",
-  text2: "#000000ff",
-  textSecondary: "#334155",
-  textDim:"#727272ff",
-  outline: "#afafafff",
-  success: "#10B981",
-  warning: "#F59E0B",
-  error: "#EF4444",
-  info: "#3B82F6",
-  white: "#FFFFFF",
-  black: "#000000",
-  disabled: "#474747ff",
+  primary: "#007AFF", // Main brand blue
+  onPrimary: "#FFFFFF", // Text on primary buttons
+  primaryContainer: "#007AFF", // Primary container color
+
+  secondary: "#2776CAFF", // Secondary accent blue
+
+  background: "#FFFFFF", // Main app background
+  background2: "#E4E4E4FF", // Secondary background sections
+
+  surface: "#F7FAF8", // Cards / surfaces
+  surfaceVariant: "#F0F4F2", // Slightly darker surface variant
+
+  text: "#000000FF", // Main black text
+  text2: "#000000FF", // Secondary main text
+  textSecondary: "#334155", // Less emphasis text
+  textDim: "#727272FF", // Dimmed / hint text
+
+  outline: "#9C9C9CFF", // Borders / dividers
+
+  success: "#10B981", // Success green
+  warning: "#F59E0B", // Warning orange
+  error: "#EF4444", // Error red
+  info: "#3B82F6", // Info blue
+
+  white: "#FFFFFF", // Pure white
+  black: "#000000", // Pure black
+
+  disabled: "#474747FF", // Disabled elements
 };
 
 const darkColors = {
-  primary: "#10B981",
-  onPrimary: "#FFFFFF",
-  primaryContainer: "#6EE7B7",
-  secondary: "#098761ff",
-  background: "#071122",
-  background2: "#e4e4e4ff",
-  surface: "#0B1220",
-  surfaceVariant: "#0F1829",
-  text: "#E6EEF2",
-  text2: "#000000ff",
-  textSecondary: "#94A3B8",
-  textDim:"#102647ff",
-  outline: "#E0E0E0",
-  success: "#10B981",
-  warning: "#F59E0B",
-  error: "#EF4444",
-  info: "#3B82F6",
+  primary: "#004A99", // Brightened for dark background
+  onPrimary: "#000000", // Text on primary buttons
+  primaryContainer: "#005FCC", // Darker container for primary
+
+  secondary: "#4A8DDB", // Softer alternative to primary
+
+  background: "#000000ff", // Main app background (near-black)
+  background2: "#1A1A1A", // Secondary background
+
+  surface: "#1E1E1E", // Cards / surfaces
+  surfaceVariant: "#2A2A2A", // Slightly brighter surface variant
+
+  text: "#FFFFFFFF", // Main white text
+  text2: "#E7E7E7FF", // Slightly dimmed white
+  textSecondary: "#A0AEC0", // Cool gray for less emphasis
+  textDim: "#7A7A7AFF", // Even dimmer text (labels, hints)
+
+  outline: "#5F5F5FFF", // Border / dividers
+
+  success: "#22C55E", // Green success on dark background
+  warning: "#FBBF24", // Deep warm yellow
+  error: "#F87171", // Light red for visibility
+  info: "#60A5FA", // Light blue info
+
   white: "#FFFFFF",
   black: "#000000",
-  disabled: "#181717ff",
+
+  disabled: "#555555FF", // Disabled elements (low contrast)
 };
 
 export const lightTheme = {

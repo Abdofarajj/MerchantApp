@@ -1,6 +1,12 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Avatar from "../components/Avatar";
 import {
   RechargeBottomSheet,
@@ -25,6 +31,47 @@ type QuickAction = {
   iconColor: string;
   iconBg: string;
   navigateTo: string;
+};
+
+const AnimatedSection = ({
+  visible,
+  delay = 0,
+  children,
+}: {
+  visible: boolean;
+  delay?: number;
+  children: React.ReactNode;
+}) => {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(12)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 320,
+        useNativeDriver: true,
+        delay,
+      }).start();
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 320,
+        useNativeDriver: true,
+        delay,
+      }).start();
+    }
+  }, [visible, delay, opacity, translateY]);
+
+  return (
+    <Animated.View
+      style={{
+        opacity,
+        transform: [{ translateY }],
+      }}
+    >
+      {children}
+    </Animated.View>
+  );
 };
 
 export default function HomeScreen() {
@@ -95,7 +142,10 @@ export default function HomeScreen() {
     [theme.colors.white, theme.colors.primary]
   );
 
-  if (!data) return null;
+  // Visibility flags
+  const hasProfile = !!userInfo;
+  const hasBalance = typeof data?.balance !== "undefined";
+  const hasWidgets = true; // Quick actions are always available
 
   if (error) {
     const styles = StyleSheet.create({
@@ -165,6 +215,7 @@ export default function HomeScreen() {
     balanceAmount: {
       fontSize: 52,
       marginBottom: 20,
+      color: theme.colors.text,
       textAlign: "center",
     },
     balanceDecimal: {
@@ -189,95 +240,95 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerRow}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Account" as never)}
-            >
-              <Avatar />
-            </TouchableOpacity>
-            <View style={styles.greeting}>
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: "black",
-                  textAlign: "right",
-                }}
+        <AnimatedSection visible={hasProfile} delay={0}>
+          <View style={styles.header}>
+            <View style={styles.headerRow}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Account" as never)}
               >
-                مرحبا
-              </Text>
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: "black",
-                  opacity: 0.8,
-                  textAlign: "right",
-                }}
-              >
-                {userInfo?.displayName || "User"}
-              </Text>
+                <Avatar />
+              </TouchableOpacity>
+              <View style={styles.greeting}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    color: theme.colors.text,
+                    textAlign: "right",
+                  }}
+                >
+                  مرحبا
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: theme.colors.textSecondary,
+                    textAlign: "right",
+                  }}
+                >
+                  {userInfo?.displayName || "User"}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
+        </AnimatedSection>
 
         {/* Balance Card */}
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>
-            الرصيد الحالي{signalRConnected}
-          </Text>
-          <Text style={styles.balanceAmount}>
-            {(() => {
-              const balanceStr = (
-                signalRBalance ?? data.balance
-              ).toLocaleString();
-              const parts = balanceStr.split(".");
-              return (
-                <>
-                  {parts[0]}
-                  {parts[1] && (
-                    <>
-                      <Text style={styles.balanceAmount}>.</Text>
-                      <Text style={styles.balanceDecimal}>{parts[1]}</Text>
-                    </>
-                  )}{" "}
-                  {data.currency}
-                </>
-              );
-            })()}
-          </Text>
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-            }}
-          />
-        </View>
+        <AnimatedSection visible={hasBalance} delay={320}>
+          <View style={styles.balanceCard}>
+            <Text style={styles.balanceLabel}>
+              الرصيد الحالي{signalRConnected}
+            </Text>
+            <Text style={styles.balanceAmount}>
+              {(() => {
+                const balance = signalRBalance ?? data?.balance ?? 0;
+                const balanceStr = balance.toLocaleString();
+                const parts = balanceStr.split(".");
+                return (
+                  <>
+                    {parts[0]}
+                    {parts[1] && (
+                      <>
+                        <Text style={styles.balanceAmount}>.</Text>
+                        <Text style={styles.balanceDecimal}>{parts[1]}</Text>
+                      </>
+                    )}{" "}
+                    {data?.currency || ""}
+                  </>
+                );
+              })()}
+            </Text>
+          </View>
+        </AnimatedSection>
 
         {/* Quick Actions */}
-        <View style={styles.actionsContainer}>
-          <View style={styles.actionsGrid}>
-            {quickActions.map((action) => (
-              <QuickActionButton
-                key={action.id}
-                title={action.label}
-                icon={action.icon}
-                iconColor={action.iconColor}
-                iconBg={action.iconBg}
-                onPress={() => handleQuickAction(action.label)}
-              />
-            ))}
+        <AnimatedSection visible={hasWidgets} delay={240}>
+          <View style={styles.actionsContainer}>
+            <View style={styles.actionsGrid}>
+              {quickActions.map((action) => (
+                <QuickActionButton
+                  key={action.id}
+                  title={action.label}
+                  icon={action.icon}
+                  iconColor={action.iconColor}
+                  iconBg={action.iconBg}
+                  onPress={() => handleQuickAction(action.label)}
+                />
+              ))}
+            </View>
           </View>
-        </View>
+        </AnimatedSection>
 
         {/* POS Devices */}
-        <POSDevicesSection
-          posData={posData}
-          posLoading={posLoading}
-          posError={posError}
-          onDevicePress={(device) =>
-            (navigation as any).navigate("POSManagement", { device })
-          }
-        />
+        <AnimatedSection visible={true} delay={1000}>
+          <POSDevicesSection
+            posData={posData}
+            posLoading={posLoading}
+            posError={posError}
+            onDevicePress={(device) =>
+              (navigation as any).navigate("POSManagement", { device })
+            }
+          />
+        </AnimatedSection>
       </ScrollView>
 
       {/* Recharge Bottom Sheet */}
