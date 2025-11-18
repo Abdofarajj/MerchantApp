@@ -1,6 +1,16 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  Animated,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Avatar from "../components/Avatar";
 import {
   RechargeBottomSheet,
@@ -13,8 +23,10 @@ import Text from "../components/Text";
 import { useColorScheme } from "../hooks/use-color-scheme";
 import { useHomeDetails } from "../hooks/useHomeDetails";
 import { usePosDetails } from "../hooks/usePosDetails";
+import type { RootStackParamList } from "../navigation/AppNavigator";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
+import { AccountSnapshot } from "../types/account";
 import { logger } from "../utils/logger";
 import { useToast } from "../utils/toast";
 
@@ -27,8 +39,49 @@ type QuickAction = {
   navigateTo: string;
 };
 
+const AnimatedSection = ({
+  visible,
+  delay = 0,
+  children,
+}: {
+  visible: boolean;
+  delay?: number;
+  children: React.ReactNode;
+}) => {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(12)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 320,
+        useNativeDriver: true,
+        delay,
+      }).start();
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 320,
+        useNativeDriver: true,
+        delay,
+      }).start();
+    }
+  }, [visible, delay, opacity, translateY]);
+
+  return (
+    <Animated.View
+      style={{
+        opacity,
+        transform: [{ translateY }],
+      }}
+    >
+      {children}
+    </Animated.View>
+  );
+};
+
 export default function HomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { data, error, signalRBalance, signalRConnected } = useHomeDetails();
   const {
     data: posData,
@@ -93,6 +146,31 @@ export default function HomeScreen() {
       },
     ],
     [theme.colors.white, theme.colors.primary]
+  );
+
+  const accountSnapshot = useMemo<AccountSnapshot>(
+    () => ({
+      balance: signalRBalance ?? data?.balance ?? userInfo?.cardBalance,
+      reservedAmount: userInfo?.amount,
+      currency: data?.currency ?? "د.ل",
+      displayName: userInfo?.displayName,
+      accountName: userInfo?.accountName,
+      userName: userInfo?.userName,
+      phoneNumber: userInfo?.phoneNumber,
+      email: userInfo?.email,
+    }),
+    [
+      data?.balance,
+      data?.currency,
+      signalRBalance,
+      userInfo?.accountName,
+      userInfo?.amount,
+      userInfo?.cardBalance,
+      userInfo?.displayName,
+      userInfo?.email,
+      userInfo?.phoneNumber,
+      userInfo?.userName,
+    ]
   );
 
   if (!data) return null;
@@ -160,16 +238,17 @@ export default function HomeScreen() {
     balanceLabel: {
       fontSize: 16,
       marginBottom: 8,
-      textAlign: "right",
+      textAlign: "center",
     },
     balanceAmount: {
-      fontSize: 32,
-      marginBottom: 16,
-      textAlign: "right",
+      fontSize: 52,
+      marginBottom: 20,
+      color: theme.colors.text,
+      textAlign: "center",
     },
     balanceDecimal: {
       color: theme.colors.outline,
-      fontSize: 28,
+      fontSize: 40,
     },
     actionsContainer: {
       paddingHorizontal: 16,
@@ -182,11 +261,11 @@ export default function HomeScreen() {
     },
   });
 
+  const hasBalance = true;
+  const hasWidgets = true;
+
   return (
-    <Screen
-      useSafeArea={false}
-      // style={{ backgroundColor: theme.colors.surface }}
-    >
+    <Screen useSafeArea={false}>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
@@ -195,7 +274,9 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Account" as never)}
+              onPress={() =>
+                navigation.navigate("Account", { snapshot: accountSnapshot })
+              }
             >
               <Avatar />
             </TouchableOpacity>
@@ -224,63 +305,62 @@ export default function HomeScreen() {
         </View>
 
         {/* Balance Card */}
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>
-            الرصيد الحالي{signalRConnected}
-          </Text>
-          <Text style={styles.balanceAmount}>
-            {(() => {
-              const balanceStr = (
-                signalRBalance ?? data.balance
-              ).toLocaleString();
-              const parts = balanceStr.split(".");
-              return (
-                <>
-                  {parts[0]}
-                  {parts[1] && (
-                    <>
-                      <Text style={styles.balanceAmount}>.</Text>
-                      <Text style={styles.balanceDecimal}>{parts[1]}</Text>
-                    </>
-                  )}{" "}
-                  {data.currency}
-                </>
-              );
-            })()}
-          </Text>
-          <View
-            style={{
-              height: 1,
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-            }}
-          />
-        </View>
+        <AnimatedSection visible={hasBalance} delay={320}>
+          <View style={styles.balanceCard}>
+            <Text style={styles.balanceLabel}>
+              الرصيد الحالي{signalRConnected}
+            </Text>
+            <Text style={styles.balanceAmount}>
+              {(() => {
+                const balance = signalRBalance ?? data?.balance ?? 0;
+                const balanceStr = balance.toLocaleString();
+                const parts = balanceStr.split(".");
+                return (
+                  <>
+                    {parts[0]}
+                    {parts[1] && (
+                      <>
+                        <Text style={styles.balanceAmount}>.</Text>
+                        <Text style={styles.balanceDecimal}>{parts[1]}</Text>
+                      </>
+                    )}{" "}
+                    {data?.currency || ""}
+                  </>
+                );
+              })()}
+            </Text>
+          </View>
+        </AnimatedSection>
 
         {/* Quick Actions */}
-        <View style={styles.actionsContainer}>
-          <View style={styles.actionsGrid}>
-            {quickActions.map((action) => (
-              <QuickActionButton
-                key={action.id}
-                title={action.label}
-                icon={action.icon}
-                iconColor={action.iconColor}
-                iconBg={action.iconBg}
-                onPress={() => handleQuickAction(action.label)}
-              />
-            ))}
+        <AnimatedSection visible={hasWidgets} delay={240}>
+          <View style={styles.actionsContainer}>
+            <View style={styles.actionsGrid}>
+              {quickActions.map((action) => (
+                <QuickActionButton
+                  key={action.id}
+                  title={action.label}
+                  icon={action.icon}
+                  iconColor={action.iconColor}
+                  iconBg={action.iconBg}
+                  onPress={() => handleQuickAction(action.label)}
+                />
+              ))}
+            </View>
           </View>
-        </View>
+        </AnimatedSection>
 
         {/* POS Devices */}
-        <POSDevicesSection
-          posData={posData}
-          posLoading={posLoading}
-          posError={posError}
-          onDevicePress={(device) =>
-            (navigation as any).navigate("POSManagement", { device })
-          }
-        />
+        <AnimatedSection visible={true} delay={1000}>
+          <POSDevicesSection
+            posData={posData}
+            posLoading={posLoading}
+            posError={posError}
+            onDevicePress={(device) =>
+              (navigation as any).navigate("POSManagement", { device })
+            }
+          />
+        </AnimatedSection>
       </ScrollView>
 
       {/* Recharge Bottom Sheet */}

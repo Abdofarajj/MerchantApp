@@ -1,4 +1,3 @@
-import { Image } from "expo-image";
 import React from "react";
 import {
   StyleSheet,
@@ -8,6 +7,7 @@ import {
 } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
 
+import { IconComponent } from "../components/Icon";
 import Text from "../components/Text";
 import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 
@@ -46,8 +46,18 @@ export default function POSCard({ device, onPress }: POSCardProps) {
       activeOpacity={0.8}
     >
       <View style={styles.card}>
-        {/* Status indicator at top right */}
-        <View style={styles.statusContainer}>
+        {/* Top Half - Icon and Status */}
+        <View style={styles.topHalf}>
+          {/* Left side: POS icon */}
+          <View style={styles.iconContainer}>
+            <IconComponent
+              iconName="pos"
+              iconSize={50} // Increased from 24 to 40
+              iconColor={theme.colors.text || "#333"}
+            />
+          </View>
+
+          {/* Right side: Status */}
           <View
             style={[
               styles.statusPill,
@@ -58,26 +68,25 @@ export default function POSCard({ device, onPress }: POSCardProps) {
           </View>
         </View>
 
-        {/* POS Image */}
-        <Image source={posImage} style={styles.posImage} contentFit="contain" />
-
-        {/* Info Section */}
-        <View style={styles.infoSection}>
-          {/* Serial number */}
-          <Text style={styles.serialNumber} numberOfLines={1}>
-            {serialNumber}
-          </Text>
-
-          {/* Model */}
-          <Text style={styles.model} numberOfLines={1}>
-            {model}
-          </Text>
-
-          {/* addressName */}
-          {addressName && (
-            <Text style={styles.addressName} numberOfLines={2}>
-              {addressName}
+        {/* Bottom Half - Two rows */}
+        <View style={styles.bottomHalf}>
+          {/* First Row: Serial Number (left) and Model (right) */}
+          <View style={styles.bottomFirstRow}>
+            <Text style={styles.serialNumber} numberOfLines={1}>
+              {serialNumber}
             </Text>
+            <Text style={styles.model} numberOfLines={1}>
+              {model}
+            </Text>
+          </View>
+
+          {/* Second Row: Address aligned to flex-end */}
+          {addressName && (
+            <View style={styles.bottomSecondRow}>
+              <Text style={styles.addressName} numberOfLines={2}>
+                {addressName}
+              </Text>
+            </View>
           )}
         </View>
       </View>
@@ -88,28 +97,42 @@ export default function POSCard({ device, onPress }: POSCardProps) {
 const getStyles = (theme: any) =>
   StyleSheet.create({
     container: {
-      width: "50%", // Set width to exactly 50% for half screen
+      width: "50%",
     },
     card: {
-      // backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.surface,
       borderRadius: 15,
       overflow: "hidden",
-      minHeight: 290,
-      margin: 6, // Move margin to card level
+      // margin: 6,
+      // borderWidth: 1,
+      borderColor: theme.colors.outline,
+      padding: 8,
+      minHeight: 120, // Increased to accommodate proper spacing
     },
-    posImage: {
-      width: "70%",
-      height: 200,
+    topHalf: {
+      flexDirection: "row",
+      alignItems: "center", // Changed from "flex-start" to "center"
+      justifyContent: "space-between",
+      height: "43%", // Slightly reduced to make room for spacing
+      paddingBottom: 12, // Space between top content and bottom half
     },
-    infoSection: {
-      padding: 12,
+    bottomHalf: {
+      height: "57%", // Increased to compensate and maintain balance
+      justifyContent: "flex-start",
+      paddingTop: 20, // Small additional spacing at top of bottom half
     },
-    serialNumber: {
-      fontSize: 12,
-      color: theme.colors.text,
-      flex: 1,
-      marginLeft: 8,
-      textAlign: "right", // Always RTL text alignment
+    bottomFirstRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      // marginBottom: 8, // Space between first and second row
+    },
+    bottomSecondRow: {
+      alignItems: "flex-end",
+    },
+    iconContainer: {
+      justifyContent: "flex-start",
+      alignItems: "center",
     },
     statusPill: {
       paddingHorizontal: 8,
@@ -121,24 +144,24 @@ const getStyles = (theme: any) =>
     statusText: {
       color: "#fff",
       fontSize: 10,
-      textAlign: "center", // Center align status text
+      textAlign: "center",
+    },
+    serialNumber: {
+      fontSize: 11,
+      color: theme.colors.text,
+      flex: 1,
+      textAlign: "left",
     },
     model: {
-      fontSize: 14,
+      fontSize: 11,
       color: theme.colors.text,
-      marginBottom: 4,
-      textAlign: "right", // Always RTL text alignment
+      flex: 1,
+      textAlign: "right",
     },
     addressName: {
-      fontSize: 12,
-      color: theme.colors.text,
-      lineHeight: 16,
-      textAlign: "right", // Always RTL text alignment
-    },
-    statusContainer: {
-      position: "absolute",
-      top: 10,
-      right: 10, // Fixed RTL positioning
-      zIndex: 1,
+      fontSize: 10,
+      color: theme.colors.text || theme.colors.textSecondary,
+      lineHeight: 14,
+      textAlign: "right",
     },
   });

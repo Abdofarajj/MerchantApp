@@ -286,97 +286,91 @@ export default function ActivityScreen() {
 
   return (
     <Screen useSafeArea={false}>
-      <View style={styles.container}>
-        <Text style={styles.header}>Activity</Text>
+      <Text style={styles.header}>Activity</Text>
 
-        {/* Tab Bar */}
-        <View style={styles.tabBar}>
-          <Animated.View
-            style={[
-              styles.tabBackground,
-              { transform: [{ translateX: tabIndicatorPosition }] },
-            ]}
-          />
+      {/* Tab Bar */}
+      <View style={styles.tabBar}>
+        <Animated.View
+          style={[
+            styles.tabBackground,
+            { transform: [{ translateX: tabIndicatorPosition }] },
+          ]}
+        />
 
-          {["الكل", "شحن", "دفع", "تحصيل"].map((tab, index) => (
-            <TouchableOpacity
-              key={tab}
-              style={styles.tab}
-              onPress={() => handleTabPress(tab as any)}
-              activeOpacity={0.7}
+        {["الكل", "شحن", "دفع", "تحصيل"].map((tab, index) => (
+          <TouchableOpacity
+            key={tab}
+            style={styles.tab}
+            onPress={() => handleTabPress(tab as any)}
+            activeOpacity={0.7}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                activeTab === tab
+                  ? styles.activeTabText
+                  : styles.inactiveTabText,
+              ]}
             >
-              <Text
-                style={[
-                  styles.tabText,
-                  activeTab === tab
-                    ? styles.activeTabText
-                    : styles.inactiveTabText,
-                ]}
-              >
-                {tab}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+              {tab}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-        <FlatList
-          style={styles.list}
-          data={combinedData}
-          keyExtractor={(item) => `${item.type}-${item.id}`}
-          renderItem={({ item }) => (
-            <ActivityCard
-              item={item}
-              onPress={() => handleItemPress(item)}
-              theme={theme}
-            />
-          )}
-          contentContainerStyle={{ paddingBottom: 100 }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              colors={[theme.colors.primary]}
-            />
-          }
-          onEndReached={handleLoadMore}
-          onEndReachedThreshold={0.5}
-          ListEmptyComponent={
-            !isLoading ? (
-              <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>No activities found</Text>
-              </View>
-            ) : null
-          }
-          ListFooterComponent={
-            isLoading && combinedData.length ? (
-              <Text style={styles.loadingText}>Loading more...</Text>
-            ) : null
-          }
-        />
-        <ConfirmationModal
-          ref={confirmationModalRef}
-          desc={modalDesc}
-          onConfirm={modalOnConfirm}
-          onCancel={modalOnCancel}
-        />
-        {toastVisible && (
-          <Toast
-            message={toastMessage}
-            type={toastType}
-            onDismiss={() => setToastVisible(false)}
+      <FlatList
+        style={styles.list}
+        data={combinedData}
+        keyExtractor={(item) => `${item.type}-${item.id}`}
+        renderItem={({ item }) => (
+          <ActivityCard
+            item={item}
+            onPress={() => handleItemPress(item)}
+            theme={theme}
           />
         )}
-      </View>
+        contentContainerStyle={{ paddingBottom: 100 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[theme.colors.primary]}
+          />
+        }
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
+        ListEmptyComponent={
+          !isLoading ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No activities found</Text>
+            </View>
+          ) : null
+        }
+        ListFooterComponent={
+          isLoading && combinedData.length ? (
+            <Text style={styles.loadingText}>Loading more...</Text>
+          ) : null
+        }
+      />
+      <ConfirmationModal
+        ref={confirmationModalRef}
+        desc={modalDesc}
+        onConfirm={modalOnConfirm}
+        onCancel={modalOnCancel}
+      />
+      {toastVisible && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          onDismiss={() => setToastVisible(false)}
+        />
+      )}
     </Screen>
   );
 }
 
 const activityScreenStyles = (theme: any) =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
     header: {
       fontSize: 24,
       color: theme.colors.text2,

@@ -30,6 +30,7 @@ interface IconProps extends Omit<TouchableOpacityProps, "style"> {
  * Add only files that actually exist.
  */
 export const ICON_ASSETS: Record<string, number> = {
+  pos: require("../assets/icons/pos.png"),
   // person: require('../../assets/icons/person.png'),
   // logo: require('../../assets/icons/logo.png'),
 };

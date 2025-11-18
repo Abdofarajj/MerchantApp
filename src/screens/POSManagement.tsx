@@ -1,8 +1,8 @@
 import { useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState } from "react";
-import { Linking, ScrollView, StyleSheet, View } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Linking, ScrollView, StyleSheet, View } from "react-native";
 import DeviceActivityCard from "../components/DeviceActivityCard";
 import Header from "../components/Header";
 import { IconComponent } from "../components/Icon";
@@ -16,6 +16,47 @@ import useDeviceActivation from "../hooks/useDeviceActivation";
 import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 import { useGetByAccount } from "../services/Documents";
 import { darkTheme, lightTheme } from "../theme";
+
+const AnimatedSection = ({
+  visible,
+  delay = 0,
+  children,
+}: {
+  visible: boolean;
+  delay?: number;
+  children: React.ReactNode;
+}) => {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const translateY = useRef(new Animated.Value(12)).current;
+
+  useEffect(() => {
+    if (visible) {
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 320,
+        useNativeDriver: true,
+        delay,
+      }).start();
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 320,
+        useNativeDriver: true,
+        delay,
+      }).start();
+    }
+  }, [visible, delay, opacity, translateY]);
+
+  return (
+    <Animated.View
+      style={{
+        opacity,
+        transform: [{ translateY }],
+      }}
+    >
+      {children}
+    </Animated.View>
+  );
+};
 
 export default function POSManagement() {
   const route = useRoute();
@@ -241,14 +282,16 @@ export default function POSManagement() {
         </View>
 
         {/* Device Activities - Full Width */}
-        <View style={{ backgroundColor: theme.colors.background }}>
+        <View>
           {deviceActivities?.items && deviceActivities.items.length > 0 ? (
             deviceActivities.items.map((activity, index) => (
-              <DeviceActivityCard
+              <AnimatedSection
                 key={activity.id}
-                item={activity}
-                theme={theme}
-              />
+                visible={true}
+                delay={index * 100}
+              >
+                <DeviceActivityCard item={activity} theme={theme} />
+              </AnimatedSection>
             ))
           ) : !activitiesLoading ? (
             <View

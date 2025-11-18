@@ -99,7 +99,7 @@ export default function POSDevicesSection({
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           scrollEnabled={false}
-          contentContainerStyle={{ paddingHorizontal: 16 }}
+          contentContainerStyle={{ paddingHorizontal: 5 }}
           columnWrapperStyle={{ flexDirection: "row-reverse" }}
         />
       )}
