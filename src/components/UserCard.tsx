@@ -7,6 +7,7 @@ import {
   TouchableOpacityProps,
   View,
   ViewStyle,
+  useColorScheme,
 } from "react-native";
 
 import Text from "../components/Text";
@@ -51,6 +52,10 @@ export default function UserCard(props: UserCardProps) {
     ...restProps
   } = props;
 
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme !== "dark";
+  const textColor = isLight ? (Colors?.light?.text ?? "#000000") : (Colors?.dark?.text ?? "#ffffff");
+
   const deleteOpts: IconButtonOptions = {
     name: deleteIcon?.name ?? "delete",
     size: deleteIcon?.size ?? 40, // larger default
@@ -61,7 +66,7 @@ export default function UserCard(props: UserCardProps) {
   const editOpts: IconButtonOptions = {
     name: editIcon?.name ?? "edit",
     size: editIcon?.size ?? 40, // larger default
-    color: editIcon?.color ?? "#bcfff1ff",
+    color: editIcon?.color ?? isLight ? "#062c55ff" : "#66a1ffff",
     containerStyle: editIcon?.containerStyle,
   };
 
@@ -76,17 +81,17 @@ export default function UserCard(props: UserCardProps) {
       <View style={styles.card}>
         {/* Right side: content */}
         <View style={styles.content}>
-          <Text style={[styles.name, nameStyle]} numberOfLines={1}>
+          <Text style={[styles.name, nameStyle, { color: textColor }]} numberOfLines={1}>
             {name}
           </Text>
 
           {email ? (
-            <Text style={[styles.details, detailsStyle]} numberOfLines={1}>
+            <Text style={[styles.details, detailsStyle, { color: textColor, opacity: 0.85 }]} numberOfLines={1}>
               {email}
             </Text>
           ) : null}
 
-          <Text style={[styles.details, detailsStyle]} numberOfLines={1}>
+          <Text style={[styles.details, detailsStyle, { color: textColor, opacity: 0.85 }]} numberOfLines={1}>
             {phoneNumber}
           </Text>
         </View>
@@ -158,7 +163,6 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    color: Colors.dark.text,
     borderBottomWidth: 1,
     borderBottomColor: "#000000ff",
     paddingStart: 4,
@@ -167,7 +171,6 @@ const styles = StyleSheet.create({
   details: {
     marginTop: 4,
     fontSize: 14,
-    color: Colors.dark.text,
     opacity: 0.95,
   },
 });

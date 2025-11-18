@@ -50,7 +50,7 @@ export default function UsersScreen() {
   const users = (data && Array.isArray(data) && data.length > 0 ? data : placeholderUsers) as GetUsersDeviceResponse;
 
   return (
-    <Screen useSafeArea={false} centerContent>
+    <Screen>
       <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={styles.list}>
           {users.map((u) => (
