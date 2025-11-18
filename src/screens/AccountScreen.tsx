@@ -1,29 +1,84 @@
-import { LinearGradient } from "expo-linear-gradient";
-import React from "react";
-import { Alert, StyleSheet, useColorScheme, View } from "react-native";
-import { Button } from "react-native-paper";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import React, { useMemo } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  useColorScheme,
+  View,
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import Avatar from "../components/Avatar";
+import Button from "../components/Button";
 import Header from "../components/Header";
+import InfoRow from "../components/InfoRow";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
-// import { useHomeDetails } from "../hooks/useHomeDetails";
-import { useLogoutMutation } from "../services/Accounts";
-import { queryClient } from "../services/reactQuery";
+import { useHomeDetails } from "../hooks/useHomeDetails";
+import type { RootStackParamList } from "../navigation/AppNavigator";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function AccountScreen() {
+  const route = useRoute<RouteProp<RootStackParamList, "Account">>();
+  const snapshot = route.params?.snapshot;
+  const { userInfo, logout } = useAuthStore();
+  const {
+    data,
+    isLoading,
+    signalRBalance,
+    signalRConnected,
+  } = useHomeDetails();
+  const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
-  // Get user info from auth store
-  const { userInfo } = useAuthStore();
+  const currency = snapshot?.currency ?? data?.currency ?? "د.ل";
+  const balance =
+    signalRBalance ??
+    snapshot?.balance ??
+    data?.balance ??
+    userInfo?.cardBalance ??
+    0;
+  const reserved = snapshot?.reservedAmount ?? userInfo?.amount ?? 0;
 
-  // Logout mutation
-  const logoutMutation = useLogoutMutation();
-
-  // User info is now ready to use (from auth store)
-  const userData = userInfo;
+  const infoSections = useMemo(
+    () => [
+      {
+        title: "تفاصيل الحساب",
+        items: [
+          {
+            label: "اسم الحساب",
+            value: userInfo?.accountName ?? snapshot?.accountName ?? "-",
+            icon: "account-balance",
+          },
+          {
+            label: "اسم المستخدم",
+            value: userInfo?.userName ?? snapshot?.userName ?? "-",
+            icon: "person-outline",
+          },
+        ],
+      },
+      {
+        title: "معلومات التواصل",
+        items: [
+          {
+            label: "الهاتف",
+            value: userInfo?.phoneNumber ?? snapshot?.phoneNumber ?? "غير محدد",
+            icon: "call",
+          },
+          {
+            label: "البريد الإلكتروني",
+            value: userInfo?.email ?? snapshot?.email ?? "غير متوفر",
+            icon: "mail-outline",
+          },
+        ],
+      },
+    ],
+    [snapshot, userInfo]
+  );
 
   const handleLogout = () => {
     Alert.alert("تسجيل الخروج", "هل أنت متأكد أنك تريد تسجيل الخروج؟", [
@@ -34,100 +89,248 @@ export default function AccountScreen() {
       {
         text: "تسجيل الخروج",
         style: "destructive",
-        onPress: () => {
-          logoutMutation.mutate(undefined, {
-            onSuccess: () => {
-              // Clear auth store and secure storage
-              useAuthStore.getState().logout();
-              // Clear all user cache
-              queryClient.clear();
-              console.log("Logged out successfully");
-              // Navigation will happen automatically through auth store changes
-              // The RootNavigator will switch to AuthNavigator when isSignedIn becomes false
-            },
-            onError: (error) => {
-              Alert.alert(
-                "خطأ",
-                "فشل في تسجيل الخروج: " + (error as Error).message
-              );
-            },
-          });
+        onPress: async () => {
+          await logout();
         },
       },
     ]);
   };
 
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      // backgroundColor: "black",
-      paddingHorizontal: theme.spacing[4],
-      paddingBottom: 100,
-    },
-    profileCard: {
-      width: "100%",
-      padding: theme.spacing[3],
-      borderRadius: theme.radius.xxxl,
-      marginBottom: theme.spacing[6],
-      direction: "rtl",
-      flexDirection: "row",
-      alignItems: "center",
-      gap: theme.spacing[3],
-    },
-    displayName: {
-      fontSize: 28,
-      color: theme.colors.text,
-    },
-    mainContent: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    text: {
-      fontSize: 24,
-      color: theme.colors.text,
-      marginBottom: theme.spacing[4],
-    },
-    logoutButton: {
-      marginTop: theme.spacing[4],
-      width: 200,
-    },
-  });
+  const handleResetPassword = () => {
+    Alert.alert(
+      "إعادة تعيين كلمة المرور",
+      "سنتواصل معك قريبًا لاستكمال هذه العملية."
+    );
+  };
 
   return (
-    <Screen useSafeArea={false}>
+    <Screen useSafeArea={false} backgroundColor={theme.colors.background}>
       <Header title="الحساب" />
-      <View style={styles.container}>
-        <LinearGradient
-          colors={[
-            theme.colors.secondary,
-            theme.colors.primary,
-            theme.colors.primary,
-            theme.colors.secondary,
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: insets.bottom + 140 },
+        ]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View
+          style={[
+            styles.heroCard,
+            { backgroundColor: theme.colors.surface },
           ]}
-          style={styles.profileCard}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
         >
           <Avatar />
-          {userData?.displayName && (
-            <Text style={styles.displayName}>{userData.displayName}</Text>
-          )}
-        </LinearGradient>
-        <View style={styles.mainContent}>
-          <Text style={styles.text}>Account Screen</Text>
-          <Button
-            mode="contained"
-            onPress={handleLogout}
-            loading={logoutMutation.isPending}
-            disabled={logoutMutation.isPending}
-            buttonColor={theme.colors.error}
-            style={styles.logoutButton}
-          >
-            {logoutMutation.isPending ? "Logging out..." : "Logout"}
-          </Button>
+          <View style={styles.heroTexts}>
+            <Text
+              weight="semiBold"
+              style={[styles.heroTitle, { color: theme.colors.text }]}
+            >
+              {userInfo?.displayName ?? snapshot?.displayName ?? "مستخدم"}
+            </Text>
+            <Text
+              style={[
+                styles.heroSubtitle,
+                { color: theme.colors.textSecondary },
+              ]}
+            >
+              {userInfo?.accountName ?? snapshot?.accountName ?? "حساب التاجر"}
+            </Text>
+            <View style={styles.statusPill}>
+              <View
+                style={[
+                  styles.statusDot,
+                  {
+                    backgroundColor: signalRConnected
+                      ? theme.colors.success
+                      : theme.colors.error,
+                  },
+                ]}
+              />
+              <Text
+                weight="medium"
+                style={[
+                  styles.statusText,
+                  {
+                    color: signalRConnected
+                      ? theme.colors.success
+                      : theme.colors.error,
+                  },
+                ]}
+              >
+                {signalRConnected ? "متصل" : "غير متصل"}
+              </Text>
+            </View>
+          </View>
         </View>
-      </View>
+
+        <View style={styles.statsRow}>
+          <View
+            style={[
+              styles.statCard,
+              { backgroundColor: theme.colors.surface },
+            ]}
+          >
+            <Text
+              style={[styles.statLabel, { color: theme.colors.textSecondary }]}
+            >
+              الرصيد الحالي
+            </Text>
+            {isLoading ? (
+              <ActivityIndicator color={theme.colors.primary} />
+            ) : (
+              <Text
+                weight="bold"
+                style={[styles.statValue, { color: theme.colors.text }]}
+              >
+                {balance.toLocaleString()} {currency}
+              </Text>
+            )}
+          </View>
+
+          <View
+            style={[
+              styles.statCard,
+              { backgroundColor: theme.colors.surface },
+            ]}
+          >
+            <Text
+              style={[styles.statLabel, { color: theme.colors.textSecondary }]}
+            >
+              مبالغ قيد التحصيل
+            </Text>
+            <Text
+              weight="bold"
+              style={[styles.statValue, { color: theme.colors.warning }]}
+            >
+              {reserved.toLocaleString()} {currency}
+            </Text>
+          </View>
+        </View>
+
+        {infoSections.map((section) => (
+          <View
+            key={section.title}
+            style={[
+              styles.sectionCard,
+              { backgroundColor: theme.colors.surface },
+            ]}
+          >
+            <Text weight="semiBold" style={styles.sectionTitle}>
+              {section.title}
+            </Text>
+            {section.items.map((item) => (
+              <InfoRow
+                key={item.label}
+                label={item.label}
+                value={item.value}
+                iconName={item.icon}
+                iconColor={theme.colors.primary}
+                labelStyle={{ color: theme.colors.textSecondary }}
+                valueStyle={{ color: theme.colors.text }}
+              />
+            ))}
+          </View>
+        ))}
+
+        <View style={styles.actions}>
+          <Button
+            gradientColors={[theme.colors.primary, theme.colors.secondary]}
+            text="إعادة تعيين كلمة المرور"
+            onPress={handleResetPassword}
+            style={{ width: "100%" }}
+          />
+          <Button
+            backgroundColor={theme.colors.background2}
+            text="تسجيل الخروج"
+            textColor={theme.colors.text}
+            onPress={handleLogout}
+            style={{ width: "100%" }}
+          />
+        </View>
+      </ScrollView>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  scrollContent: {
+    padding: 20,
+    gap: 16,
+    paddingBottom: 40,
+  },
+  heroCard: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    borderRadius: 22,
+    padding: 20,
+    gap: 16,
+  },
+  heroTexts: {
+    flex: 1,
+    alignItems: "flex-end",
+  },
+  heroTitle: {
+    fontSize: 22,
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  heroSubtitle: {
+    fontSize: 14,
+    opacity: 0.85,
+    textAlign: "right",
+  },
+  statusPill: {
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 6,
+    marginTop: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 999,
+    backgroundColor: "rgba(37, 99, 235, 0.08)",
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  statusText: {
+    fontSize: 12,
+  },
+  statsRow: {
+    flexDirection: "row-reverse",
+    gap: 12,
+  },
+  statCard: {
+    flex: 1,
+    borderRadius: 20,
+    padding: 16,
+    alignItems: "flex-end",
+    gap: 8,
+  },
+  statLabel: {
+    fontSize: 14,
+    textAlign: "right",
+  },
+  statValue: {
+    fontSize: 20,
+    textAlign: "right",
+  },
+  sectionCard: {
+    borderRadius: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    marginBottom: 4,
+    textAlign: "right",
+  },
+  actions: {
+    gap: 12,
+    marginTop: 8,
+  },
+});
+

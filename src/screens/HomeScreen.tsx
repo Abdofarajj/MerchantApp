@@ -1,4 +1,8 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import {
   Animated,
@@ -19,8 +23,10 @@ import Text from "../components/Text";
 import { useColorScheme } from "../hooks/use-color-scheme";
 import { useHomeDetails } from "../hooks/useHomeDetails";
 import { usePosDetails } from "../hooks/usePosDetails";
+import type { RootStackParamList } from "../navigation/AppNavigator";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
+import { AccountSnapshot } from "../types/account";
 import { logger } from "../utils/logger";
 import { useToast } from "../utils/toast";
 
@@ -75,7 +81,7 @@ const AnimatedSection = ({
 };
 
 export default function HomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { data, error, signalRBalance, signalRConnected } = useHomeDetails();
   const {
     data: posData,
@@ -142,10 +148,32 @@ export default function HomeScreen() {
     [theme.colors.white, theme.colors.primary]
   );
 
-  // Visibility flags
-  const hasProfile = !!userInfo;
-  const hasBalance = typeof data?.balance !== "undefined";
-  const hasWidgets = true; // Quick actions are always available
+  const accountSnapshot = useMemo<AccountSnapshot>(
+    () => ({
+      balance: signalRBalance ?? data?.balance ?? userInfo?.cardBalance,
+      reservedAmount: userInfo?.amount,
+      currency: data?.currency ?? "د.ل",
+      displayName: userInfo?.displayName,
+      accountName: userInfo?.accountName,
+      userName: userInfo?.userName,
+      phoneNumber: userInfo?.phoneNumber,
+      email: userInfo?.email,
+    }),
+    [
+      data?.balance,
+      data?.currency,
+      signalRBalance,
+      userInfo?.accountName,
+      userInfo?.amount,
+      userInfo?.cardBalance,
+      userInfo?.displayName,
+      userInfo?.email,
+      userInfo?.phoneNumber,
+      userInfo?.userName,
+    ]
+  );
+
+  if (!data) return null;
 
   if (error) {
     const styles = StyleSheet.create({
@@ -233,6 +261,9 @@ export default function HomeScreen() {
     },
   });
 
+  const hasBalance = true;
+  const hasWidgets = true;
+
   return (
     <Screen useSafeArea={false}>
       <ScrollView
@@ -240,37 +271,38 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Header */}
-        <AnimatedSection visible={hasProfile} delay={0}>
-          <View style={styles.header}>
-            <View style={styles.headerRow}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Account" as never)}
+        <View style={styles.header}>
+          <View style={styles.headerRow}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Account", { snapshot: accountSnapshot })
+              }
+            >
+              <Avatar />
+            </TouchableOpacity>
+            <View style={styles.greeting}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "black",
+                  textAlign: "right",
+                }}
               >
-                <Avatar />
-              </TouchableOpacity>
-              <View style={styles.greeting}>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: theme.colors.text,
-                    textAlign: "right",
-                  }}
-                >
-                  مرحبا
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    color: theme.colors.textSecondary,
-                    textAlign: "right",
-                  }}
-                >
-                  {userInfo?.displayName || "User"}
-                </Text>
-              </View>
+                مرحبا
+              </Text>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "black",
+                  opacity: 0.8,
+                  textAlign: "right",
+                }}
+              >
+                {userInfo?.displayName || "User"}
+              </Text>
             </View>
           </View>
-        </AnimatedSection>
+        </View>
 
         {/* Balance Card */}
         <AnimatedSection visible={hasBalance} delay={320}>
