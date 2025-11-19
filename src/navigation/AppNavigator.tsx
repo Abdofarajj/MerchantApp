@@ -38,10 +38,14 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const tabs = [
-  { id: "Home", label: "Home", iconName: "home-outline" as const },
-  { id: "Users", label: "Users", iconName: "people-outline" as const },
-  { id: "Activity", label: "Activity", iconName: "card-outline" as const },
-  { id: "Account", label: "Account", iconName: "person-outline" as const },
+  { id: "Home", label: "الرئيسية", iconName: "home-outline" as const },
+  { id: "Users", label: "المستخدمون", iconName: "people-outline" as const },
+  {
+    id: "Activity",
+    label: "الحركات",
+    iconName: "swap-horizontal-outline" as const,
+  },
+  { id: "Account", label: "الحساب", iconName: "person-outline" as const },
 ];
 
 // Tab Navigator (navbar screens only)

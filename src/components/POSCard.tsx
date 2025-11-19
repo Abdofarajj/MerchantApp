@@ -34,9 +34,6 @@ export default function POSCard({ device, onPress }: POSCardProps) {
     return isActive ? "مفعلة" : "غير مفعلة";
   };
 
-  // Use hardcoded A75Pro image for all POS devices
-  const posImage = require("../assets/images/A75Pro.png");
-
   const styles = getStyles(theme);
 
   return (
@@ -52,7 +49,7 @@ export default function POSCard({ device, onPress }: POSCardProps) {
           <View style={styles.iconContainer}>
             <IconComponent
               iconName="pos"
-              iconSize={50} // Increased from 24 to 40
+              iconSize={35} // Increased from 24 to 40
               iconColor={theme.colors.text || "#333"}
             />
           </View>

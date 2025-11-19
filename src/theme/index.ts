@@ -13,10 +13,10 @@ const lightColors = {
   onPrimary: "#FFFFFF", // Text on primary buttons
   primaryContainer: "#007AFF", // Primary container color
 
-  secondary: "#2776CAFF", // Secondary accent blue
+  secondary: "#0c29a8ff", // Secondary accent blue
 
   background: "#FFFFFF", // Main app background
-  background2: "#E4E4E4FF", // Secondary background sections
+  background2: "#e6e6e6ff", // Secondary background sections
 
   surface: "#F7FAF8", // Cards / surfaces
   surfaceVariant: "#F0F4F2", // Slightly darker surface variant

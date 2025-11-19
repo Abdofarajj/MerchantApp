@@ -2,14 +2,14 @@ import React from "react";
 import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
 import Screen from "../components/Screen";
 import UserCard from "../components/UserCard";
-import { useGetUserDeviceQuery } from "../services";
-import type { GetUsersDeviceResponse } from "../services/Users/schema";
+import { useHeader } from "../hooks/useHeader";
+import { GetUsersDeviceResponse, useGetUserDeviceQuery } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-
+  useHeader({ title: "Users", showBackButton: false });
   const { data, error, isLoading } = useGetUserDeviceQuery();
   console.log("User Device Data:", data, "Error:", error, "Loading:", isLoading);
 

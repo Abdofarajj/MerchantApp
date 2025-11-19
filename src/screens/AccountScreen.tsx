@@ -25,12 +25,8 @@ export default function AccountScreen() {
   const route = useRoute<RouteProp<RootStackParamList, "Account">>();
   const snapshot = route.params?.snapshot;
   const { userInfo, logout } = useAuthStore();
-  const {
-    data,
-    isLoading,
-    signalRBalance,
-    signalRConnected,
-  } = useHomeDetails();
+  const { data, isLoading, signalRBalance, signalRConnected } =
+    useHomeDetails();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
@@ -115,10 +111,7 @@ export default function AccountScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View
-          style={[
-            styles.heroCard,
-            { backgroundColor: theme.colors.surface },
-          ]}
+          style={[styles.heroCard, { backgroundColor: theme.colors.surface }]}
         >
           <Avatar />
           <View style={styles.heroTexts}>
@@ -166,10 +159,7 @@ export default function AccountScreen() {
 
         <View style={styles.statsRow}>
           <View
-            style={[
-              styles.statCard,
-              { backgroundColor: theme.colors.surface },
-            ]}
+            style={[styles.statCard, { backgroundColor: theme.colors.surface }]}
           >
             <Text
               style={[styles.statLabel, { color: theme.colors.textSecondary }]}
@@ -189,10 +179,7 @@ export default function AccountScreen() {
           </View>
 
           <View
-            style={[
-              styles.statCard,
-              { backgroundColor: theme.colors.surface },
-            ]}
+            style={[styles.statCard, { backgroundColor: theme.colors.surface }]}
           >
             <Text
               style={[styles.statLabel, { color: theme.colors.textSecondary }]}
@@ -333,4 +320,3 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
-

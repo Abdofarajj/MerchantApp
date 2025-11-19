@@ -31,7 +31,10 @@ interface IconProps extends Omit<TouchableOpacityProps, "style"> {
  */
 export const ICON_ASSETS: Record<string, number> = {
   pos: require("../assets/icons/pos.png"),
-  // person: require('../../assets/icons/person.png'),
+  collect: require("../assets/icons/give-money.png"),
+  recharge: require("../assets/icons/deposit.png"),
+  download: require("../assets/icons/download.png"),
+
   // logo: require('../../assets/icons/logo.png'),
 };
 
@@ -64,8 +67,8 @@ export function IconComponent(props: IconProps): React.ReactElement {
         <Image
           source={imageSource}
           style={{
-            width: iconSize * 0.6,
-            height: iconSize * 0.6,
+            width: iconSize,
+            height: iconSize,
             tintColor: iconColor,
           }}
           resizeMode="contain"
@@ -115,7 +118,7 @@ export function IconComponent(props: IconProps): React.ReactElement {
       >
         <MaterialIcons
           name={iconName as any}
-          size={Math.round(iconSize * 0.6)}
+          size={iconSize}
           color={iconColor}
         />
       </View>
@@ -153,8 +156,8 @@ export function IconComponent(props: IconProps): React.ReactElement {
     <Image
       source={imageSource}
       style={{
-        width: iconSize * 0.6,
-        height: iconSize * 0.6,
+        width: iconSize * 0.8,
+        height: iconSize * 0.8,
         tintColor: iconColor,
       }}
       resizeMode="contain"

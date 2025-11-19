@@ -8,4 +8,3 @@ export interface AccountSnapshot {
   phoneNumber?: string;
   email?: string;
 }
-
