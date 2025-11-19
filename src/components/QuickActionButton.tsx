@@ -1,11 +1,8 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, useColorScheme } from "react-native";
 
+import { IconComponent } from "../components/Icon";
 import Text from "../components/Text";
 
 import { darkTheme, lightTheme } from "../theme";
@@ -46,11 +43,11 @@ export default function QuickActionButton({
       alignItems: "center",
       justifyContent: "center",
       marginBottom: 8,
-      backgroundColor: iconBg,
-    },
-    icon: {
-      fontSize: 20,
-      color: iconColor,
+      shadowColor: theme.colors.primary,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 1,
+      shadowRadius: 20,
+      elevation: 20,
     },
     text: {
       fontSize: 14,
@@ -65,9 +62,14 @@ export default function QuickActionButton({
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <View style={styles.iconContainer}>
-        <Text style={styles.icon}>{icon}</Text>
-      </View>
+      <LinearGradient
+        colors={[theme.colors.primary, theme.colors.secondary]}
+        style={styles.iconContainer}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <IconComponent iconName={icon} iconSize={30} iconColor={iconColor} />
+      </LinearGradient>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

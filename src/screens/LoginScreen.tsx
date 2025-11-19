@@ -123,6 +123,7 @@ export default function LoginScreen() {
     checkboxContainer: {
       flexDirection: "row",
       alignItems: "center",
+      justifyContent: "flex-end",
       marginBottom: 15,
     },
     checkboxLabel: {

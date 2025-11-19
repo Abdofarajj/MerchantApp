@@ -1,7 +1,7 @@
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Linking, ScrollView, StyleSheet, View } from "react-native";
 import DeviceActivityCard from "../components/DeviceActivityCard";
 import Header from "../components/Header";
@@ -65,12 +65,22 @@ export default function POSManagement() {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { isEnabled, toggleDevice } = useDeviceActivation(device);
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: deviceActivities, isLoading: activitiesLoading } =
-    useGetByAccount({
-      deviceId: device?.id || 0,
-      pageSize: 10,
-      pageNumber: currentPage,
-    });
+  const {
+    data: deviceActivities,
+    isLoading: activitiesLoading,
+    refetch: refetchActivities,
+  } = useGetByAccount({
+    deviceId: device?.id || 0,
+    pageSize: 10,
+    pageNumber: currentPage,
+  });
+
+  // Refetch data on screen focus
+  useFocusEffect(
+    useCallback(() => {
+      refetchActivities();
+    }, [refetchActivities])
+  );
   const openLocationInMaps = () => {
     const latitude = device?.linthtude;
     const longitude = device?.longtude;
@@ -257,7 +267,7 @@ export default function POSManagement() {
                     <View style={styles.icon}>
                       <IconComponent
                         iconName="location-on"
-                        iconSize={40}
+                        iconSize={25}
                         iconColor="white"
                         onPress={openLocationInMaps}
                       />
@@ -265,7 +275,7 @@ export default function POSManagement() {
                     <View style={styles.icon}>
                       <IconComponent
                         iconName="phone"
-                        iconSize={40}
+                        iconSize={25}
                         iconColor="white"
                         onPress={callPhoneNumber}
                       />

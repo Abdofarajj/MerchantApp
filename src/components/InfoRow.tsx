@@ -1,10 +1,10 @@
 import React from "react";
 import {
-    StyleProp,
-    StyleSheet,
-    TextStyle,
-    View,
-    ViewStyle,
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  View,
+  ViewStyle,
 } from "react-native";
 
 import { IconComponent } from "./Icon";
@@ -78,7 +78,9 @@ const styles = StyleSheet.create({
   texts: {
     flex: 1,
     marginRight: 12,
-    alignItems: "flex-end",
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   label: {
     fontSize: 14,
@@ -87,7 +89,6 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     color: "#0f172a",
-    marginTop: 4,
   },
   iconContainer: {
     width: 46,
@@ -97,4 +98,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-

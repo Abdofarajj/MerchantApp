@@ -2,11 +2,13 @@ import React from "react";
 import { StyleSheet, useColorScheme } from "react-native";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
+import { useHeader } from "../hooks/useHeader";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  useHeader({ title: "Users", showBackButton: false });
 
   const styles = StyleSheet.create({
     container: {

@@ -21,16 +21,17 @@ export default function ActivityCard({
 
   let row1Text = "";
   if (isRecharge) {
-    row1Text = `Recharge request to ${item.appUserName}`;
+    row1Text = `شحن رصيد الى ${item.appUserName}`;
   } else if (isPayOrCollect) {
     row1Text = `${item.financialItemName} الى ${item.toAccountName}`;
   }
 
   const statusText = item.isApproved ? "تم الموافقة" : "معلق";
-  const amountText = `${isCollect ? "+" : isPay ? "" : ""}$${item.amount}`;
-  const dateText = item.chargeDate
-    ? new Date(item.chargeDate).toLocaleDateString()
-    : new Date(item.insertDate).toLocaleDateString();
+  const amountText = `${item.amount}${isCollect ? "+" : isPay ? "" : ""} د.ل`;
+  const dateObj = item.chargeDate
+    ? new Date(item.chargeDate)
+    : new Date(item.insertDate);
+  const dateText = `${String(dateObj.getHours()).padStart(2, "0")}:${String(dateObj.getMinutes()).padStart(2, "0")}:${String(dateObj.getSeconds()).padStart(2, "0")}, ${dateObj.getFullYear()}/${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}`;
   const styles = getStyles(theme, item.type);
 
   return (
@@ -58,6 +59,7 @@ export default function ActivityCard({
               iconName={item.isApproved ? "check-circle" : "schedule"}
               iconSize={25}
               iconColor={item.isApproved ? "green" : "#ffc70dff"}
+              iconContainerStyle={{ marginLeft: 8 }}
             />
           </View>
           <Text style={styles.amountText}>{amountText}</Text>
@@ -96,15 +98,9 @@ const getStyles = (theme: any, type: string) =>
     container: {
       flexDirection: "row",
       backgroundColor: theme.colors.surface,
-      borderRadius: 12,
       padding: 15,
       marginVertical: 5,
       marginHorizontal: 10,
-      shadowColor: "#0000008e",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.12,
-      shadowRadius: 10,
-      elevation: 3,
     },
     leftArea: {
       flex: 1,

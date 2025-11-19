@@ -26,7 +26,7 @@ const tabBarWidth = screenWidth - 16 * 2; // paddingHorizontal of container (the
 const tabWidth = (tabBarWidth - 8) / 2; // Subtract tabBar padding (theme.spacing[1] * 2 = 8)
 
 export default function CollectScreen() {
-  const [activeTab, setActiveTab] = useState<"pay" | "collect">("pay");
+  const [activeTab, setActiveTab] = useState<"تسديد" | "تصفية">("تسديد");
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { userInfo } = useAuthStore();
@@ -42,16 +42,16 @@ export default function CollectScreen() {
   const tabBackgroundPosition = useRef(new Animated.Value(0)).current;
 
   useHeader({
-    title: "تحصيل",
+    title: "تسوية",
     showBackButton: true,
   });
 
   const isAmountValid = parseFloat(amount) >= 1;
 
-  const handleTabPress = (tab: "pay" | "collect") => {
+  const handleTabPress = (tab: "تسديد" | "تصفية") => {
     if (tab !== activeTab) {
       setActiveTab(tab);
-      const targetPosition = tab === "pay" ? 0 : tabWidth;
+      const targetPosition = tab === "تسديد" ? 0 : tabWidth;
 
       Animated.parallel([
         Animated.timing(tabIndicatorPosition, {
@@ -86,35 +86,35 @@ export default function CollectScreen() {
             />
             <TouchableOpacity
               style={styles.tab}
-              onPress={() => handleTabPress("pay")}
+              onPress={() => handleTabPress("تسديد")}
               activeOpacity={0.7}
             >
               <Text
                 style={[
                   styles.tabText,
-                  activeTab === "pay"
+                  activeTab === "تسديد"
                     ? styles.activeTabText
                     : styles.inactiveTabText,
                 ]}
               >
-                Pay
+                تسديد
               </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.tab}
-              onPress={() => handleTabPress("collect")}
+              onPress={() => handleTabPress("تصفية")}
               activeOpacity={0.7}
             >
               <Text
                 style={[
                   styles.tabText,
-                  activeTab === "collect"
+                  activeTab === "تصفية"
                     ? styles.activeTabText
                     : styles.inactiveTabText,
                 ]}
               >
-                Collect
+                تصفية
               </Text>
             </TouchableOpacity>
           </View>
@@ -152,7 +152,7 @@ export default function CollectScreen() {
                       );
                     }
 
-                    if (activeTab === "pay") {
+                    if (activeTab === "تسديد") {
                       // Use ReceiptCharge for pay amount
                       await receiptChargeMutation.mutateAsync({
                         distrputerId: userInfo.distrputerId,
@@ -189,9 +189,9 @@ export default function CollectScreen() {
               text={
                 isLoading
                   ? "جاري المعالجة..."
-                  : activeTab === "pay"
-                    ? "دفع المبلغ"
-                    : "تحصيل المبلغ"
+                  : activeTab === "تسديد"
+                    ? "تسديد المبلغ"
+                    : "تصفية المبلغ"
               }
               height={60}
             />

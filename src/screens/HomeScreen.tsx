@@ -116,7 +116,7 @@ export default function HomeScreen() {
       if (action === "شحن") {
         // Navigate to RechargeScreen
         navigation.navigate("Recharge" as never);
-      } else if (action === "تحصيل") {
+      } else if (action === "تسوية") {
         // Navigate to CollectScreen
         navigation.navigate("Collect" as never);
       } else {
@@ -131,15 +131,15 @@ export default function HomeScreen() {
       {
         id: "recharge",
         label: "شحن",
-        icon: "+",
+        icon: "recharge",
         iconColor: theme.colors.white,
         iconBg: theme.colors.primary,
         navigateTo: "requests",
       },
       {
         id: "collect",
-        label: "تحصيل",
-        icon: "$",
+        label: "تسوية",
+        icon: "collect",
         iconColor: theme.colors.white,
         iconBg: theme.colors.primary,
         navigateTo: "devices",

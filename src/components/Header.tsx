@@ -44,7 +44,7 @@ export default function Header({
       justifyContent: "center",
       paddingHorizontal: theme.spacing[4],
       paddingVertical: theme.spacing[3],
-      backgroundColor: "transparent",
+      backgroundColor: "white",
       minHeight: 100,
     },
     leftSection: {

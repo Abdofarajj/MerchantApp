@@ -1,6 +1,6 @@
-import React, { useMemo, useRef, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import {
-  Alert,
   Animated,
   Dimensions,
   FlatList,
@@ -11,13 +11,10 @@ import {
   View,
 } from "react-native";
 import ActivityCard from "../components/ActivityCard";
-import {
-  ConfirmationModal,
-  ConfirmationModalRef,
-} from "../components/Modal/ConfirmationModal";
+import { ActivityDetailsModal } from "../components/ActivityDetailsModal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
-import Toast, { ToastType } from "../components/Toast";
+import { useHeader } from "../hooks/useHeader";
 import { useGetChargeOrdersByMerchantQuery } from "../services/ChargeOrders";
 import { useDeleteChargeOrderMutation } from "../services/ChargeOrders/hook";
 import {
@@ -25,6 +22,7 @@ import {
   useGetAllReceiptReCharge,
 } from "../services/Documents";
 import { darkTheme, lightTheme } from "../theme";
+import { useToast } from "../utils/toast";
 
 const { width: screenWidth } = Dimensions.get("window");
 const tabBarWidth = screenWidth - 16 * 2;
@@ -33,20 +31,16 @@ const tabWidth = (tabBarWidth - 12) / 4; // 4 tabs with 3 gaps
 export default function ActivityScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  const [activeTab, setActiveTab] = useState<"الكل" | "شحن" | "دفع" | "تحصيل">(
-    "الكل"
-  );
+  useHeader({ title: "الحركات", showBackButton: false });
+  const [activeTab, setActiveTab] = useState<
+    "الكل" | "شحن" | "تسديد" | "تصفية"
+  >("الكل");
   const [pageNumber, setPageNumber] = useState(1);
   const [refreshing, setRefreshing] = useState(false);
 
-  const confirmationModalRef = useRef<ConfirmationModalRef>(null);
-  const [modalDesc, setModalDesc] = useState("");
-  const [modalOnConfirm, setModalOnConfirm] = useState<() => void>(() => {});
-  const [modalOnCancel, setModalOnCancel] = useState<() => void>(() => {});
-
-  const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<ToastType>("info");
+  const toast = useToast();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
   // Animation for tab indicator
   const tabIndicatorPosition = useRef(new Animated.Value(0)).current;
@@ -85,6 +79,15 @@ export default function ActivityScreen() {
   // Mutation for deleting charge orders
   const deleteChargeOrderMutation = useDeleteChargeOrderMutation();
 
+  // Refetch data on screen focus
+  useFocusEffect(
+    useCallback(() => {
+      refetchRecharge();
+      refetchPay();
+      refetchCollect();
+    }, [refetchRecharge, refetchPay, refetchCollect])
+  );
+
   // Combined data based on active tab
   const combinedData = useMemo(() => {
     let items: any[] = [];
@@ -109,13 +112,13 @@ export default function ActivityScreen() {
           type: "recharge",
         }));
         break;
-      case "دفع":
+      case "تسديد":
         items = (payData?.items || []).map((item) => ({
           ...item,
           type: "pay",
         }));
         break;
-      case "تحصيل":
+      case "تصفية":
         items = (collectData?.items || []).map((item) => ({
           ...item,
           type: "collect",
@@ -153,10 +156,10 @@ export default function ActivityScreen() {
     // This can be enhanced later with proper pagination per tab
   };
 
-  const handleTabPress = (tab: "الكل" | "شحن" | "دفع" | "تحصيل") => {
+  const handleTabPress = (tab: "الكل" | "شحن" | "تسديد" | "تصفية") => {
     if (tab !== activeTab) {
       setActiveTab(tab);
-      const tabIndex = ["الكل", "شحن", "دفع", "تحصيل"].indexOf(tab);
+      const tabIndex = ["الكل", "شحن", "تسديد", "تصفية"].indexOf(tab);
       const targetPosition = tabIndex * tabWidth;
 
       Animated.timing(tabIndicatorPosition, {
@@ -168,108 +171,26 @@ export default function ActivityScreen() {
   };
 
   const handleItemPress = (item: any) => {
-    // Determine if this is a charge order or receipt document
-    const isChargeOrder =
-      item.hasOwnProperty("merchantName") &&
-      item.hasOwnProperty("distrputerName");
-    const isReceiptDocument =
-      item.hasOwnProperty("fromAccountName") &&
-      item.hasOwnProperty("toAccountName");
-
-    let details: string[] = [];
-    let title = "Details";
-
-    if (isChargeOrder) {
-      title = "Charge Order Details";
-      details = [
-        `ID: ${item.id}`,
-        `Merchant: ${item.merchantName}`,
-        `Amount: $${item.amount}`,
-        `User: ${item.appUserName}`,
-        `Distributor: ${item.distrputerName}`,
-        `Status: ${item.isApproved ? "Approved" : "Pending"}`,
-        `Insert Date: ${new Date(item.insertDate).toLocaleString()}`,
-      ];
-
-      if (item.isApproved && item.chargeDate) {
-        details.push(
-          `Charge Date: ${new Date(item.chargeDate).toLocaleString()}`
-        );
-      }
-
-      if (item.chargeDocumentId) {
-        details.push(`Document ID: ${item.chargeDocumentId}`);
-      }
-    } else if (isReceiptDocument) {
-      title = "Receipt Document Details";
-      details = [
-        `ID: ${item.id}`,
-        `Amount: $${item.amount}`,
-        `User: ${item.appUserName}`,
-        `From Account: ${item.fromAccountName}`,
-        `To Account: ${item.toAccountName}`,
-        `Financial Item: ${item.financialItemName}`,
-        `Status: ${item.isApproved ? "Approved" : "Pending"}`,
-        `Insert Date: ${new Date(item.insertDate).toLocaleString()}`,
-      ];
-
-      if (item.branchName) {
-        details.push(`Branch: ${item.branchName}`);
-      }
-    } else {
-      // Fallback for unknown item type
-      details = [
-        `ID: ${item.id}`,
-        `Amount: $${item.amount || "N/A"}`,
-        `Status: ${item.isApproved ? "Approved" : "Pending"}`,
-        `Insert Date: ${new Date(item.insertDate).toLocaleString()}`,
-      ];
-    }
-
-    // Show delete option for pending charge orders only
-    if (isChargeOrder && !item.isApproved) {
-      Alert.alert(title, details.join("\n"), [
-        { text: "Cancel", style: "cancel" },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: () => handleDeleteChargeOrder(item),
-        },
-      ]);
-    } else {
-      Alert.alert(title, details.join("\n"));
-    }
+    setSelectedItem(item);
+    setModalVisible(true);
   };
 
-  const handleDeleteChargeOrder = (item: any) => {
-    if (item.type === "recharge") {
-      setModalDesc(`الغاء طلب الشحن ${item.amount} د.ل ؟`);
-      setModalOnConfirm(() => async () => {
-        try {
-          const response = await deleteChargeOrderMutation.mutateAsync({
-            id: item.id,
-            updateToken: item.updateToken,
-          });
-          setToastMessage(response.messageName);
-          setToastType("success");
-          setToastVisible(true);
-          // Refresh the list
+  const handleDelete = (item: any) => {
+    deleteChargeOrderMutation.mutate(
+      { id: item.id, updateToken: item.updateToken },
+      {
+        onSuccess: (response) => {
+          toast.success(response.messageName);
           refetchRecharge();
-        } catch (error: any) {
-          setToastMessage(
+          setModalVisible(false);
+        },
+        onError: (error: any) => {
+          toast.error(
             error.response?.data?.messageName || "Failed to delete charge order"
           );
-          setToastType("error");
-          setToastVisible(true);
-        }
-      });
-      setModalOnCancel(() => () => {});
-      confirmationModalRef.current?.present();
-    } else {
-      setToastMessage("This item cannot be deleted from this view.");
-      setToastType("error");
-      setToastVisible(true);
-    }
+        },
+      }
+    );
   };
 
   if (error) {
@@ -286,8 +207,6 @@ export default function ActivityScreen() {
 
   return (
     <Screen useSafeArea={false}>
-      <Text style={styles.header}>Activity</Text>
-
       {/* Tab Bar */}
       <View style={styles.tabBar}>
         <Animated.View
@@ -297,7 +216,7 @@ export default function ActivityScreen() {
           ]}
         />
 
-        {["الكل", "شحن", "دفع", "تحصيل"].map((tab, index) => (
+        {["الكل", "شحن", "تسديد", "تصفية"].map((tab, index) => (
           <TouchableOpacity
             key={tab}
             style={styles.tab}
@@ -352,31 +271,19 @@ export default function ActivityScreen() {
           ) : null
         }
       />
-      <ConfirmationModal
-        ref={confirmationModalRef}
-        desc={modalDesc}
-        onConfirm={modalOnConfirm}
-        onCancel={modalOnCancel}
+      <ActivityDetailsModal
+        visible={modalVisible}
+        item={selectedItem}
+        onClose={() => setModalVisible(false)}
+        theme={theme}
+        onDelete={handleDelete}
       />
-      {toastVisible && (
-        <Toast
-          message={toastMessage}
-          type={toastType}
-          onDismiss={() => setToastVisible(false)}
-        />
-      )}
     </Screen>
   );
 }
 
 const activityScreenStyles = (theme: any) =>
   StyleSheet.create({
-    header: {
-      fontSize: 24,
-      color: theme.colors.text2,
-      textAlign: "center",
-      marginVertical: 20,
-    },
     tabBar: {
       flexDirection: "row",
       backgroundColor: theme.colors.surfaceVariant,
