@@ -10,7 +10,7 @@ export default function UsersScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
-  const { data, error, isLoading, refetch } = useGetUserDeviceQuery();
+  const { data, error, isLoading } = useGetUserDeviceQuery();
   console.log("User Device Data:", data, "Error:", error, "Loading:", isLoading);
 
   // Placeholder data that matches the Users schema

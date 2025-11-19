@@ -11,10 +11,8 @@ import {
 } from "react-native";
 
 import Text from "../components/Text";
-
-import { Colors } from "../theme";
+import { darkTheme, lightTheme } from "../theme";
 import { IconComponent } from "./Icon";
-
 interface IconButtonOptions {
   name?: string | number;
   size?: number;
@@ -51,11 +49,10 @@ export default function UserCard(props: UserCardProps) {
     editIcon,
     ...restProps
   } = props;
-
   const colorScheme = useColorScheme();
-  const isLight = colorScheme !== "dark";
-  const textColor = isLight ? (Colors?.light?.text ?? "#000000") : (Colors?.dark?.text ?? "#ffffff");
-
+  const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const textColor = theme?.colors.text;
+  const CARD_BG = theme?.colors.surface;
   const deleteOpts: IconButtonOptions = {
     name: deleteIcon?.name ?? "delete",
     size: deleteIcon?.size ?? 40, // larger default
@@ -66,7 +63,7 @@ export default function UserCard(props: UserCardProps) {
   const editOpts: IconButtonOptions = {
     name: editIcon?.name ?? "edit",
     size: editIcon?.size ?? 40, // larger default
-    color: editIcon?.color ?? isLight ? "#062c55ff" : "#66a1ffff",
+    color: editIcon?.color ?? theme.colors.primary,
     containerStyle: editIcon?.containerStyle,
   };
 
@@ -78,10 +75,10 @@ export default function UserCard(props: UserCardProps) {
       {...restProps}
       {...touchableProps}
     >
-      <View style={styles.card}>
+      <View style={[  styles.card, { backgroundColor: CARD_BG }]}>
         {/* Right side: content */}
         <View style={styles.content}>
-          <Text style={[styles.name, nameStyle, { color: textColor }]} numberOfLines={1}>
+          <Text style={[styles.name, nameStyle, { color: textColor, borderBottomColor: theme.colors.onSurface }]} numberOfLines={1}>
             {name}
           </Text>
 
@@ -97,7 +94,7 @@ export default function UserCard(props: UserCardProps) {
         </View>
         {/* Left side: action icons side-by-side */}
         <View style={styles.sideActions}>
-          <View style={[styles.iconContainer, deleteOpts.containerStyle]}>
+          <View style={[styles.iconContainer, deleteOpts.containerStyle, {backgroundColor: theme.colors.background2}]}>
             <IconComponent
               iconName={deleteOpts.name || "delete"}
               iconSize={deleteOpts.size}
@@ -106,7 +103,7 @@ export default function UserCard(props: UserCardProps) {
             />
           </View>
 
-          <View style={[styles.iconContainer, editOpts.containerStyle]}>
+          <View style={[styles.iconContainer, editOpts.containerStyle, {backgroundColor: theme.colors.background2}]}>
             <IconComponent
               iconName={editOpts.name || "edit"}
               iconSize={editOpts.size}
@@ -120,26 +117,15 @@ export default function UserCard(props: UserCardProps) {
   );
 }
 
-const CARD_BG = "#25367523"; // off-white greenish
-
 const styles = StyleSheet.create({
   wrapper: {},
   card: {
     direction: "rtl",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: CARD_BG,
     padding: 16,
-    borderWidth: 1,
-    borderColor: "#a8e9f1ff",
     borderRadius: 12,
     // iOS shadow
-    shadowColor: "#1c331621",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.02,
-    shadowRadius: 8,
-    // Android elevation
-    elevation: 2,
     marginVertical: 8,
   },
   sideActions: {
@@ -153,8 +139,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     margin: 8,
-    backgroundColor: "#e1f0e834",
-    borderRadius: 20,
+    borderRadius: 8,
   },
   content: {
     flex: 4,
@@ -164,7 +149,6 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#000000ff",
     paddingStart: 4,
     marginBottom: 4,
   },
