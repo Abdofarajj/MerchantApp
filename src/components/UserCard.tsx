@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import {
   StyleProp,
   StyleSheet,
@@ -13,6 +13,7 @@ import {
 import Text from "../components/Text";
 import { darkTheme, lightTheme } from "../theme";
 import { IconComponent } from "./Icon";
+import { ConfirmationModal, ConfirmationModalRef } from "./Modal";
 interface IconButtonOptions {
   name?: string | number;
   size?: number;
@@ -55,19 +56,25 @@ export default function UserCard(props: UserCardProps) {
   const CARD_BG = theme?.colors.surface;
   const deleteOpts: IconButtonOptions = {
     name: deleteIcon?.name ?? "delete",
-    size: deleteIcon?.size ?? 40, // larger default
+    size: deleteIcon?.size ?? 36, // larger default
     color: deleteIcon?.color ?? "#ff3300ff",
     containerStyle: deleteIcon?.containerStyle,
   };
 
   const editOpts: IconButtonOptions = {
     name: editIcon?.name ?? "edit",
-    size: editIcon?.size ?? 40, // larger default
+    size: editIcon?.size ?? 36, // larger default
     color: editIcon?.color ?? theme.colors.primary,
     containerStyle: editIcon?.containerStyle,
   };
 
-  return (
+  const confirmationModalRef = useRef<ConfirmationModalRef>(null);
+    const handleDelete = () => {
+      // Implement delete logic here
+  
+    };
+
+  return (<View>
     <TouchableOpacity
       activeOpacity={0.9}
       onPress={onPress}
@@ -99,7 +106,7 @@ export default function UserCard(props: UserCardProps) {
               iconName={deleteOpts.name || "delete"}
               iconSize={deleteOpts.size}
               iconColor={deleteOpts.color}
-              onPress={() => console.log("delete pressed", id)}
+              onPress={() => { confirmationModalRef.current?.present(); }}
             />
           </View>
 
@@ -114,6 +121,16 @@ export default function UserCard(props: UserCardProps) {
         </View>
       </View>
     </TouchableOpacity>
+    <ConfirmationModal
+            ref={confirmationModalRef}
+            desc="هل أنت متأكد أنك تريد حذف هذا المستخدم؟"
+            onConfirm={handleDelete}
+            onCancel={() => {
+              // Handle cancel action
+              console.log("Cancelled");
+            }}
+          />
+    </View>
   );
 }
 
@@ -124,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    borderRadius: 12,
+    borderRadius: 18,
     // iOS shadow
     marginVertical: 8,
   },
@@ -138,7 +155,8 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   iconContainer: {
-    margin: 8,
+    padding: 4,
+    marginVertical: 4,
     borderRadius: 8,
   },
   content: {
