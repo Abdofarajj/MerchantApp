@@ -1,5 +1,6 @@
 import React from "react";
 import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
+import FloatingActionButton from "../components/FloatingActionButton";
 import Screen from "../components/Screen";
 import UserCard from "../components/UserCard";
 import { useHeader } from "../hooks/useHeader";
@@ -12,7 +13,6 @@ export default function UsersScreen() {
   useHeader({ title: "Users", showBackButton: false });
   const { data, error, isLoading } = useGetUserDeviceQuery();
   console.log("User Device Data:", data, "Error:", error, "Loading:", isLoading);
-
   // Placeholder data that matches the Users schema
   const placeholderUsers: GetUsersDeviceResponse = [
     {
@@ -65,6 +65,8 @@ export default function UsersScreen() {
           ))}
         </View>
       </ScrollView>
+      <FloatingActionButton
+      onPress={() => console.log("Add Pressed")}/>
     </Screen>
   );
 }
