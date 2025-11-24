@@ -7,6 +7,7 @@ import React from "react";
 import CustomTabBar from "../components/CustomTabBar";
 import AccountScreen from "../screens/AccountScreen";
 import ActivityScreen from "../screens/ActivityScreen";
+import AddUserScreen from "../screens/AddUserScreen";
 import CollectScreen from "../screens/CollectScreen";
 import HomeScreen from "../screens/HomeScreen";
 import POSManagement from "../screens/POSManagement";
@@ -32,6 +33,7 @@ export type RootStackParamList = {
   Collect: undefined;
   Account: { snapshot?: AccountSnapshot } | undefined;
   POSManagement: undefined;
+  AddUser: undefined
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -85,6 +87,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Collect" component={CollectScreen} />
       <Stack.Screen name="Account" component={AccountScreen} />
       <Stack.Screen name="POSManagement" component={POSManagement} />
+      <Stack.Screen name="AddUser" component={AddUserScreen} />
     </Stack.Navigator>
   );
 }

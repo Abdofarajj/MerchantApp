@@ -1,13 +1,17 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
 import FloatingActionButton from "../components/FloatingActionButton";
 import Screen from "../components/Screen";
 import UserCard from "../components/UserCard";
 import { useHeader } from "../hooks/useHeader";
+import { RootStackParamList } from "../navigation/AppNavigator";
 import { GetUsersDeviceResponse, useGetUserDeviceQuery } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   useHeader({ title: "Users", showBackButton: false });
@@ -66,7 +70,12 @@ export default function UsersScreen() {
         </View>
       </ScrollView>
       <FloatingActionButton
-      onPress={() => console.log("Add Pressed")}/>
+      onPress={() => {
+        console.log("Add Pressed")
+        navigation.navigate("AddUser")
+        }
+        }/>
+      
     </Screen>
   );
 }
