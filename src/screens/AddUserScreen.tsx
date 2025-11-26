@@ -1,11 +1,15 @@
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useRef, useState } from "react";
-import { ScrollView, StyleSheet, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
+import { ScrollView, StyleSheet, TextInput, useColorScheme, View } from "react-native";
 import { Button } from "react-native-paper";
 import { UserDeviceListModal, UserDeviceListModalRef } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { useAddUserDeviceMutation } from "../services";
 import { darkTheme, lightTheme } from "../theme";
+import { useToast } from "../utils/toast";
 
 export default function AddUserScreen() {
     const [displayName, setDisplayName] = useState("");
@@ -15,8 +19,48 @@ export default function AddUserScreen() {
     const [merchantDeviceID, setMerchantDeviceID] = useState(0);
     const colorScheme = useColorScheme();
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-    useHeader({ title: "أضافة مستخدم جهاز", showBackButton: true });
     const userDeviceListModalRef = useRef<UserDeviceListModalRef>(null);
+    const addUserDeviceMutation = useAddUserDeviceMutation();
+    useHeader({ title: "أضافة مستخدم جهاز", showBackButton: true });
+    const { error } = useToast();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const handleAddUserDevice = () => {
+        if (!merchantDeviceID) {
+            error("يرجى اختيار جهاز التاجر");
+            return;
+        }
+        if (!displayName || !username || !password || !confirmPassword) {
+            error("يرجى ملء جميع الحقول");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            error("كلمة المرور وتأكيد كلمة المرور غير متطابقين");
+            return;
+        }
+
+        addUserDeviceMutation.mutate(
+            {
+                deviceMerchantId: merchantDeviceID,
+                displayName: displayName,
+                userName: username,
+                password: password,
+                confirmPassword,
+            },
+            {
+                onSuccess: (response) => {
+                    // Handle success (e.g., show a success message, navigate back, etc.)
+                    alert("تم إضافة مستخدم الجهاز بنجاح");
+                    navigation.goBack();
+                },
+                onError: (err) => {
+                    // Handle error (e.g., show an error message)
+                    error("حدث خطأ أثناء إضافة مستخدم الجهاز");
+                    console.error("Add User Device Error:", err);
+                }
+            }
+    )
+    }
     const styles = StyleSheet.create({
         container: {
             padding: 16,
@@ -56,12 +100,12 @@ export default function AddUserScreen() {
     <Screen>
       <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={styles.list}>
-            <TouchableOpacity onPress={() => { 
+            <Button onPress={() => { 
                 console.log("Select Device Pressed")
                 userDeviceListModalRef.current?.present();
              }}>
                 <Text>اختر الجهاز المستخدم</Text>
-                </TouchableOpacity>
+                </Button>
             <TextInput
                 style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
                 placeholder="اسم مستخدم الجهاز"
@@ -99,6 +143,7 @@ export default function AddUserScreen() {
         mode="contained"
         buttonColor={theme.colors.primary}
         labelStyle={{ fontFamily: "AlexandriaRegular" }} 
+        onPress={handleAddUserDevice}
         >
         <Text>أضافة مستخدم جهاز</Text>
       </Button>

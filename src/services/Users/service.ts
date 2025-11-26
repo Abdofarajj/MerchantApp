@@ -1,5 +1,5 @@
 import api from "../api";
-import { GetUsersDeviceResponse } from "./schema";
+import { AddUserPayload, AddUserResponse, GetUsersDeviceResponse } from "./schema";
 
 /**
  * Users API service
@@ -13,6 +13,13 @@ export const usersService = {
     const response = await api.get("/Accounts/GetMyUserDevice");
     return response.data;
   },
+
+  addUserDevice: async (
+    data: AddUserPayload
+  ): Promise<AddUserResponse> => {
+    const response = await api.post("/Accounts/Create", data);
+    return response.data;
+  }
 };
 
 export default usersService;

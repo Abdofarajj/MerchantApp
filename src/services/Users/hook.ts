@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { GetUsersDeviceResponse } from "./schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AddUserPayload, GetUsersDeviceResponse } from "./schema";
 import usersService from "./service";
 
 /**
@@ -10,12 +10,24 @@ import usersService from "./service";
 export const useGetUserDeviceQuery = () => {
   return useQuery<GetUsersDeviceResponse>({
     queryKey: ["myUserDevice"],
-    queryFn: async () => {
-      const data = await usersService.getMyUserDevice();
+    queryFn: () => {
+      const data = usersService.getMyUserDevice();
       return data;
     },
     enabled: true,
   });
 };
 
-export default useGetUserDeviceQuery;
+/**
+ * Mutation: add a new user device.
+ * Usage:
+ *  
+ */
+export const useAddUserDeviceMutation = () => {
+  return useMutation({
+    mutationFn: (payload: AddUserPayload) =>{
+    const data = usersService.addUserDevice(payload);
+    return data;
+    }
+  });
+}
