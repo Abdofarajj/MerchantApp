@@ -13,7 +13,9 @@ import EditUserScreen from "../screens/EditUserScreen";
 import HomeScreen from "../screens/HomeScreen";
 import POSManagement from "../screens/POSManagement";
 import RechargeScreen from "../screens/RechargeScreen";
+import UserDetailsScreen from "../screens/UserDetailsScreen";
 import UsersScreen from "../screens/UsersScreen";
+import { UserDevice } from "../services";
 import type { AccountSnapshot } from "../types/account";
 
 export type TabParamList = {
@@ -36,6 +38,7 @@ export type RootStackParamList = {
   POSManagement: undefined;
   AddUser: undefined
   EditUser: { userId: string, oldUsername?: string, oldDisplayName?: string  };
+  UserDetails: {userInfo: UserDevice}
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -91,6 +94,7 @@ export default function AppNavigator() {
       <Stack.Screen name="POSManagement" component={POSManagement} />
       <Stack.Screen name="AddUser" component={AddUserScreen} />
       <Stack.Screen name="EditUser" component={EditUserScreen} />
+      <Stack.Screen name="UserDetails" component={UserDetailsScreen}/>
     </Stack.Navigator>
   );
 }

@@ -38,7 +38,7 @@ export default function EditUserScreen() {
             return;
         }
     
-        const data = editUserDeviceMutation.mutate(
+        editUserDeviceMutation.mutate(
             {
                 id: userId,
                 displayName: displayName,

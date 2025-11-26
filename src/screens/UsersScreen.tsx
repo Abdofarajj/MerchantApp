@@ -69,7 +69,10 @@ export default function UsersScreen() {
             <UserCard
               key={u.id}
               user={u}
-              onPress={() => console.log("user pressed", u.id)}
+              onPress={() => {
+                console.log("user pressed", u.id)
+                navigation.navigate("UserDetails", {userInfo: u})
+              }}
             />
           ))}
         </View>
