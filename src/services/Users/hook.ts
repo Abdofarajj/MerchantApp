@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { queryClient } from "../reactQuery";
 import { AddUserPayload, GetUsersDeviceResponse } from "./schema";
 import usersService from "./service";
 
@@ -28,6 +29,9 @@ export const useAddUserDeviceMutation = () => {
     mutationFn: (payload: AddUserPayload) =>{
     const data = usersService.addUserDevice(payload);
     return data;
-    }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myUserDevice"] });
+    },
   });
 }

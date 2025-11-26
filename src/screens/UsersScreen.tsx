@@ -1,5 +1,5 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
 import FloatingActionButton from "../components/FloatingActionButton";
 import Screen from "../components/Screen";
@@ -7,6 +7,7 @@ import UserCard from "../components/UserCard";
 import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { GetUsersDeviceResponse, useGetUserDeviceQuery } from "../services";
+import { queryClient } from "../services/reactQuery";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {
@@ -15,7 +16,14 @@ export default function UsersScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   useHeader({ title: "Users", showBackButton: false });
-  const { data, error, isLoading } = useGetUserDeviceQuery();
+
+  const { data, error, isLoading, refetch } = useGetUserDeviceQuery();
+  useEffect(() => {
+    if (queryClient.getQueryState(["myUserDevice"])?.isInvalidated === true) {
+      refetch();
+    }
+  }, [queryClient.getQueryState(["myUserDevice"])]
+  );
   console.log("User Device Data:", data, "Error:", error, "Loading:", isLoading);
   // Placeholder data that matches the Users schema
   const placeholderUsers: GetUsersDeviceResponse = [
