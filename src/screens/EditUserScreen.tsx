@@ -1,66 +1,63 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useRef, useState } from "react";
+import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, TextInput, useColorScheme, View } from "react-native";
 import { Button } from "react-native-paper";
-import { UserDeviceListModal, UserDeviceListModalRef } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
-import { useAddUserDeviceMutation } from "../services";
+import { useEditUserDeviceMutation } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 
-export default function AddUserScreen() {
-    const [displayName, setDisplayName] = useState("");
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [merchantDeviceID, setMerchantDeviceID] = useState(0);
+export default function EditUserScreen() {
+    const route = useRoute<RouteProp<RootStackParamList, "EditUser">>();
+    console.log("EditUserScreen Route Params:", route.params);
+    const { userId, oldUsername, oldDisplayName } = route.params;   
+    const [displayName, setDisplayName] = useState(oldDisplayName || "");
+    const [username, setUsername] = useState(oldUsername || "");
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const editUserDeviceMutation = useEditUserDeviceMutation();
+
     const colorScheme = useColorScheme();
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-    const userDeviceListModalRef = useRef<UserDeviceListModalRef>(null);
-    const addUserDeviceMutation = useAddUserDeviceMutation();
-    useHeader({ title: "أضافة مستخدم جهاز", showBackButton: true });
+    useHeader({ title: "تعديل مستخدم جهاز", showBackButton: true });
+
     const { error } = useToast();
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-    const handleAddUserDevice = () => {
-        if (!merchantDeviceID) {
-            error("يرجى اختيار جهاز التاجر");
-            return;
-        }
-        if (!displayName || !username || !password || !confirmPassword) {
+
+    const handleEditUserDevice = () => {
+        console.log(`Old Display Name: ${oldDisplayName}, New Display Name: ${displayName}.
+            \n Old Username: ${oldUsername}, New Username: ${username}.`);
+
+        if (!displayName || !username) {
             error("يرجى ملء جميع الحقول");
             return;
         }
-
-        if (password !== confirmPassword) {
-            error("كلمة المرور وتأكيد كلمة المرور غير متطابقين");
+        if (displayName === oldDisplayName && username === oldUsername) {
+            error("لم يتم إجراء أي تغييرات");
             return;
         }
-
-        addUserDeviceMutation.mutate(
+    
+        const data = editUserDeviceMutation.mutate(
             {
-                deviceMerchantId: merchantDeviceID,
+                id: userId,
                 displayName: displayName,
                 userName: username,
-                password: password,
-                confirmPassword,
             },
             {
                 onSuccess: (response) => {
                     // Handle success (e.g., show a success message, navigate back, etc.)
-                    alert("تم إضافة مستخدم الجهاز بنجاح");
+                    alert("تم تعديل مستخدم الجهاز بنجاح");
                     navigation.goBack();
                 },
-                onError: (err) => {
+                onError: (err, _, res) => {
                     // Handle error (e.g., show an error message)
-                    error("حدث خطأ أثناء إضافة مستخدم الجهاز");
-                    console.error("Add User Device Error:", err);
-                }
-            }
-    )
-    }
+                    error("حدث خطأ أثناء تعديل مستخدم الجهاز");
+                    console.error("Edit User Device Error:", err,);
+                },
+            })
+        }
+
     const styles = StyleSheet.create({
         container: {
             padding: 16,
@@ -100,17 +97,16 @@ export default function AddUserScreen() {
     <Screen>
       <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={styles.list}>
-            <Button onPress={() => { 
-                console.log("Select Device Pressed")
-                userDeviceListModalRef.current?.present();
-             }}>
-                <Text>اختر الجهاز المستخدم</Text>
-                </Button>
             <TextInput
                 style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
                 placeholder="اسم العرض على الجهاز"
                 value={displayName}
                 onChangeText={setDisplayName}
+                onEndEditing={() =>{
+                    if (displayName.trim() === "") {
+                        setDisplayName(oldDisplayName || "");
+                    }
+                }}
                 autoCapitalize="none"
             />
             <TextInput
@@ -118,38 +114,27 @@ export default function AddUserScreen() {
                 placeholder="اسم مستخدم الجهاز"
                 value={username}
                 onChangeText={setUsername}
-                autoCapitalize="none"
-                />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="كلمة المرور"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
-                autoCapitalize="none"
-                />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="تأكيد كلمة المرور" 
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={true}
+                onEndEditing={() =>{
+                    if (username.trim() === "") {
+                        setUsername(oldUsername || "");
+                    }
+                }}
                 autoCapitalize="none"
                 />
         </View>
     </ScrollView>
-    <Button
+        <Button
         style={styles.button}
         mode="contained"
         buttonColor={theme.colors.primary}
         labelStyle={{ fontFamily: "AlexandriaRegular" }} 
-        onPress={handleAddUserDevice}
+        onPress={() => { 
+            console.log("Save Pressed")
+            handleEditUserDevice();
+         }}
         >
         <Text>أضافة مستخدم جهاز</Text>
       </Button>
-    <UserDeviceListModal ref={userDeviceListModalRef} 
-    setID={setMerchantDeviceID}/>
     </Screen>
   );
 }
-

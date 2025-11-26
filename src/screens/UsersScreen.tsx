@@ -68,10 +68,7 @@ export default function UsersScreen() {
           {users.map((u) => (
             <UserCard
               key={u.id}
-              id={u.id}
-              name={u.displayName || u.accountName}
-              phoneNumber={u.phoneNumber}
-              email={u.email}
+              user={u}
               onPress={() => console.log("user pressed", u.id)}
             />
           ))}
@@ -91,6 +88,7 @@ export default function UsersScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+    paddingBottom: 220,
   },
   list: {
     width: "100%",

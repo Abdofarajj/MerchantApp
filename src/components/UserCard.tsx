@@ -5,13 +5,17 @@ import {
   TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
+  useColorScheme,
   View,
   ViewStyle,
-  useColorScheme,
 } from "react-native";
 
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Text from "../components/Text";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { usedeleteUserDeviceMutation as useDeleteUserDeviceMutation, UserDevice } from "../services";
 import { darkTheme, lightTheme } from "../theme";
+import { useToast } from "../utils/toast";
 import { IconComponent } from "./Icon";
 import { ConfirmationModal, ConfirmationModalRef } from "./Modal";
 interface IconButtonOptions {
@@ -22,10 +26,7 @@ interface IconButtonOptions {
 }
 
 interface UserCardProps extends Omit<TouchableOpacityProps, "style"> {
-  id: string;
-  name: string;
-  email?: string;
-  phoneNumber: string;
+  user: UserDevice;
   onPress?: TouchableOpacityProps["onPress"];
   // styling overrides
   nameStyle?: StyleProp<TextStyle>;
@@ -38,10 +39,7 @@ interface UserCardProps extends Omit<TouchableOpacityProps, "style"> {
 
 export default function UserCard(props: UserCardProps) {
   const {
-    id,
-    name,
-    email,
-    phoneNumber,
+    user,
     onPress,
     nameStyle,
     detailsStyle,
@@ -61,17 +59,32 @@ export default function UserCard(props: UserCardProps) {
     containerStyle: deleteIcon?.containerStyle,
   };
 
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const editOpts: IconButtonOptions = {
     name: editIcon?.name ?? "edit",
     size: editIcon?.size ?? 36, // larger default
     color: editIcon?.color ?? theme.colors.primary,
     containerStyle: editIcon?.containerStyle,
   };
-
+  
+  const { error } = useToast();
+  const deleteUserDeviceMutation = useDeleteUserDeviceMutation();
   const confirmationModalRef = useRef<ConfirmationModalRef>(null);
     const handleDelete = () => {
-      // Implement delete logic here
-  
+      deleteUserDeviceMutation.mutate(
+        { id: user.id },
+        {
+          onSuccess: (response) => {
+            // Handle success (e.g., show a success message, navigate back, etc.)
+            alert("تم حذف مستخدم الجهاز بنجاح");
+          },
+          onError: (err) => {
+            // Handle error (e.g., show an error message)
+            error("حدث خطأ أثناء حذف مستخدم الجهاز");
+            console.error("Delete User Device Error:", err);
+        }
+      }
+    ) 
     };
 
   return (<View>
@@ -86,17 +99,17 @@ export default function UserCard(props: UserCardProps) {
         {/* Right side: content */}
         <View style={styles.content}>
           <Text style={[styles.name, nameStyle, { color: textColor, borderBottomColor: theme.colors.onSurface }]} numberOfLines={1}>
-            {name}
+            {user.displayName}
           </Text>
 
-          {email ? (
+          {user.email ? (
             <Text style={[styles.details, detailsStyle, { color: textColor, opacity: 0.85 }]} numberOfLines={1}>
-              {email}
+              {user.email}
             </Text>
           ) : null}
 
           <Text style={[styles.details, detailsStyle, { color: textColor, opacity: 0.85 }]} numberOfLines={1}>
-            {phoneNumber}
+            {user.phoneNumber}
           </Text>
         </View>
         {/* Left side: action icons side-by-side */}
@@ -115,7 +128,10 @@ export default function UserCard(props: UserCardProps) {
               iconName={editOpts.name || "edit"}
               iconSize={editOpts.size}
               iconColor={editOpts.color}
-              onPress={() => console.log("edit pressed", id)}
+              onPress={() => {
+                console.log("edit pressed", user.id)
+                navigation.navigate("EditUser", { userId: user.id, oldUsername: user.userName, oldDisplayName: user.displayName});
+              }}
             />
           </View>
         </View>

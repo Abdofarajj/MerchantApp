@@ -1,5 +1,5 @@
 import api from "../api";
-import { AddUserPayload, AddUserResponse, GetUsersDeviceResponse } from "./schema";
+import { AddUserPayload, AddUserResponse, EditUserPayload, EditUserResponse, GetUsersDeviceResponse } from "./schema";
 
 /**
  * Users API service
@@ -19,7 +19,21 @@ export const usersService = {
   ): Promise<AddUserResponse> => {
     const response = await api.post("/Accounts/Create", data);
     return response.data;
-  }
+  },
+
+  editUserDevice: async (
+    data: EditUserPayload
+  ): Promise<EditUserResponse> => {
+    const response = await api.post("/Accounts/Edit", data);
+    return response.data;
+  },
+
+  deleteUserDevice: async (
+    data: {id: string}
+  ): Promise<AddUserResponse> => {
+    const response = await api.delete(`/Accounts/Delete/${data.id}`,);
+    return response.data;
+  },
 };
 
 export default usersService;

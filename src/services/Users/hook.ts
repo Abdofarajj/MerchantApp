@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "../reactQuery";
-import { AddUserPayload, GetUsersDeviceResponse } from "./schema";
+import { AddUserPayload, EditUserPayload, GetUsersDeviceResponse } from "./schema";
 import usersService from "./service";
 
 /**
@@ -35,3 +35,33 @@ export const useAddUserDeviceMutation = () => {
     },
   });
 }
+
+/**
+ * Mutation: edit an existing user device.
+ * Usage:
+ * useEditUserDeviceMutation({userId, displayName, userName})
+ */
+export const useEditUserDeviceMutation = () => {
+  return useMutation({
+    mutationFn: (payload: EditUserPayload) =>{
+    const data = usersService.editUserDevice(payload);
+    console.log("[API response]: ",data)
+    return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myUserDevice"] });
+    },
+  });
+}
+
+export const usedeleteUserDeviceMutation = () => {
+  return useMutation({
+    mutationFn: (payload: {id: string}) =>{
+    const data = usersService.deleteUserDevice(payload);
+    return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["myUserDevice"] });
+    },
+  })
+};
