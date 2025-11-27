@@ -130,7 +130,7 @@ export default function UserCard(props: UserCardProps) {
               iconColor={editOpts.color}
               onPress={() => {
                 console.log("edit pressed", user.id)
-                navigation.navigate("EditUser", { userId: user.id, oldUsername: user.userName, oldDisplayName: user.displayName});
+                navigation.navigate("EditUser", { user: user});
               }}
             />
           </View>

@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "../reactQuery";
-import { AddUserPayload, EditUserPayload, GetUsersDeviceResponse } from "./schema";
+import { AddUserPayload, EditUserPayload, GetUsersDeviceResponse, ResetPasswordPayload } from "./schema";
 import usersService from "./service";
 
 /**
@@ -65,3 +65,12 @@ export const usedeleteUserDeviceMutation = () => {
     },
   })
 };
+
+export const useResetPasswordMutation = () => {
+  return useMutation({
+    mutationFn: (payload: ResetPasswordPayload) => {
+      const data = usersService.resetUserDevicePassword(payload)
+      return data
+    }
+  })
+}

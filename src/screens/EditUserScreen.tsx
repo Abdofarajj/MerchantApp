@@ -6,18 +6,22 @@ import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
-import { useEditUserDeviceMutation } from "../services";
+import { useEditUserDeviceMutation, useResetPasswordMutation } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 
 export default function EditUserScreen() {
     const route = useRoute<RouteProp<RootStackParamList, "EditUser">>();
     console.log("EditUserScreen Route Params:", route.params);
-    const { userId, oldUsername, oldDisplayName } = route.params;   
+    const { user } = route.params;   
+    const {displayName: oldDisplayName, userName: oldUsername,} = user
     const [displayName, setDisplayName] = useState(oldDisplayName || "");
     const [username, setUsername] = useState(oldUsername || "");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const editUserDeviceMutation = useEditUserDeviceMutation();
+    const resetPasswordMutation = useResetPasswordMutation();
 
     const colorScheme = useColorScheme();
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
@@ -40,7 +44,7 @@ export default function EditUserScreen() {
     
         editUserDeviceMutation.mutate(
             {
-                id: userId,
+                id: user.id,
                 displayName: displayName,
                 userName: username,
             },
@@ -48,7 +52,7 @@ export default function EditUserScreen() {
                 onSuccess: (response) => {
                     // Handle success (e.g., show a success message, navigate back, etc.)
                     alert("تم تعديل مستخدم الجهاز بنجاح");
-                    navigation.goBack();
+                    navigation.navigate("Tabs", undefined, {pop: true})
                 },
                 onError: (err, _, res) => {
                     // Handle error (e.g., show an error message)
@@ -57,6 +61,35 @@ export default function EditUserScreen() {
                 },
             })
         }
+
+    const handleEditUserDevicePassowrd = () => {
+        if (!password && !confirmPassword)
+            return
+
+        if (password !== confirmPassword) {
+            error("كلمة المرور وتأكيد كلمة المرور غير متطابقين");
+            return
+        }
+        resetPasswordMutation.mutate(
+            {
+                userId: user.id,
+                userName: username ?? oldUsername,
+                password: password,
+                confirmPassword: confirmPassword,
+            },
+            {
+                onSuccess: (res) => {
+                    alert("تم تعديل كلمة السر بنجاح");
+                    navigation.navigate("Tabs", undefined, {pop: true})
+                },
+                onError: (err, _, res) => {
+                    // Handle error (e.g., show an error message)
+                    error("حدث خطأ أثناء تعديل كلمة السر");
+                    console.error("Edit User Device Error:", err,);
+                },
+            }                
+        )
+    }
 
     const styles = StyleSheet.create({
         container: {
@@ -121,20 +154,48 @@ export default function EditUserScreen() {
                 }}
                 autoCapitalize="none"
                 />
+        <Button
+            style={styles.button}
+            mode="contained"
+            buttonColor={theme.colors.primary}
+            labelStyle={{ fontFamily: "AlexandriaRegular" }} 
+            onPress={() => { 
+                console.log("Save Pressed")
+                handleEditUserDevice();
+            }}>
+            <Text>حفظ</Text>
+      </Button>
+        </View>
+        <View style={styles.list}>
+            <TextInput
+                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                placeholder="كلمة المرور"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={true}
+                autoCapitalize="none"
+                />
+            <TextInput
+                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                placeholder="تأكيد كلمة المرور" 
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry={true}
+                autoCapitalize="none"
+                />
+            <Button
+                style={styles.button}
+                mode="contained"
+                buttonColor={theme.colors.primary}
+                labelStyle={{ fontFamily: "AlexandriaRegular" }} 
+                onPress={() => { 
+                    console.log("Save Pressed")
+                    handleEditUserDevicePassowrd();
+                }}>
+                <Text>حفظ</Text>
+            </Button>
         </View>
     </ScrollView>
-        <Button
-        style={styles.button}
-        mode="contained"
-        buttonColor={theme.colors.primary}
-        labelStyle={{ fontFamily: "AlexandriaRegular" }} 
-        onPress={() => { 
-            console.log("Save Pressed")
-            handleEditUserDevice();
-         }}
-        >
-        <Text>أضافة مستخدم جهاز</Text>
-      </Button>
     </Screen>
   );
 }

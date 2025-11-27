@@ -8,7 +8,11 @@ import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
+import { usedeleteUserDeviceMutation } from "../services";
 import { darkTheme, lightTheme } from "../theme";
+import { useToast } from "../utils/toast";
+
+
 export default function UserDetailsScreen() {
     const route = useRoute<RouteProp<RootStackParamList, "UserDetails">>();
     const {userInfo} = route.params;
@@ -16,8 +20,11 @@ export default function UserDetailsScreen() {
     const colorScheme = useColorScheme();
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
     useHeader({ title: "تفاصيل مستخدم الجهاز", showBackButton: true });
+
+    const deleteUserDeviceMutation = usedeleteUserDeviceMutation();
+    const { error } = useToast();
+    
     const deleteConfirmationModalRef = useRef<ConfirmationModalRef>(null);
-    const resetPasswordConfirmationModalRef = useRef<ConfirmationModalRef>(null);
       const infoSections = useMemo(
         () => [
           {
@@ -53,6 +60,24 @@ export default function UserDetailsScreen() {
         ],
         [ userInfo]
       );
+
+      const handleDelete = () => {
+      deleteUserDeviceMutation.mutate(
+        { id: userInfo.id },
+        {
+          onSuccess: (response) => {
+            // Handle success (e.g., show a success message, navigate back, etc.)
+            alert("تم حذف مستخدم الجهاز بنجاح");
+            navigation.goBack()
+          },
+          onError: (err) => {
+            // Handle error (e.g., show an error message)
+            error("حدث خطأ أثناء حذف مستخدم الجهاز");
+            console.error("Delete User Device Error:", err);
+        }
+      }
+    ) 
+    };
     
     const styles = StyleSheet.create({
         container: {
@@ -129,10 +154,10 @@ export default function UserDetailsScreen() {
             marginBottom: 4,
             textAlign: "right",
         },
-        actions: {
-            gap: 12,
-            marginTop: 8,
+        button: {
+            margin: 10,
         },
+
         });
     
     return <Screen useSafeArea={false} backgroundColor={theme.colors.background}>
@@ -191,15 +216,25 @@ export default function UserDetailsScreen() {
                 ))}
             <Button
             gradientColors={[theme.colors.primary, theme.colors.secondary]}
-            text="إعادة تعيين كلمة المرور"
-            onPress={() => resetPasswordConfirmationModalRef.current?.present()}
-            style={{ width: "100%" }}
+            text="تعديل الحساب"
+            onPress={() => navigation.navigate("EditUser", {user: userInfo})}
+            style={styles.button}
+          />
+          <Button
+            gradientColors={[theme.colors.error, theme.colors.onErrorContainer]}
+            text="حذف الحساب"
+            onPress={() => deleteConfirmationModalRef.current?.present()}
+            style={styles.button}
           />
         </ScrollView>
-        <ConfirmationModal desc={"إعادة تعيين كلمة المرور؟"} 
-        ref={resetPasswordConfirmationModalRef}
-        onConfirm={() =>  {
-            throw new Error("Function not implemented.");
-        } } onCancel={() => {} }/>
+        <ConfirmationModal
+            ref={deleteConfirmationModalRef}
+            desc="هل أنت متأكد أنك تريد حذف هذا المستخدم؟"
+            onConfirm={handleDelete}
+            onCancel={() => {
+              // Handle cancel action
+              console.log("Cancelled");
+            }}
+          />
     </Screen>
 }

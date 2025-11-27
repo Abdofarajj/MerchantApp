@@ -37,7 +37,7 @@ export type RootStackParamList = {
   Account: { snapshot?: AccountSnapshot } | undefined;
   POSManagement: undefined;
   AddUser: undefined
-  EditUser: { userId: string, oldUsername?: string, oldDisplayName?: string  };
+  EditUser: { user: UserDevice };
   UserDetails: {userInfo: UserDevice}
 };
 
