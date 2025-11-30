@@ -97,10 +97,10 @@ const getStyles = (theme: any) =>
       width: "50%",
     },
     card: {
-      backgroundColor: theme.colors.surface,
+      backgroundColor: theme.colors.surfaceVariant,
       borderRadius: 15,
       overflow: "hidden",
-      // margin: 6,
+      margin: 1,
       // borderWidth: 1,
       borderColor: theme.colors.outline,
       padding: 8,
