@@ -133,7 +133,11 @@ export default function EditUserScreen() {
         },
         section: {
             marginVertical: 8,
-        }
+        },
+        buttonTextStyle:
+        {
+            color: theme.colors.onPrimary
+        },
         });
 
     return (
@@ -213,7 +217,7 @@ export default function EditUserScreen() {
                     console.log("Save Pressed")
                     handleEditUserDevicePassowrd();
                 }}>
-                <Text style={[theme.fonts.bodyMedium, {color: theme.colors.onPrimary}]}>تعديل كلمة المرور</Text>
+                <Text style={[theme.fonts.bodyMedium, styles.buttonTextStyle]}>تعديل كلمة المرور</Text>
             </Button>
         </View>
     </ScrollView>

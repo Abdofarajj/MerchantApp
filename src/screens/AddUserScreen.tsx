@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { ScrollView, StyleSheet, TextInput, useColorScheme, View } from "react-native";
-import { Button } from "react-native-paper";
+import Button from "../components/Button";
 import { UserDeviceListModal, UserDeviceListModalRef } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
@@ -21,6 +21,23 @@ export default function AddUserScreen() {
     const theme = colorScheme === "dark" ? darkTheme : lightTheme;
     const userDeviceListModalRef = useRef<UserDeviceListModalRef>(null);
     const addUserDeviceMutation = useAddUserDeviceMutation();
+
+    const isEnabled = useMemo(() => {
+    const isDisplayNameEmpty = displayName.trim() !== '';
+    const isUsernameEmpty = username.trim() !== '';
+    const isPasswordEmpty = password.trim() !== '';
+    const isConfirmPasswordEmpty = confirmPassword.trim() !== '';
+    const isMerchantDeviceIDEmpty = Boolean(merchantDeviceID);
+
+    return (
+        isDisplayNameEmpty &&
+        isUsernameEmpty &&
+        isPasswordEmpty &&
+        isConfirmPasswordEmpty &&
+        isMerchantDeviceIDEmpty
+    );
+    }, [displayName, username, password, confirmPassword, merchantDeviceID]);
+
     useHeader({ title: "أضافة مستخدم جهاز", showBackButton: true });
     const { error } = useToast();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -63,12 +80,13 @@ export default function AddUserScreen() {
     }
     const styles = StyleSheet.create({
         container: {
+            flex: 1,
             padding: 16,
         },
         list: {
             width: "100%",
-            maxWidth: 960,
             alignSelf: "center",
+            gap: 20,
         },
         input: {
             marginBottom: 15,
@@ -92,60 +110,76 @@ export default function AddUserScreen() {
             textAlign: "right",
             },
         button: {
-            marginBottom: 15,
+            marginBottom: 18,
             },
+        inputLabel: {
+            textAlign: "right",
+            margin: 4,
+        },
+        buttonTextStyle:
+        {
+            color: theme.colors.onPrimary
+        },
         });
 
     return (
-    <Screen>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <Screen useSafeArea={true} style={styles.container}>
+      <ScrollView contentContainerStyle={[{ backgroundColor: theme.colors.background }]}>
         <View style={styles.list}>
             <Button onPress={() => { 
                 console.log("Select Device Pressed")
                 userDeviceListModalRef.current?.present();
-             }}>
-                <Text>اختر الجهاز المستخدم</Text>
+                }}
+                gradientColors={[theme.colors.primary, theme.colors.secondary]}
+             >
+                <Text style={[theme.fonts.bodyMedium, styles.buttonTextStyle]}>اختر الجهاز المستخدم</Text>
                 </Button>
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="اسم العرض على الجهاز"
-                value={displayName}
-                onChangeText={setDisplayName}
-                autoCapitalize="none"
-            />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="اسم مستخدم الجهاز"
-                value={username}
-                onChangeText={setUsername}
-                autoCapitalize="none"
+            <View>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="اسم العرض على الجهاز"
+                    value={displayName}
+                    onChangeText={setDisplayName}
+                    autoCapitalize="none"
                 />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="كلمة المرور"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
-                autoCapitalize="none"
-                />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="تأكيد كلمة المرور" 
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={true}
-                autoCapitalize="none"
-                />
+            </View>    
+            <View>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="اسم مستخدم الجهاز"
+                    value={username}
+                    onChangeText={setUsername}
+                    autoCapitalize="none"
+                    />
+            </View>
+            <View>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="كلمة المرور"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={true}
+                    autoCapitalize="none"
+                    />
+            </View>
+            <View>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="تأكيد كلمة المرور" 
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={true}
+                    autoCapitalize="none"
+                    />
+            </View>
         </View>
     </ScrollView>
     <Button
+        gradientColors={isEnabled ? [theme.colors.primary, theme.colors.secondary] : [theme.colors.disabled, theme.colors.disabled]}
         style={styles.button}
-        mode="contained"
-        buttonColor={theme.colors.primary}
-        labelStyle={{ fontFamily: "AlexandriaRegular" }} 
         onPress={handleAddUserDevice}
         >
-        <Text>أضافة مستخدم جهاز</Text>
+        <Text style={[theme.fonts.bodyMedium, styles.buttonTextStyle]}>أضافة مستخدم جهاز</Text>
       </Button>
     <UserDeviceListModal ref={userDeviceListModalRef} 
     setID={setMerchantDeviceID}/>
