@@ -13,6 +13,7 @@ import EditUserScreen from "../screens/EditUserScreen";
 import HomeScreen from "../screens/HomeScreen";
 import POSManagement from "../screens/POSManagement";
 import RechargeScreen from "../screens/RechargeScreen";
+import ResetPasswordScreen from "../screens/ResetPasswordScreen";
 import UserDetailsScreen from "../screens/UserDetailsScreen";
 import UsersScreen from "../screens/UsersScreen";
 import { UserDevice } from "../services";
@@ -39,6 +40,7 @@ export type RootStackParamList = {
   AddUser: undefined;
   EditUser: { user: UserDevice };
   UserDetails: { userInfo: UserDevice };
+  ResetPassword: undefined;
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
@@ -94,6 +96,7 @@ export default function AppNavigator() {
       <Stack.Screen name="AddUser" component={AddUserScreen} />
       <Stack.Screen name="EditUser" component={EditUserScreen} />
       <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
   );
 }

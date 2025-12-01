@@ -15,7 +15,7 @@ export default function UsersScreen() {
 
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  useHeader({ title: "Users", showBackButton: false });
+  useHeader({ title: "مستخدموا الاجهزة", showBackButton: false });
 
   const { data, error, isLoading, refetch } = useGetUserDeviceQuery();
   useEffect(() => {

@@ -1,10 +1,16 @@
-import { RouteProp, useRoute } from "@react-navigation/native";
-import React, { useMemo } from "react";
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import React, { useMemo, useRef } from "react";
 import {
   ActivityIndicator,
-  Alert,
+  Linking,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
@@ -14,6 +20,7 @@ import Avatar from "../components/Avatar";
 import Button from "../components/Button";
 import Header from "../components/Header";
 import InfoRow from "../components/InfoRow";
+import { ConfirmationModal } from "../components/Modal/ConfirmationModal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHomeDetails } from "../hooks/useHomeDetails";
@@ -23,13 +30,14 @@ import { darkTheme, lightTheme } from "../theme";
 
 export default function AccountScreen() {
   const route = useRoute<RouteProp<RootStackParamList, "Account">>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const snapshot = route.params?.snapshot;
   const { userInfo, logout } = useAuthStore();
-  const { data, isLoading, signalRBalance, signalRConnected } =
-    useHomeDetails();
+  const { data, isLoading, signalRBalance } = useHomeDetails();
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const logoutModalRef = useRef<{ present: () => void; dismiss: () => void }>(null);
 
   const currency = snapshot?.currency ?? data?.currency ?? "د.ل";
   const balance =
@@ -42,21 +50,6 @@ export default function AccountScreen() {
 
   const infoSections = useMemo(
     () => [
-      {
-        title: "تفاصيل الحساب",
-        items: [
-          {
-            label: "اسم الحساب",
-            value: userInfo?.accountName ?? snapshot?.accountName ?? "-",
-            icon: "account-balance",
-          },
-          {
-            label: "اسم المستخدم",
-            value: userInfo?.userName ?? snapshot?.userName ?? "-",
-            icon: "person-outline",
-          },
-        ],
-      },
       {
         title: "معلومات التواصل",
         items: [
@@ -77,26 +70,27 @@ export default function AccountScreen() {
   );
 
   const handleLogout = () => {
-    Alert.alert("تسجيل الخروج", "هل أنت متأكد أنك تريد تسجيل الخروج؟", [
-      {
-        text: "إلغاء",
-        style: "cancel",
-      },
-      {
-        text: "تسجيل الخروج",
-        style: "destructive",
-        onPress: async () => {
-          await logout();
-        },
-      },
-    ]);
+    logoutModalRef.current?.present();
+  };
+
+  const handleLogoutConfirm = async () => {
+    await logout();
+  };
+
+  const handleLogoutCancel = () => {
+    logoutModalRef.current?.dismiss();
   };
 
   const handleResetPassword = () => {
-    Alert.alert(
-      "إعادة تعيين كلمة المرور",
-      "سنتواصل معك قريبًا لاستكمال هذه العملية."
-    );
+    navigation.navigate("ResetPassword");
+  };
+
+  const callSupportPhone = () => {
+    const phoneNumber = userInfo?.supportPhone;
+    if (phoneNumber) {
+      const url = `tel:${phoneNumber}`;
+      Linking.openURL(url);
+    }
   };
 
   return (
@@ -127,33 +121,8 @@ export default function AccountScreen() {
                 { color: theme.colors.textSecondary },
               ]}
             >
-              {userInfo?.accountName ?? snapshot?.accountName ?? "حساب التاجر"}
+              {userInfo?.userName ?? snapshot?.userName ?? "اسم المستخدم"}
             </Text>
-            <View style={styles.statusPill}>
-              <View
-                style={[
-                  styles.statusDot,
-                  {
-                    backgroundColor: signalRConnected
-                      ? theme.colors.success
-                      : theme.colors.error,
-                  },
-                ]}
-              />
-              <Text
-                weight="medium"
-                style={[
-                  styles.statusText,
-                  {
-                    color: signalRConnected
-                      ? theme.colors.success
-                      : theme.colors.error,
-                  },
-                ]}
-              >
-                {signalRConnected ? "متصل" : "غير متصل"}
-              </Text>
-            </View>
           </View>
         </View>
 
@@ -164,7 +133,7 @@ export default function AccountScreen() {
             <Text
               style={[styles.statLabel, { color: theme.colors.textSecondary }]}
             >
-              الرصيد الحالي
+              الرصيد المتاح
             </Text>
             {isLoading ? (
               <ActivityIndicator color={theme.colors.primary} />
@@ -184,7 +153,7 @@ export default function AccountScreen() {
             <Text
               style={[styles.statLabel, { color: theme.colors.textSecondary }]}
             >
-              مبالغ قيد التحصيل
+            رصيد المديونية
             </Text>
             <Text
               weight="bold"
@@ -209,16 +178,45 @@ export default function AccountScreen() {
             {section.items.map((item) => (
               <InfoRow
                 key={item.label}
-                label={item.label}
+                hideLabel={true}
                 value={item.value}
                 iconName={item.icon}
                 iconColor={theme.colors.primary}
-                labelStyle={{ color: theme.colors.textSecondary }}
-                valueStyle={{ color: theme.colors.text }}
+                valueStyle={{
+                  color: theme.colors.text,
+                  fontSize: 18,
+                  fontWeight: "600",
+                }}
               />
             ))}
           </View>
         ))}
+
+        {userInfo?.supportPhone && (
+          <View
+            style={[
+              styles.supportCard,
+              { backgroundColor: theme.colors.surface },
+            ]}
+          >
+            <Text weight="semiBold" style={styles.sectionTitle}>
+              الدعم الفني
+            </Text>
+            <TouchableOpacity onPress={callSupportPhone} activeOpacity={0.7}>
+              <InfoRow
+                hideLabel={true}
+                value={userInfo.supportPhone}
+                iconName="support-agent"
+                iconColor={theme.colors.primary}
+                valueStyle={{
+                  color: theme.colors.text,
+                  fontSize: 18,
+                  fontWeight: "600",
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
 
         <View style={styles.actions}>
           <Button
@@ -236,6 +234,12 @@ export default function AccountScreen() {
           />
         </View>
       </ScrollView>
+      <ConfirmationModal
+        ref={logoutModalRef}
+        desc="هل أنت متأكد أنك تريد تسجيل الخروج؟"
+        onConfirm={handleLogoutConfirm}
+        onCancel={handleLogoutCancel}
+      />
     </Screen>
   );
 }
@@ -267,24 +271,6 @@ const styles = StyleSheet.create({
     opacity: 0.85,
     textAlign: "right",
   },
-  statusPill: {
-    flexDirection: "row-reverse",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 12,
-    borderRadius: 999,
-    backgroundColor: "rgba(37, 99, 235, 0.08)",
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  statusText: {
-    fontSize: 12,
-  },
   statsRow: {
     flexDirection: "row-reverse",
     gap: 12,
@@ -314,6 +300,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
     textAlign: "right",
+  },
+  supportCard: {
+    borderRadius: 20,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    gap: 8,
   },
   actions: {
     gap: 12,

@@ -11,7 +11,7 @@ import { IconComponent } from "./Icon";
 import Text from "./Text";
 
 interface InfoRowProps {
-  label: string;
+  label?: string;
   value?: React.ReactNode;
   iconName?: string;
   style?: StyleProp<ViewStyle>;
@@ -19,6 +19,7 @@ interface InfoRowProps {
   valueStyle?: StyleProp<TextStyle>;
   iconColor?: string;
   iconBackground?: string;
+  hideLabel?: boolean;
 }
 
 export default function InfoRow({
@@ -30,28 +31,33 @@ export default function InfoRow({
   valueStyle,
   iconColor = "#2563EB",
   iconBackground = "rgba(37, 99, 235, 0.08)",
+  hideLabel = false,
 }: InfoRowProps) {
   return (
     <View style={[styles.container, style]}>
-      <View style={styles.texts}>
-        <Text
-          weight="medium"
-          style={[styles.label, labelStyle]}
-          numberOfLines={1}
-        >
-          {label}
-        </Text>
-        {React.isValidElement(value) ? (
-          value
-        ) : (
+      <View style={[styles.texts, hideLabel && styles.textsNoLabel]}>
+        {!hideLabel && label ? (
           <Text
-            weight="semiBold"
-            style={[styles.value, valueStyle]}
+            weight="medium"
+            style={[styles.label, labelStyle]}
             numberOfLines={1}
           >
-            {value}
+            {label}
           </Text>
-        )}
+        ) : null}
+        <View style={[styles.valueContainer, hideLabel && styles.valueContainerNoLabel]}>
+          {React.isValidElement(value) ? (
+            value
+          ) : (
+            <Text
+              weight="semiBold"
+              style={[styles.value, valueStyle]}
+              numberOfLines={1}
+            >
+              {value}
+            </Text>
+          )}
+        </View>
       </View>
       {iconName ? (
         <IconComponent
@@ -81,14 +87,28 @@ const styles = StyleSheet.create({
     flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
+    minWidth: 0, // Allow shrinking
+  },
+  textsNoLabel: {
+    justifyContent: "flex-end",
   },
   label: {
     fontSize: 14,
     color: "#64748b",
+    flexShrink: 0, // Don't shrink label
+  },
+  valueContainer: {
+    flex: 1,
+    marginLeft: 8,
+    minWidth: 0, // Allow shrinking
+  },
+  valueContainerNoLabel: {
+    marginLeft: 0,
   },
   value: {
     fontSize: 16,
     color: "#0f172a",
+    textAlign: "right",
   },
   iconContainer: {
     width: 46,
@@ -96,5 +116,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
+    flexShrink: 0, // Don't shrink icon
   },
 });
