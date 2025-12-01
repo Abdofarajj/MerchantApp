@@ -1,12 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  Alert,
-  FlatList,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from "react-native";
+import { FlatList, StyleSheet, View, useColorScheme } from "react-native";
 import Text from "../components/Text";
 import { darkTheme, lightTheme } from "../theme";
 import POSCard from "./POSCard";
@@ -58,11 +51,11 @@ export default function POSDevicesSection({
     <View>
       <View style={styles.posHeader}>
         <Text style={styles.sectionTitle}>نقاط البيع</Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => Alert.alert("Devices", "عرض جميع الأجهزة")}
         >
           <Text style={styles.viewAllText}>عرض الكل</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       {/* Loading state */}

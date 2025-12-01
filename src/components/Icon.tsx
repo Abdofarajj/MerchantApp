@@ -34,6 +34,11 @@ export const ICON_ASSETS: Record<string, number> = {
   collect: require("../assets/icons/give-money.png"),
   recharge: require("../assets/icons/deposit.png"),
   download: require("../assets/icons/download.png"),
+  plus: require("../assets/icons/plus.png"),
+  arrow: require("../assets/icons/arrow.png"),
+  home: require("../assets/icons/home.png"),
+  users: require("../assets/icons/users.png"),
+  transfer: require("../assets/icons/transfer.png"),
 
   // logo: require('../../assets/icons/logo.png'),
 };

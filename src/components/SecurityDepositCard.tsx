@@ -17,6 +17,7 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
   remainingBalance,
   deviceId,
 }) => {
+  const paid = totalDeposit - remainingBalance;
   const confirmationModalRef = useRef<ConfirmationModalRef>(null);
   const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
@@ -49,11 +50,9 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.amount} weight="medium">
-        {remainingBalance.toFixed(2)} د.ل
+        المتبقي : {remainingBalance.toFixed(2)} د.ل
       </Text>
-      <Text style={styles.totalAmount}>
-        المجموع: {totalDeposit.toFixed(2)} د.ل
-      </Text>
+      <Text style={styles.totalAmount}>المدفوع: {paid.toFixed(2)} د.ل</Text>
       <Button
         onPress={() => confirmationModalRef.current?.present()}
         gradientColors={["#1a1a1a", "#424242ff"]}

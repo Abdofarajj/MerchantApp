@@ -63,12 +63,16 @@ export default function QuickActionButton({
       activeOpacity={0.8}
     >
       <LinearGradient
-        colors={[theme.colors.primary, theme.colors.secondary]}
+        colors={
+          iconBg === theme.colors.white
+            ? [theme.colors.white, theme.colors.white]
+            : [theme.colors.black, theme.colors.background3]
+        }
         style={styles.iconContainer}
         start={{ x: 1, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        <IconComponent iconName={icon} iconSize={30} iconColor={iconColor} />
+        <IconComponent iconName={icon} iconSize={25} iconColor={iconColor} />
       </LinearGradient>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>

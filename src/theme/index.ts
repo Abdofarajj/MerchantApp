@@ -12,14 +12,17 @@ const lightColors = {
   primary: "#007AFF", // Main brand blue
   onPrimary: "#FFFFFF", // Text on primary buttons
   primaryContainer: "#007AFF", // Primary container color
+  posBackground: "#ffffffff", // Primary container color
 
   secondary: "#0c29a8ff", // Secondary accent blue
 
-  background: "#FFFFFF", // Main app background
-  background2: "#e6e6e6ff", // Secondary background sections
+  background2: "#FFFFFF", // Main app background
+  background: "#eeeeeeff", // Secondary background sections
+  background3: "#060e17", // Tertiary background sections
 
-  surface: "#F7FAF8", // Cards / surfaces
-  surfaceVariant: "#c3d8f3ff", // Slightly darker surface variant
+  surface: "#ffffffff", // Cards / surfaces
+  surfaceVariant: "#F0F4F2", // Slightly darker surface variant
+  
 
   text: "#000000FF", // Main black text
   text2: "#000000FF", // Secondary main text
@@ -43,11 +46,15 @@ const darkColors = {
   primary: "#004A99", // Brightened for dark background
   onPrimary: "#000000", // Text on primary buttons
   primaryContainer: "#005FCC", // Darker container for primary
+  posBackground: "#c3d8f3ff", // Primary container color
+
 
   secondary: "#4A8DDB", // Softer alternative to primary
 
   background: "#000000ff", // Main app background (near-black)
   background2: "#1A1A1A", // Secondary background
+  background3: "#060e17", // Tertiary background sections
+
 
   surface: "#1E1E1E", // Cards / surfaces
   surfaceVariant: "#2A2A2A", // Slightly brighter surface variant
@@ -59,7 +66,7 @@ const darkColors = {
 
   outline: "#5F5F5FFF", // Border / dividers
 
-  success: "#22C55E", // Green success on dark background
+  success: "#22C55E", // Green success on dark 
   warning: "#FBBF24", // Deep warm yellow
   error: "#F87171", // Light red for visibility
   info: "#60A5FA", // Light blue info

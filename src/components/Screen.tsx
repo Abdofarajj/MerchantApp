@@ -55,4 +55,3 @@ export default function Screen({
 
 // Export screen dimensions for use in other components
 export { screenHeight, screenWidth };
-

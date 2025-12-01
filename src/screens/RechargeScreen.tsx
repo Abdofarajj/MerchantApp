@@ -116,12 +116,18 @@ export default function RechargeScreen() {
                   } catch (error) {
                     // Error - show toast with actual API message
                     const apiError = error as any;
-                    const errorMessage =
+                    let errorMessage =
                       apiError?.response?.data?.messageName ||
                       apiError?.response?.data?.message ||
                       apiError?.response?.data ||
                       apiError?.message ||
                       "An error occurred";
+                    // Reverse numbers in the format int.dec to dec.int
+                    errorMessage = errorMessage.replace(
+                      /(\d+)\.(\d+)/g,
+                      (match: string, int: string, dec: string) =>
+                        `${dec}.${int}`
+                    );
                     showErrorToast(errorMessage);
                   } finally {
                     setIsLoading(false);

@@ -36,23 +36,22 @@ export type RootStackParamList = {
   Collect: undefined;
   Account: { snapshot?: AccountSnapshot } | undefined;
   POSManagement: undefined;
-  AddUser: undefined
+  AddUser: undefined;
   EditUser: { user: UserDevice };
-  UserDetails: {userInfo: UserDevice}
+  UserDetails: { userInfo: UserDevice };
 };
 
 const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const tabs = [
-  { id: "Home", label: "الرئيسية", iconName: "home-outline" as const },
-  { id: "Users", label: "المستخدمون", iconName: "people-outline" as const },
+  { id: "Home", label: "الرئيسية", iconName: "home" as const },
+  { id: "Users", label: "المستخدمون", iconName: "users" as const },
   {
     id: "Activity",
     label: "الحركات",
-    iconName: "swap-horizontal-outline" as const,
+    iconName: "transfer" as const,
   },
-  { id: "Account", label: "الحساب", iconName: "person-outline" as const },
 ];
 
 // Tab Navigator (navbar screens only)
@@ -94,7 +93,7 @@ export default function AppNavigator() {
       <Stack.Screen name="POSManagement" component={POSManagement} />
       <Stack.Screen name="AddUser" component={AddUserScreen} />
       <Stack.Screen name="EditUser" component={EditUserScreen} />
-      <Stack.Screen name="UserDetails" component={UserDetailsScreen}/>
+      <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
     </Stack.Navigator>
   );
 }

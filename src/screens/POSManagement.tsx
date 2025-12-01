@@ -214,7 +214,7 @@ export default function POSManagement() {
       width: 40,
       height: 40,
       backgroundColor: "#1a1a1a",
-      borderRadius: 24, // Make it circular
+      borderRadius: 24,
       justifyContent: "center",
       alignItems: "center",
     },

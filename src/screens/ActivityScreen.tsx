@@ -186,7 +186,7 @@ export default function ActivityScreen() {
         },
         onError: (error: any) => {
           toast.error(
-            error.response?.data?.messageName || "Failed to delete charge order"
+            error.response?.data?.messageName || "فشل في حذف طلب الشحن"
           );
         },
       }
@@ -200,7 +200,7 @@ export default function ActivityScreen() {
           data={[]}
           keyExtractor={() => "error"}
           renderItem={() => null}
-          contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+          contentContainerStyle={{ flex: 1, justifyContent: "center" }}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -276,13 +276,13 @@ export default function ActivityScreen() {
         ListEmptyComponent={
           !isLoading ? (
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No activities found</Text>
+              <Text style={styles.emptyText}>لا توجد أنشطة</Text>
             </View>
           ) : null
         }
         ListFooterComponent={
           isLoading && combinedData.length ? (
-            <Text style={styles.loadingText}>Loading more...</Text>
+            <Text style={styles.loadingText}>جاري التحميل...</Text>
           ) : null
         }
       />

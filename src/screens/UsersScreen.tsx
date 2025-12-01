@@ -12,7 +12,7 @@ import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  
+
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   useHeader({ title: "Users", showBackButton: false });
@@ -22,9 +22,15 @@ export default function UsersScreen() {
     if (queryClient.getQueryState(["myUserDevice"])?.isInvalidated === true) {
       refetch();
     }
-  }, [queryClient.getQueryState(["myUserDevice"])]
+  }, [queryClient.getQueryState(["myUserDevice"])]);
+  console.log(
+    "User Device Data:",
+    data,
+    "Error:",
+    error,
+    "Loading:",
+    isLoading
   );
-  console.log("User Device Data:", data, "Error:", error, "Loading:", isLoading);
   // Placeholder data that matches the Users schema
   const placeholderUsers: GetUsersDeviceResponse = [
     {
@@ -59,31 +65,37 @@ export default function UsersScreen() {
     },
   ];
 
-  const users = (data && Array.isArray(data) && data.length > 0 ? data : placeholderUsers) as GetUsersDeviceResponse;
+  const users = (
+    data && Array.isArray(data) && data.length > 0 ? data : placeholderUsers
+  ) as GetUsersDeviceResponse;
 
   return (
     <Screen>
-      <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          { backgroundColor: theme.colors.background },
+        ]}
+      >
         <View style={styles.list}>
           {users.map((u) => (
             <UserCard
               key={u.id}
               user={u}
               onPress={() => {
-                console.log("user pressed", u.id)
-                navigation.navigate("UserDetails", {userInfo: u})
+                console.log("user pressed", u.id);
+                navigation.navigate("UserDetails", { userInfo: u });
               }}
             />
           ))}
         </View>
       </ScrollView>
       <FloatingActionButton
-      onPress={() => {
-        console.log("Add Pressed")
-        navigation.navigate("AddUser")
-        }
-        }/>
-      
+        onPress={() => {
+          console.log("Add Pressed");
+          navigation.navigate("AddUser");
+        }}
+      />
     </Screen>
   );
 }

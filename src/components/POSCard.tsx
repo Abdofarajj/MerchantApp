@@ -97,7 +97,7 @@ const getStyles = (theme: any) =>
       width: "50%",
     },
     card: {
-      backgroundColor: theme.colors.surfaceVariant,
+      backgroundColor: theme.colors.posBackground,
       borderRadius: 15,
       overflow: "hidden",
       margin: 1,
