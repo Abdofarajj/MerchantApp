@@ -82,8 +82,8 @@ export default function UserDetailsScreen() {
     const styles = StyleSheet.create({
         container: {
             padding: 20,
-            gap: 16,
             paddingBottom: 40,
+            gap: 18,
         },
         heroCard: {
             flexDirection: "row-reverse",
@@ -106,43 +106,6 @@ export default function UserDetailsScreen() {
             opacity: 0.85,
             textAlign: "right",
         },
-        statusPill: {
-            flexDirection: "row-reverse",
-            alignItems: "center",
-            gap: 6,
-            marginTop: 10,
-            paddingVertical: 4,
-            paddingHorizontal: 12,
-            borderRadius: 999,
-            backgroundColor: "rgba(37, 99, 235, 0.08)",
-        },
-        statusDot: {
-            width: 8,
-            height: 8,
-            borderRadius: 4,
-        },
-        statusText: {
-            fontSize: 12,
-        },
-        statsRow: {
-            flexDirection: "row-reverse",
-            gap: 12,
-        },
-        statCard: {
-            flex: 1,
-            borderRadius: 20,
-            padding: 16,
-            alignItems: "flex-end",
-            gap: 8,
-        },
-        statLabel: {
-            fontSize: 14,
-            textAlign: "right",
-        },
-        statValue: {
-            fontSize: 20,
-            textAlign: "right",
-        },
         sectionCard: {
             borderRadius: 20,
             paddingVertical: 16,
@@ -155,13 +118,13 @@ export default function UserDetailsScreen() {
             textAlign: "right",
         },
         button: {
-            margin: 10,
+            margin: 5,
         },
 
         });
     
     return <Screen useSafeArea={false} backgroundColor={theme.colors.background}>
-        <ScrollView style={[styles.container]}>
+        <ScrollView contentContainerStyle={[styles.container]}>
             <View
                 style={[styles.heroCard, { backgroundColor: theme.colors.surface }]}
                     >
@@ -209,7 +172,7 @@ export default function UserDetailsScreen() {
                         iconName={item.icon}
                         iconColor={theme.colors.primary}
                         labelStyle={{ color: theme.colors.textSecondary }}
-                        valueStyle={{ color: theme.colors.text }}
+                        valueStyle={{ color: theme.colors.text, fontSize: theme.fonts.bodyMedium.fontSize, marginHorizontal: theme.spacing[4] }}
                       />
                     ))}
                   </View>
