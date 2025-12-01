@@ -1,3 +1,5 @@
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -157,6 +159,329 @@ export function ActivityDetailsModal({
     },
   });
 
+  const downloadReceiptAsPdf = async (html: string) => {
+    try {
+      const { uri } = await Print.printToFileAsync({ html });
+      await Sharing.shareAsync(uri, {
+        mimeType: "application/pdf",
+        dialogTitle: "Share Receipt",
+      });
+    } catch (error) {
+      console.log("PDF error:", error);
+    }
+  };
+
+  const generateReceiptHtml = (item: any) => {
+    const isChargeOrder =
+      item.hasOwnProperty("merchantName") &&
+      item.hasOwnProperty("distrputerName");
+    const isReceiptDocument =
+      item.hasOwnProperty("fromAccountName") &&
+      item.hasOwnProperty("toAccountName");
+
+    let financialItem = "";
+    let fromAccount = "";
+    let toAccount = "";
+    let amount = "";
+    let insertDate = "";
+    let chargeDate = "";
+
+    if (isChargeOrder) {
+      financialItem = "شحن رصيد";
+      fromAccount = item.distrputerName;
+      toAccount = item.merchantName;
+      amount = `${item.amount} د.ل`;
+      const insertDateObj = new Date(item.insertDate);
+      insertDate = `${insertDateObj.getFullYear()}/${String(insertDateObj.getMonth() + 1).padStart(2, "0")}/${String(insertDateObj.getDate()).padStart(2, "0")}, ${String(insertDateObj.getHours()).padStart(2, "0")}:${String(insertDateObj.getMinutes()).padStart(2, "0")}:${String(insertDateObj.getSeconds()).padStart(2, "0")}`;
+      if (item.chargeDate) {
+        const chargeDateObj = new Date(item.chargeDate);
+        chargeDate = `${chargeDateObj.getFullYear()}/${String(chargeDateObj.getMonth() + 1).padStart(2, "0")}/${String(chargeDateObj.getDate()).padStart(2, "0")}, ${String(chargeDateObj.getHours()).padStart(2, "0")}:${String(chargeDateObj.getMinutes()).padStart(2, "0")}:${String(chargeDateObj.getSeconds()).padStart(2, "0")}`;
+      }
+    } else if (isReceiptDocument) {
+      financialItem = item.financialItemName;
+      fromAccount = item.fromAccountName;
+      toAccount = item.toAccountName;
+      amount = `${item.amount} د.ل`;
+      const insertDateObj = new Date(item.insertDate);
+      insertDate = `${insertDateObj.getFullYear()}/${String(insertDateObj.getMonth() + 1).padStart(2, "0")}/${String(insertDateObj.getDate()).padStart(2, "0")}, ${String(insertDateObj.getHours()).padStart(2, "0")}:${String(insertDateObj.getMinutes()).padStart(2, "0")}:${String(insertDateObj.getSeconds()).padStart(2, "0")}`;
+    }
+
+    return `
+  <html>
+    <head>
+      <style>
+        body {
+          font-family: "Segoe UI", Arial, sans-serif;
+          direction: rtl;
+          background: #f4f5f7;
+          margin: 0;
+          padding: 40px 0;
+          display: flex;
+          justify-content: center;
+        }
+
+        .receipt-container {
+          width: 100%;
+          padding: 35px 40px;
+        }
+
+        h1 {
+          text-align: center;
+          font-size: 28px;
+          font-weight: 700;
+          margin-bottom: 30px;
+          color: #222;
+        }
+
+        /* ROW */
+        .row {
+          display: flex;
+          gap: 18px;
+          padding: 14px 16px;
+          border-radius: 10px;
+          margin-bottom: 14px;
+        }
+
+        /* Alternating Background */
+        .row:nth-child(odd) {
+          background: #ffffff;
+        }
+        .row:nth-child(even) {
+          background: none;
+        }
+
+        /* Row Title */
+        .row-title {
+          min-width: 140px;
+          max-width: 160px;
+          display: flex;
+          align-items: center;
+          font-size: 17px;
+          font-weight: 700;
+          color: #333;
+        }
+
+        .col {
+          flex: 1;
+        }
+
+        .label {
+          display: inline;
+          font-size: 13px;
+          color: #555;
+          font-weight: 700;
+          margin-left: 8px;
+        }
+
+        .value {
+          font-size: 16px;
+          font-weight: 500;
+          color: #222;
+        }
+      </style>
+    </head>
+
+    <body>
+      <div class="receipt-container">
+
+        <h1>الإيصال</h1>
+
+        <!-- ROW 1 -->
+        <div class="row">
+          <div class="row-title">البيانات الأساسية</div>
+
+          <div class="col">
+            <span class="label">المبلغ:</span>
+            <span class="value">${amount}</span>
+          </div>
+
+          <div class="col">
+            <span class="label">تاريخ الإصدار:</span>
+            <span class="value">${insertDate}</span>
+          </div>
+
+          ${
+            chargeDate
+              ? `
+          <div class="col">
+            <span class="label">تاريخ الموافقة:</span>
+            <span class="value">${chargeDate}</span>
+          </div>`
+              : ""
+          }
+        </div>
+
+        <!-- ROW 2 -->
+        <div class="row">
+          <div class="row-title">البند المالي</div>
+
+          <div class="col">
+            <span class="label">البند المالي:</span>
+            <span class="value">${financialItem}</span>
+          </div>
+
+          ${
+            isReceiptDocument && item.financialItemId
+              ? `
+          <div class="col">
+            <span class="label">معرف البند المالي:</span>
+            <span class="value">${item.financialItemId}</span>
+          </div>`
+              : ""
+          }
+        </div>
+
+        <!-- ROW 3 -->
+        <div class="row">
+          <div class="row-title">بيانات المستند</div>
+
+          <div class="col">
+            <span class="label">رقم المستند:</span>
+            <span class="value">#${item.id}</span>
+          </div>
+
+          ${
+            item.branchName
+              ? `
+          <div class="col">
+            <span class="label">اسم الفرع:</span>
+            <span class="value">${item.branchName}</span>
+          </div>`
+              : ""
+          }
+
+          ${
+            item.branchId
+              ? `
+          <div class="col">
+            <span class="label">معرف الفرع:</span>
+            <span class="value">${item.branchId}</span>
+          </div>`
+              : ""
+          }
+        </div>
+
+        <!-- ROW 4 -->
+        <div class="row">
+          <div class="row-title">حساب المرسل</div>
+
+          <div class="col">
+            <span class="label">من:</span>
+            <span class="value">${fromAccount}</span>
+          </div>
+
+          ${
+            isReceiptDocument && item.fromAccountId
+              ? `
+          <div class="col">
+            <span class="label">المعرف:</span>
+            <span class="value">${item.fromAccountId}</span>
+          </div>`
+              : ""
+          }
+
+          ${
+            isChargeOrder && item.distrputerId
+              ? `
+          <div class="col">
+            <span class="label">المعرف:</span>
+            <span class="value">${item.distrputerId}</span>
+          </div>`
+              : ""
+          }
+        </div>
+
+        <!-- ROW 5 -->
+        <div class="row">
+          <div class="row-title">حساب المستلم</div>
+
+          <div class="col">
+            <span class="label">إلى:</span>
+            <span class="value">${toAccount}</span>
+          </div>
+
+          ${
+            isReceiptDocument && item.toAccountId
+              ? `
+          <div class="col">
+            <span class="label">المعرف:</span>
+            <span class="value">${item.toAccountId}</span>
+          </div>`
+              : ""
+          }
+
+          ${
+            isChargeOrder && item.merchantId
+              ? `
+          <div class="col">
+            <span class="label">معرف التاجر:</span>
+            <span class="value">${item.merchantId}</span>
+          </div>`
+              : ""
+          }
+        </div>
+
+        <!-- ROW 6 -->
+        <div class="row">
+          <div class="row-title">تفاصيل إضافية</div>
+
+          ${
+            item.appUserName
+              ? `
+          <div class="col">
+            <span class="label">اسم المستخدم:</span>
+            <span class="value">${item.appUserName}</span>
+          </div>`
+              : ""
+          }
+
+          ${
+            item.isApproved !== undefined
+              ? `
+          <div class="col">
+            <span class="label">معتمد:</span>
+            <span class="value">${item.isApproved ? "إيصال معتمد" : "إيصال غير معتمد"}</span>
+          </div>`
+              : ""
+          }
+        </div>
+
+        ${
+          isChargeOrder
+            ? `
+        <!-- ROW 7 -->
+        <div class="row">
+          <div class="row-title">أوامر الشحن</div>
+
+          ${
+            item.chargeDocumentId
+              ? `
+          <div class="col">
+            <span class="label">معرف الوثيقة:</span>
+            <span class="value">${item.chargeDocumentId}</span>
+          </div>`
+              : ""
+          }
+
+          ${
+            item.updateToken
+              ? `
+          <div class="col">
+            <span class="label">رمز التحديث:</span>
+            <span class="value">${item.updateToken}</span>
+          </div>`
+              : ""
+          }
+        </div>`
+            : ""
+        }
+
+      </div>
+    </body>
+  </html>
+`;
+  };
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <TouchableOpacity
@@ -244,10 +569,7 @@ export function ActivityDetailsModal({
           text="تحميل واصل PDF  "
           iconName="download"
           backgroundColor={theme.colors.primary}
-          onPress={() => {
-            // TODO: Implement PDF download functionality
-            console.log("Download PDF receipt");
-          }}
+          onPress={() => downloadReceiptAsPdf(generateReceiptHtml(item))}
           style={{
             marginTop: 20,
             marginHorizontal: 20,

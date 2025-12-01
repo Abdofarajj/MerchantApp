@@ -8,10 +8,9 @@
     "scheme": "merchantapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assets": ["./src/assets/fonts/"],
-    "ios": {
-      "supportsTablet": true
-    },
+    "assets": [
+      "./src/assets/fonts/"
+    ],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -45,7 +44,10 @@
     "extra": {
       "API_URL": "https://e-voucher-merchant.zaho.ly:6443/",
       "SIGNAL_R_URL": "https://e-voucher-merchant.zaho.ly:6443/balanceHub",
-      "TIMEOUT": "60000"
+      "TIMEOUT": "60000",
+      "eas": {
+        "projectId": "39274d3e-16cc-4819-b49a-4ed79a70bb9a"
+      }
     },
     "experiments": {
       "reactCompiler": true

@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "#E0E0E0",
     borderRadius: 16,
-    marginTop: -50,
+    marginTop: -20,
     padding: 4,
     position: "relative",
     overflow: "hidden",

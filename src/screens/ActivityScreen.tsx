@@ -196,11 +196,26 @@ export default function ActivityScreen() {
   if (error) {
     return (
       <Screen useSafeArea={false}>
-        <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>
-            Failed to load charge orders. Please try again.
-          </Text>
-        </View>
+        <FlatList
+          data={[]}
+          keyExtractor={() => "error"}
+          renderItem={() => null}
+          contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[theme.colors.primary]}
+            />
+          }
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>
+                فشل تحميل الحركات. يرجى المحاولة مرة أخرى{" "}
+              </Text>
+            </View>
+          }
+        />
       </Screen>
     );
   }

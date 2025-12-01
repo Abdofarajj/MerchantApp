@@ -19,7 +19,7 @@ const lightColors = {
   background2: "#e6e6e6ff", // Secondary background sections
 
   surface: "#F7FAF8", // Cards / surfaces
-  surfaceVariant: "#F0F4F2", // Slightly darker surface variant
+  surfaceVariant: "#c3d8f3ff", // Slightly darker surface variant
 
   text: "#000000FF", // Main black text
   text2: "#000000FF", // Secondary main text
