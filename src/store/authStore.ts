@@ -14,6 +14,7 @@ interface UserInfo {
   distrputerName: string;
   cardBalance: number;
   amount: number;
+  supportPhone: string;
 }
 
 interface AuthState {

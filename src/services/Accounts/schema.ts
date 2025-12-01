@@ -42,6 +42,7 @@ export const getUserInfoResponseSchema = z.object({
   distrputerName: z.string(),
   cardBalance: z.number(),
   amount: z.number(),
+  supportPhone: z.string(),
 });
 
 // Get My User Device
