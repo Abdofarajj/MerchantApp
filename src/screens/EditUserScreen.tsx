@@ -1,7 +1,7 @@
 import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import React, { useState } from "react";
 import { ScrollView, StyleSheet, TextInput, useColorScheme, View } from "react-native";
-import { Button } from "react-native-paper";
+import Button from "../components/Button";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
@@ -97,12 +97,14 @@ export default function EditUserScreen() {
         },
         list: {
             width: "100%",
-            maxWidth: 960,
             alignSelf: "center",
+            borderBottomWidth: 1,
+            borderBottomColor: theme.colors.onBackground,
+            marginBottom: theme.spacing[10]
         },
         input: {
             marginBottom: 15,
-            borderWidth: 1,
+            borderWidth: 2,
             borderColor: theme.colors.outline,
             borderRadius: 12,
             padding: 10,
@@ -123,76 +125,95 @@ export default function EditUserScreen() {
             },
         button: {
             marginBottom: 15,
+            marginHorizontal: 8,
             },
+        inputLabel: {
+            textAlign: "right",
+            margin: 4,
+        },
+        section: {
+            marginVertical: 8,
+        }
         });
 
     return (
     <Screen>
       <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.colors.background }]}>
         <View style={styles.list}>
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="اسم العرض على الجهاز"
-                value={displayName}
-                onChangeText={setDisplayName}
-                onEndEditing={() =>{
-                    if (displayName.trim() === "") {
-                        setDisplayName(oldDisplayName || "");
-                    }
-                }}
-                autoCapitalize="none"
-            />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="اسم مستخدم الجهاز"
-                value={username}
-                onChangeText={setUsername}
-                onEndEditing={() =>{
-                    if (username.trim() === "") {
-                        setUsername(oldUsername || "");
-                    }
-                }}
-                autoCapitalize="none"
+            <Text style={[theme.fonts.labelLarge, styles.inputLabel]} >تعديل بيانات مستخدم الجهاز</Text>
+            <View style={styles.section}>
+                <Text style={[theme.fonts.labelSmall, styles.inputLabel]} >اسم العرض على الجهاز</Text>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="اسم العرض على الجهاز"
+                    value={displayName}
+                    onChangeText={setDisplayName}
+                    onEndEditing={() =>{
+                        if (displayName.trim() === "") {
+                            setDisplayName(oldDisplayName || "");
+                        }
+                    }}
+                    autoCapitalize="none"
                 />
-        <Button
-            style={styles.button}
-            mode="contained"
-            buttonColor={theme.colors.primary}
-            labelStyle={{ fontFamily: "AlexandriaRegular" }} 
-            onPress={() => { 
-                console.log("Save Pressed")
-                handleEditUserDevice();
-            }}>
-            <Text>حفظ</Text>
-      </Button>
+                </View>
+                <View style={styles.section}>
+                    <Text style={[theme.fonts.labelSmall, styles.inputLabel]} >اسم مستخدم الجهاز</Text>
+                    <TextInput
+                        style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                        placeholder="اسم مستخدم الجهاز"
+                        value={username}
+                        onChangeText={setUsername}
+                        onEndEditing={() =>{
+                            if (username.trim() === "") {
+                                setUsername(oldUsername || "");
+                            }
+                        }}
+                        autoCapitalize="none"
+                        />
+            </View>
+            <Button
+                gradientColors={[theme.colors.primary, theme.colors.secondary]}
+                style={styles.button}
+                onPress={() => { 
+                    console.log("Save Pressed")
+                    handleEditUserDevice();
+                }}>
+<Text style={[theme.fonts.bodyMedium, {color: theme.colors.onPrimary}]}>تعديل المستخدم</Text>
+            </Button>
         </View>
         <View style={styles.list}>
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="كلمة المرور"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={true}
-                autoCapitalize="none"
-                />
-            <TextInput
-                style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-                placeholder="تأكيد كلمة المرور" 
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                secureTextEntry={true}
-                autoCapitalize="none"
-                />
+            <Text style={[theme.fonts.labelLarge, styles.inputLabel]} >تعديل كلمة مرور مستخدم الجهاز</Text>
+            <View style={styles.section}>
+                <Text style={[theme.fonts.labelSmall, styles.inputLabel]} >كلمة المرور الجديدة</Text>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="كلمة المرور"
+                    value={password}
+                    onChangeText={setPassword}
+                    secureTextEntry={true}
+                    autoCapitalize="none"
+                    />
+            </View>
+            <View style={styles.section}>
+                <Text style={[theme.fonts.labelSmall, styles.inputLabel]} >تأكيد كلمة المرور الجديدة</Text>
+                <TextInput
+                    style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+                    placeholder="تأكيد كلمة المرور" 
+                    value={confirmPassword}
+                    onChangeText={setConfirmPassword}
+                    secureTextEntry={true}
+                    autoCapitalize="none"
+                    />
+            </View>        
+
             <Button
-                style={styles.button}
-                mode="contained"
-                buttonColor={theme.colors.primary}
-                labelStyle={{ fontFamily: "AlexandriaRegular" }} 
+                gradientColors={[theme.colors.primary, theme.colors.secondary]}
+                style={styles.button} 
                 onPress={() => { 
                     console.log("Save Pressed")
                     handleEditUserDevicePassowrd();
                 }}>
-                <Text>حفظ</Text>
+                <Text style={[theme.fonts.bodyMedium, {color: theme.colors.onPrimary}]}>تعديل كلمة المرور</Text>
             </Button>
         </View>
     </ScrollView>
