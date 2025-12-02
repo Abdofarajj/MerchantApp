@@ -55,7 +55,7 @@ export const useHomeDetails = () => {
           setError("معلومات المستخدم غير متوفرة");
         }
       } catch {
-        setError("فشل في جلب بيانات لوحة التحكم");
+        setError("فشل في جلب البيانات");
       } finally {
         setIsLoading(false);
       }

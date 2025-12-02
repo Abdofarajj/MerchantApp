@@ -148,7 +148,7 @@ export default function CollectScreen() {
                     // Ensure we have a valid distributor ID
                     if (!userInfo?.distrputerId) {
                       throw new Error(
-                        "Distributor ID not found. Please log in again."
+                        "لم يتم العثور على معرف الموزع. يرجى تسجيل الدخول مرة أخرى."
                       );
                     }
 
@@ -176,7 +176,7 @@ export default function CollectScreen() {
                       apiError?.response?.data?.message ||
                       apiError?.response?.data ||
                       apiError?.message ||
-                      "An error occurred";
+                      "حدث خطأ";
                     showErrorToast(errorMessage);
                   } finally {
                     setIsLoading(false);
@@ -200,7 +200,7 @@ export default function CollectScreen() {
 
         <SuccessModal
           ref={confirmationModalRef}
-          message="Request Sent!"
+          message="تم إرسال الطلب!"
           onRequest={async () => {
             // Modal is only shown after successful API call, so just resolve
             return Promise.resolve();

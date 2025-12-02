@@ -45,7 +45,12 @@ export default function InfoRow({
             {label}
           </Text>
         ) : null}
-        <View style={[styles.valueContainer, hideLabel && styles.valueContainerNoLabel]}>
+        <View
+          style={[
+            styles.valueContainer,
+            hideLabel && styles.valueContainerNoLabel,
+          ]}
+        >
           {React.isValidElement(value) ? (
             value
           ) : (

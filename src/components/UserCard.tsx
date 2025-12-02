@@ -13,7 +13,10 @@ import {
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Text from "../components/Text";
 import { RootStackParamList } from "../navigation/AppNavigator";
-import { usedeleteUserDeviceMutation as useDeleteUserDeviceMutation, UserDevice } from "../services";
+import {
+  usedeleteUserDeviceMutation as useDeleteUserDeviceMutation,
+  UserDevice,
+} from "../services";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 import { IconComponent } from "./Icon";
@@ -66,86 +69,122 @@ export default function UserCard(props: UserCardProps) {
     color: editIcon?.color ?? theme.colors.primary,
     containerStyle: editIcon?.containerStyle,
   };
-  
+
   const { error } = useToast();
   const deleteUserDeviceMutation = useDeleteUserDeviceMutation();
   const confirmationModalRef = useRef<ConfirmationModalRef>(null);
-    const handleDelete = () => {
-      deleteUserDeviceMutation.mutate(
-        { id: user.id },
-        {
-          onSuccess: (response) => {
-            // Handle success (e.g., show a success message, navigate back, etc.)
-            alert("تم حذف مستخدم الجهاز بنجاح");
-          },
-          onError: (err) => {
-            // Handle error (e.g., show an error message)
-            error("حدث خطأ أثناء حذف مستخدم الجهاز");
-            console.error("Delete User Device Error:", err);
-        }
+  const handleDelete = () => {
+    deleteUserDeviceMutation.mutate(
+      { id: user.id },
+      {
+        onSuccess: (response) => {
+          // Handle success (e.g., show a success message, navigate back, etc.)
+          alert("تم حذف مستخدم الجهاز بنجاح");
+        },
+        onError: (err) => {
+          // Handle error (e.g., show an error message)
+          error("حدث خطأ أثناء حذف مستخدم الجهاز");
+          console.error("Delete User Device Error:", err);
+        },
       }
-    ) 
-    };
+    );
+  };
 
-  return (<View>
-    <TouchableOpacity
-      activeOpacity={0.9}
-      onPress={onPress}
-      style={styles.wrapper}
-      {...restProps}
-      {...touchableProps}
-    >
-      <View style={[  styles.card, { backgroundColor: CARD_BG }]}>
-        {/* Right side: content */}
-        <View style={styles.content}>
-          <Text style={[styles.name, nameStyle, { color: textColor, borderBottomColor: theme.colors.onSurface }]} numberOfLines={1}>
-            {user.displayName}
-          </Text>
-
-          {user.email ? (
-            <Text style={[styles.details, detailsStyle, { color: textColor, opacity: 0.85 }]} numberOfLines={1}>
-              {user.email}
+  return (
+    <View>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={onPress}
+        style={styles.wrapper}
+        {...restProps}
+        {...touchableProps}
+      >
+        <View style={[styles.card, { backgroundColor: CARD_BG }]}>
+          {/* Right side: content */}
+          <View style={styles.content}>
+            <Text
+              style={[
+                styles.name,
+                nameStyle,
+                { color: textColor, borderBottomColor: theme.colors.onSurface },
+              ]}
+              numberOfLines={1}
+            >
+              {user.displayName}
             </Text>
-          ) : null}
 
-          <Text style={[styles.details, detailsStyle, { color: textColor, opacity: 0.85 }]} numberOfLines={1}>
-            {user.phoneNumber}
-          </Text>
-        </View>
-        {/* Left side: action icons side-by-side */}
-        <View style={styles.sideActions}>
-          <View style={[styles.iconContainer, deleteOpts.containerStyle, {backgroundColor: theme.colors.background2}]}>
-            <IconComponent
-              iconName={deleteOpts.name || "delete"}
-              iconSize={deleteOpts.size}
-              iconColor={deleteOpts.color}
-              onPress={() => { confirmationModalRef.current?.present(); }}
-            />
-          </View>
+            {user.email ? (
+              <Text
+                style={[
+                  styles.details,
+                  detailsStyle,
+                  { color: textColor, opacity: 0.85 },
+                ]}
+                numberOfLines={1}
+              >
+                {user.email}
+              </Text>
+            ) : null}
 
-          <View style={[styles.iconContainer, editOpts.containerStyle, {backgroundColor: theme.colors.background2}]}>
-            <IconComponent
-              iconName={editOpts.name || "edit"}
-              iconSize={editOpts.size}
-              iconColor={editOpts.color}
-              onPress={() => {
-                console.log("edit pressed", user.id)
-                navigation.navigate("EditUser", { user: user});
-              }}
-            />
+            <Text
+              style={[
+                styles.details,
+                detailsStyle,
+                { color: textColor, opacity: 0.85 },
+              ]}
+              numberOfLines={1}
+            >
+              {user.phoneNumber}
+            </Text>
+          </View>
+          {/* Left side: action icons side-by-side */}
+          <View style={styles.sideActions}>
+            <View
+              style={[
+                styles.iconContainer,
+                deleteOpts.containerStyle,
+                { backgroundColor: theme.colors.background2 },
+              ]}
+            >
+              <IconComponent
+                iconName={deleteOpts.name || "delete"}
+                iconSize={deleteOpts.size}
+                iconColor={deleteOpts.color}
+                onPress={() => {
+                  confirmationModalRef.current?.present();
+                }}
+              />
+            </View>
+
+            <View
+              style={[
+                styles.iconContainer,
+                editOpts.containerStyle,
+                { backgroundColor: theme.colors.background2 },
+              ]}
+            >
+              <IconComponent
+                iconName={editOpts.name || "edit"}
+                iconSize={editOpts.size}
+                iconColor={editOpts.color}
+                onPress={() => {
+                  console.log("edit pressed", user.id);
+                  navigation.navigate("EditUser", { user: user });
+                }}
+              />
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
-    <ConfirmationModal
-            ref={confirmationModalRef}
-            desc="هل أنت متأكد أنك تريد حذف هذا المستخدم؟"
-            onConfirm={handleDelete}
-            onCancel={() => {
-              // Handle cancel action
-              console.log("Cancelled");
-            }}
-          />
+      </TouchableOpacity>
+      <ConfirmationModal
+        ref={confirmationModalRef}
+        desc="هل أنت متأكد أنك تريد حذف هذا المستخدم؟"
+        onConfirm={handleDelete}
+        onCancel={() => {
+          // Handle cancel action
+          console.log("Cancelled");
+        }}
+      />
     </View>
   );
 }

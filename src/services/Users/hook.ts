@@ -1,6 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { queryClient } from "../reactQuery";
-import { AddUserPayload, EditUserPayload, GetUsersDeviceResponse, ResetPasswordPayload } from "./schema";
+import {
+  AddUserPayload,
+  EditUserPayload,
+  GetUsersDeviceResponse,
+  ResetPasswordPayload,
+} from "./schema";
 import usersService from "./service";
 
 /**
@@ -22,19 +27,19 @@ export const useGetUserDeviceQuery = () => {
 /**
  * Mutation: add a new user device.
  * Usage:
- *  
+ *
  */
 export const useAddUserDeviceMutation = () => {
   return useMutation({
-    mutationFn: (payload: AddUserPayload) =>{
-    const data = usersService.addUserDevice(payload);
-    return data;
+    mutationFn: (payload: AddUserPayload) => {
+      const data = usersService.addUserDevice(payload);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myUserDevice"] });
     },
   });
-}
+};
 
 /**
  * Mutation: edit an existing user device.
@@ -43,34 +48,34 @@ export const useAddUserDeviceMutation = () => {
  */
 export const useEditUserDeviceMutation = () => {
   return useMutation({
-    mutationFn: (payload: EditUserPayload) =>{
-    const data = usersService.editUserDevice(payload);
-    console.log("[API response]: ",data)
-    return data;
+    mutationFn: (payload: EditUserPayload) => {
+      const data = usersService.editUserDevice(payload);
+      console.log("[API response]: ", data);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myUserDevice"] });
     },
   });
-}
+};
 
 export const usedeleteUserDeviceMutation = () => {
   return useMutation({
-    mutationFn: (payload: {id: string}) =>{
-    const data = usersService.deleteUserDevice(payload);
-    return data;
+    mutationFn: (payload: { id: string }) => {
+      const data = usersService.deleteUserDevice(payload);
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["myUserDevice"] });
     },
-  })
+  });
 };
 
 export const useResetPasswordMutation = () => {
   return useMutation({
     mutationFn: (payload: ResetPasswordPayload) => {
-      const data = usersService.resetUserDevicePassword(payload)
-      return data
-    }
-  })
-}
+      const data = usersService.resetUserDevicePassword(payload);
+      return data;
+    },
+  });
+};

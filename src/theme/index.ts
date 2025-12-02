@@ -22,10 +22,9 @@ const lightColors = {
 
   surface: "#ffffffff", // Cards / surfaces
   surfaceVariant: "#F0F4F2", // Slightly darker surface variant
-  
 
   text: "#000000FF", // Main black text
-  text2: "#000000FF", // Secondary main text
+  text2: "#ffffffff", // Secondary main text
   textSecondary: "#334155", // Less emphasis text
   textDim: "#727272FF", // Dimmed / hint text
 
@@ -48,25 +47,23 @@ const darkColors = {
   primaryContainer: "#005FCC", // Darker container for primary
   posBackground: "#c3d8f3ff", // Primary container color
 
-
   secondary: "#4A8DDB", // Softer alternative to primary
 
   background: "#000000ff", // Main app background (near-black)
   background2: "#1A1A1A", // Secondary background
   background3: "#060e17", // Tertiary background sections
 
-
   surface: "#1E1E1E", // Cards / surfaces
   surfaceVariant: "#2A2A2A", // Slightly brighter surface variant
 
   text: "#FFFFFFFF", // Main white text
-  text2: "#E7E7E7FF", // Slightly dimmed white
+  text2: "#000000ff", // Slightly dimmed white
   textSecondary: "#A0AEC0", // Cool gray for less emphasis
   textDim: "#7A7A7AFF", // Even dimmer text (labels, hints)
 
   outline: "#5F5F5FFF", // Border / dividers
 
-  success: "#22C55E", // Green success on dark 
+  success: "#22C55E", // Green success on dark
   warning: "#FBBF24", // Deep warm yellow
   error: "#F87171", // Light red for visibility
   info: "#60A5FA", // Light blue info

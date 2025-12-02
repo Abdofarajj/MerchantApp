@@ -146,7 +146,7 @@ export default function HomeScreen() {
         navigateTo: "devices",
       },
     ],
-    [theme.colors.white, theme.colors.primary]
+    [theme.colors.white, theme.colors.primary, theme.colors.black]
   );
 
   const accountSnapshot = useMemo<AccountSnapshot>(
@@ -201,7 +201,6 @@ export default function HomeScreen() {
       flex: 1,
       justifyContent: "center",
       alignItems: "center",
-      // backgroundColor: theme.colors.background,
     },
     errorText: {
       fontSize: 16,
@@ -209,51 +208,31 @@ export default function HomeScreen() {
       textAlign: "right",
     },
     header: {
-      paddingHorizontal: 10,
       paddingTop: 50,
-      paddingBottom: 10,
     },
     headerRow: {
       flexDirection: "row-reverse",
       alignItems: "center",
-      marginBottom: 16,
+      marginBottom: 30,
     },
     greeting: {
       flexDirection: "column",
       marginRight: 16,
     },
-    headerTitle: {
-      fontSize: 24,
-      color: theme.colors.text,
-      textAlign: "right",
-    },
-    headerSubtitle: {
-      fontSize: 16,
-      color: theme.colors.textSecondary,
-      textAlign: "right",
-    },
-    balanceCard: {
-      marginHorizontal: 16,
-      backgroundColor: "none",
-    },
     balanceLabel: {
       fontSize: 16,
-      marginBottom: 8,
       textAlign: "center",
+      color: theme.colors.text2,
     },
     balanceAmount: {
       fontSize: 52,
-      marginBottom: 20,
-      color: theme.colors.text,
+      marginBottom: 40,
+      color: theme.colors.text2,
       textAlign: "center",
     },
     balanceDecimal: {
       color: theme.colors.outline,
       fontSize: 40,
-    },
-    actionsContainer: {
-      paddingHorizontal: 16,
-      marginTop: 24,
     },
     actionsGrid: {
       flexDirection: "row",
@@ -261,8 +240,8 @@ export default function HomeScreen() {
       justifyContent: "space-between",
     },
     backgroundContainer: {
-      borderBottomLeftRadius: 30,
-      borderBottomRightRadius: 30,
+      borderBottomLeftRadius: 20,
+      borderBottomRightRadius: 20,
       overflow: "hidden",
     },
   });
@@ -294,7 +273,7 @@ export default function HomeScreen() {
                 <Text
                   style={{
                     fontSize: 18,
-                    color: "black",
+                    color: "white",
                     textAlign: "right",
                   }}
                 >
@@ -303,12 +282,12 @@ export default function HomeScreen() {
                 <Text
                   style={{
                     fontSize: 16,
-                    color: "black",
+                    color: "white",
                     opacity: 0.8,
                     textAlign: "right",
                   }}
                 >
-                  {userInfo?.displayName || "User"}
+                  {userInfo?.displayName || "المستخدم"}
                 </Text>
               </View>
             </View>
@@ -316,47 +295,43 @@ export default function HomeScreen() {
 
           {/* Balance Card */}
           <AnimatedSection visible={hasBalance} delay={320}>
-            <View style={styles.balanceCard}>
-              <Text style={styles.balanceLabel}>
-                الرصيد الحالي{signalRConnected}
-              </Text>
-              <Text style={styles.balanceAmount}>
-                {(() => {
-                  const balance = signalRBalance ?? data?.balance ?? 0;
-                  const balanceStr = balance.toLocaleString();
-                  const parts = balanceStr.split(".");
-                  return (
-                    <>
-                      {parts[0]}
-                      {parts[1] && (
-                        <>
-                          <Text style={styles.balanceAmount}>.</Text>
-                          <Text style={styles.balanceDecimal}>{parts[1]}</Text>
-                        </>
-                      )}{" "}
-                      {data?.currency || ""}
-                    </>
-                  );
-                })()}
-              </Text>
-            </View>
+            <Text style={styles.balanceLabel}>
+              الرصيد الحالي{signalRConnected}
+            </Text>
+            <Text style={styles.balanceAmount}>
+              {(() => {
+                const balance = signalRBalance ?? data?.balance ?? 0;
+                const balanceStr = balance.toLocaleString();
+                const parts = balanceStr.split(".");
+                return (
+                  <>
+                    {parts[0]}
+                    {parts[1] && (
+                      <>
+                        <Text style={styles.balanceAmount}>.</Text>
+                        <Text style={styles.balanceDecimal}>{parts[1]}</Text>
+                      </>
+                    )}{" "}
+                    {data?.currency || ""}
+                  </>
+                );
+              })()}
+            </Text>
           </AnimatedSection>
 
           {/* Quick Actions */}
           <AnimatedSection visible={hasWidgets} delay={240}>
-            <View style={styles.actionsContainer}>
-              <View style={styles.actionsGrid}>
-                {quickActions.map((action) => (
-                  <QuickActionButton
-                    key={action.id}
-                    title={action.label}
-                    icon={action.icon}
-                    iconColor={action.iconColor}
-                    iconBg={action.iconBg}
-                    onPress={() => handleQuickAction(action.label)}
-                  />
-                ))}
-              </View>
+            <View style={styles.actionsGrid}>
+              {quickActions.map((action) => (
+                <QuickActionButton
+                  key={action.id}
+                  title={action.label}
+                  icon={action.icon}
+                  iconColor={action.iconColor}
+                  iconBg={action.iconBg}
+                  onPress={() => handleQuickAction(action.label)}
+                />
+              ))}
             </View>
           </AnimatedSection>
         </LinearGradient>

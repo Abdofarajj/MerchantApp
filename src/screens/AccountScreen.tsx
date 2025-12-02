@@ -37,7 +37,9 @@ export default function AccountScreen() {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  const logoutModalRef = useRef<{ present: () => void; dismiss: () => void }>(null);
+  const logoutModalRef = useRef<{ present: () => void; dismiss: () => void }>(
+    null
+  );
 
   const currency = snapshot?.currency ?? data?.currency ?? "د.ل";
   const balance =
@@ -95,7 +97,7 @@ export default function AccountScreen() {
 
   return (
     <Screen useSafeArea={false} backgroundColor={theme.colors.background}>
-      <Header title="الحساب" />
+      <Header title="الحساب" backgroundColor={theme.colors.background} />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={[
@@ -153,7 +155,7 @@ export default function AccountScreen() {
             <Text
               style={[styles.statLabel, { color: theme.colors.textSecondary }]}
             >
-            رصيد المديونية
+              رصيد المديونية
             </Text>
             <Text
               weight="bold"

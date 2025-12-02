@@ -51,11 +51,6 @@ export default function POSDevicesSection({
     <View>
       <View style={styles.posHeader}>
         <Text style={styles.sectionTitle}>نقاط البيع</Text>
-        {/* <TouchableOpacity
-          onPress={() => Alert.alert("Devices", "عرض جميع الأجهزة")}
-        >
-          <Text style={styles.viewAllText}>عرض الكل</Text>
-        </TouchableOpacity> */}
       </View>
 
       {/* Loading state */}

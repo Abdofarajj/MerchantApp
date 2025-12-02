@@ -18,16 +18,15 @@ export type UserDeviceListModalRef = {
 export const UserDeviceListModal = forwardRef<
   UserDeviceListModalRef,
   UserDeviceListModalProps
-  >
-(({ setID, }, ref) => {
+>(({ setID }, ref) => {
   const [isVisible, setIsVisible] = useState(false);
   const colorScheme = useColorScheme();
   const {
-      data: posData,
-      isLoading: posLoading,
-      error: posError,
-      refetch: refetchPosData,
-    } = usePosDetails();
+    data: posData,
+    isLoading: posLoading,
+    error: posError,
+    refetch: refetchPosData,
+  } = usePosDetails();
 
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   useImperativeHandle(ref, () => ({
@@ -40,8 +39,7 @@ export const UserDeviceListModal = forwardRef<
   }));
 
   const styles = StyleSheet.create({
-    modal: {
-    },
+    modal: {},
     container: {
       alignSelf: "center",
       backgroundColor: theme.colors.surface,
@@ -52,7 +50,7 @@ export const UserDeviceListModal = forwardRef<
     },
     desc: {
       fontSize: 16,
-      color: theme.colors.text2,
+      color: theme.colors.text,
       textAlign: "center",
       marginBottom: theme.spacing[4],
     },
@@ -74,18 +72,16 @@ export const UserDeviceListModal = forwardRef<
       backdropOpacity={0.5}
     >
       <View style={styles.container}>
-        <POSDevicesSection 
-        posData={posData}
-        posLoading={posLoading}
-        posError={posError}
-        onDevicePress={( device ) => {
-          setID(device.id);
-          setIsVisible(false);
-        } }
+        <POSDevicesSection
+          posData={posData}
+          posLoading={posLoading}
+          posError={posError}
+          onDevicePress={(device) => {
+            setID(device.id);
+            setIsVisible(false);
+          }}
         />
       </View>
     </Modal>
   );
 });
-
-

@@ -31,7 +31,11 @@ const tabWidth = (tabBarWidth - 12) / 4; // 4 tabs with 3 gaps
 export default function ActivityScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
-  useHeader({ title: "الحركات", showBackButton: false });
+  useHeader({
+    title: "الحركات",
+    showBackButton: false,
+    backgroundColor: theme.colors.background,
+  });
   const [activeTab, setActiveTab] = useState<
     "الكل" | "شحن" | "تسديد" | "تصفية"
   >("الكل");

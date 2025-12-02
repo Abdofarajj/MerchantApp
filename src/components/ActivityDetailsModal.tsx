@@ -524,17 +524,17 @@ export function ActivityDetailsModal({
 
           {/* Vertical list of details */}
           <View style={styles.detailsList}>
-            <InfoRow label="تاريخ الإصدار" value={insertDate} />
+            <InfoRow label="تاريخ الإصدار " value={insertDate} />
             {chargeDate ? (
-              <InfoRow label="تاريخ الموافقة" value={chargeDate} />
+              <InfoRow label="تاريخ الموافقة " value={chargeDate} />
             ) : null}
-            <InfoRow label="البند المالي" value={financialItem} />
-            <InfoRow label="المستند" value={`#${item.id}`} />
+            <InfoRow label="البند المالي " value={financialItem} />
+            <InfoRow label="المستند " value={`#${item.id}`} />
             {item.branchName ? (
-              <InfoRow label="اسم الفرع" value={item.branchName} />
+              <InfoRow label="اسم الفرع " value={item.branchName} />
             ) : null}
             {item.branchId ? (
-              <InfoRow label="معرف الفرع" value={item.branchId} />
+              <InfoRow label="معرف الفرع " value={item.branchId} />
             ) : null}
           </View>
 

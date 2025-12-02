@@ -1,5 +1,11 @@
 import api from "../api";
-import { AddUserPayload, EditUserPayload, GenericResponse, GetUsersDeviceResponse, ResetPasswordPayload } from "./schema";
+import {
+  AddUserPayload,
+  EditUserPayload,
+  GenericResponse,
+  GetUsersDeviceResponse,
+  ResetPasswordPayload,
+} from "./schema";
 
 /**
  * Users API service
@@ -14,24 +20,18 @@ export const usersService = {
     return response.data;
   },
 
-  addUserDevice: async (
-    data: AddUserPayload
-  ): Promise<GenericResponse> => {
+  addUserDevice: async (data: AddUserPayload): Promise<GenericResponse> => {
     const response = await api.post("/Accounts/Create", data);
     return response.data;
   },
 
-  editUserDevice: async (
-    data: EditUserPayload
-  ): Promise<GenericResponse> => {
+  editUserDevice: async (data: EditUserPayload): Promise<GenericResponse> => {
     const response = await api.post("/Accounts/Edit", data);
     return response.data;
   },
 
-  deleteUserDevice: async (
-    data: {id: string}
-  ): Promise<GenericResponse> => {
-    const response = await api.delete(`/Accounts/Delete/${data.id}`,);
+  deleteUserDevice: async (data: { id: string }): Promise<GenericResponse> => {
+    const response = await api.delete(`/Accounts/Delete/${data.id}`);
     return response.data;
   },
 
@@ -40,7 +40,7 @@ export const usersService = {
   ): Promise<GenericResponse> => {
     const response = await api.post("/Accounts/ResetPassword", data);
     return response.data;
-  }
+  },
 };
 
 export default usersService;

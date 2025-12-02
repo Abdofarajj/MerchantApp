@@ -29,7 +29,7 @@ You can start developing by editing the files inside the **app** directory. This
 
 When you're ready, run:
 
-```bash
+````bash
 npm run reset-project
 ```a
 
@@ -48,3 +48,4 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+````

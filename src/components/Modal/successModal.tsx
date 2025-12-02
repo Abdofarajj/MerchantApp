@@ -114,7 +114,7 @@ export const SuccessModal = forwardRef<SuccessModalRef, SuccessModalProps>(
       },
       message: {
         fontSize: 16,
-        color: theme.colors.text2,
+        color: theme.colors.text,
         textAlign: "center",
         marginTop: theme.spacing[3],
       },

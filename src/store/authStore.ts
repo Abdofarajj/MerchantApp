@@ -143,7 +143,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             rememberMe: true,
           });
           console.log("AuthStore: Auto-login successful");
-        } catch (error) {
+        } catch {
           // Token refresh failed, clear stored tokens
           await SecureStore.deleteItemAsync("refreshToken");
           await SecureStore.deleteItemAsync("userId");

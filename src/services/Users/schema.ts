@@ -13,13 +13,12 @@ export const UserSchema = z.object({
 
 export const UsersSchema = z.array(UserSchema);
 
-
 export const AddUserSchema = z.object({
   deviceMerchantId: z.number(),
   displayName: z.string(),
   userName: z.string(),
-  password:  z.string(),
-  confirmPassword:  z.string(),
+  password: z.string(),
+  confirmPassword: z.string(),
 });
 
 export const EditUserSchema = z.object({
@@ -33,7 +32,7 @@ export const ResetPasswordSchema = z.object({
   userName: z.string(),
   password: z.string(),
   confirmPassword: z.string(),
-})
+});
 
 export const GetUsersResponseSchema = UsersSchema;
 
@@ -42,11 +41,9 @@ export const ResponseSchema = z.object({
   isError: z.boolean(),
 });
 
-
-
 export type UserDevice = z.infer<typeof UserSchema>;
 export type GetUsersDeviceResponse = z.infer<typeof GetUsersResponseSchema>;
 export type AddUserPayload = z.infer<typeof AddUserSchema>;
 export type GenericResponse = z.infer<typeof ResponseSchema>;
 export type EditUserPayload = z.infer<typeof EditUserSchema>;
-export type ResetPasswordPayload = z.infer<typeof ResetPasswordSchema>
+export type ResetPasswordPayload = z.infer<typeof ResetPasswordSchema>;

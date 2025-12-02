@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   amount: {
-    fontSize: 30,
+    fontSize: 26,
     textAlign: "right",
   },
   totalAmount: {

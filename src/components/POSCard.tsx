@@ -27,7 +27,7 @@ export default function POSCard({ device, onPress }: POSCardProps) {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
 
   const getStatusColor = (isActive: boolean) => {
-    return isActive ? theme.colors.success : theme.colors.textSecondary;
+    return isActive ? theme.colors.info : theme.colors.textSecondary;
   };
 
   const getStatusText = (isActive: boolean) => {

@@ -8,9 +8,7 @@
     "scheme": "merchantapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assets": [
-      "./src/assets/fonts/"
-    ],
+    "assets": ["./src/assets/fonts/"],
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",

@@ -222,7 +222,10 @@ export default function POSManagement() {
 
   return (
     <Screen useSafeArea={false}>
-      <Header title={"إدارة الجهاز"} />
+      <Header
+        title={"إدارة الجهاز"}
+        backgroundColor={theme.colors.background}
+      />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 40 }}

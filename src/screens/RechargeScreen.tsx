@@ -121,7 +121,7 @@ export default function RechargeScreen() {
                       apiError?.response?.data?.message ||
                       apiError?.response?.data ||
                       apiError?.message ||
-                      "An error occurred";
+                      "حدث خطأ";
                     // Reverse numbers in the format int.dec to dec.int
                     errorMessage = errorMessage.replace(
                       /(\d+)\.(\d+)/g,

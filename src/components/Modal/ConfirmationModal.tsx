@@ -50,7 +50,7 @@ export const ConfirmationModal = forwardRef<
     },
     desc: {
       fontSize: 16,
-      color: theme.colors.text2,
+      color: theme.colors.text,
       textAlign: "center",
       marginBottom: theme.spacing[4],
     },

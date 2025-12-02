@@ -16,6 +16,7 @@ export interface HeaderProps {
   onBackPress?: () => void;
   rightIcon?: keyof typeof Ionicons.glyphMap;
   onRightPress?: () => void;
+  backgroundColor?: string;
 }
 
 export default function Header({
@@ -24,6 +25,7 @@ export default function Header({
   onBackPress,
   rightIcon,
   onRightPress,
+  backgroundColor,
 }: HeaderProps) {
   const navigation = useNavigation();
   const colorScheme = useColorScheme();
@@ -44,7 +46,7 @@ export default function Header({
       justifyContent: "center",
       paddingHorizontal: theme.spacing[4],
       paddingVertical: theme.spacing[3],
-      backgroundColor: "white",
+      backgroundColor: backgroundColor || "white",
       minHeight: 100,
     },
     leftSection: {
