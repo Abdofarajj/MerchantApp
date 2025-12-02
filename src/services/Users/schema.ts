@@ -27,7 +27,7 @@ export const EditUserSchema = z.object({
   userName: z.string(),
 });
 
-export const ResetPasswordSchema = z.object({
+export const ResetUserDevicePasswordSchema = z.object({
   userId: z.string(),
   userName: z.string(),
   password: z.string(),
@@ -46,4 +46,4 @@ export type GetUsersDeviceResponse = z.infer<typeof GetUsersResponseSchema>;
 export type AddUserPayload = z.infer<typeof AddUserSchema>;
 export type GenericResponse = z.infer<typeof ResponseSchema>;
 export type EditUserPayload = z.infer<typeof EditUserSchema>;
-export type ResetPasswordPayload = z.infer<typeof ResetPasswordSchema>;
+export type ResetUserDevicePasswordPayload = z.infer<typeof ResetUserDevicePasswordSchema>;

@@ -25,7 +25,6 @@ export const UserDeviceListModal = forwardRef<
     data: posData,
     isLoading: posLoading,
     error: posError,
-    refetch: refetchPosData,
   } = usePosDetails();
 
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
@@ -85,3 +84,5 @@ export const UserDeviceListModal = forwardRef<
     </Modal>
   );
 });
+
+UserDeviceListModal.displayName = "UserDeviceList"

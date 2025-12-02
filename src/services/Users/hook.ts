@@ -4,9 +4,9 @@ import {
   AddUserPayload,
   EditUserPayload,
   GetUsersDeviceResponse,
-  ResetPasswordPayload,
+  ResetUserDevicePasswordPayload,
 } from "./schema";
-import usersService from "./service";
+import { usersService } from "./service";
 
 /**
  * Hook: fetch the current user's device info.
@@ -59,7 +59,7 @@ export const useEditUserDeviceMutation = () => {
   });
 };
 
-export const usedeleteUserDeviceMutation = () => {
+export const useDeleteUserDeviceMutation = () => {
   return useMutation({
     mutationFn: (payload: { id: string }) => {
       const data = usersService.deleteUserDevice(payload);
@@ -71,9 +71,9 @@ export const usedeleteUserDeviceMutation = () => {
   });
 };
 
-export const useResetPasswordMutation = () => {
+export const useResetUserDevicePasswordMutation = () => {
   return useMutation({
-    mutationFn: (payload: ResetPasswordPayload) => {
+    mutationFn: (payload: ResetUserDevicePasswordPayload) => {
       const data = usersService.resetUserDevicePassword(payload);
       return data;
     },
