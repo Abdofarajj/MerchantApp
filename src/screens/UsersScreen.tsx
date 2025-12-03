@@ -7,12 +7,10 @@ import UserCard from "../components/UserCard";
 import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { GetUsersDeviceResponse, useGetUserDeviceQuery } from "../services";
-import { queryClient } from "../services/reactQuery";
 import { darkTheme, lightTheme } from "../theme";
 
 export default function UsersScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   useHeader({
@@ -21,12 +19,12 @@ export default function UsersScreen() {
     backgroundColor: theme.colors.background,
   });
 
-  const { data, error, isLoading, refetch } = useGetUserDeviceQuery();
+  const { data, error, isLoading, refetch, isStale } = useGetUserDeviceQuery();
   useEffect(() => {
-    if (queryClient.getQueryState(["myUserDevice"])?.isInvalidated === true) {
+    if (isStale === true) {
       refetch();
     }
-  }, [queryClient.getQueryState(["myUserDevice"])]);
+  }, [isStale, refetch]);
   console.log(
     "User Device Data:",
     data,

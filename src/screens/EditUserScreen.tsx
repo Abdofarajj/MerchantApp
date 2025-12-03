@@ -19,7 +19,7 @@ import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import {
   useEditUserDeviceMutation,
-  useResetPasswordMutation,
+  useResetUserDevicePasswordMutation,
 } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
@@ -35,7 +35,7 @@ export default function EditUserScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const editUserDeviceMutation = useEditUserDeviceMutation();
-  const resetPasswordMutation = useResetPasswordMutation();
+  const resetPasswordMutation = useResetUserDevicePasswordMutation();
 
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;

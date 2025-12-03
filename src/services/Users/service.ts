@@ -4,7 +4,7 @@ import {
   EditUserPayload,
   GenericResponse,
   GetUsersDeviceResponse,
-  ResetPasswordPayload,
+  ResetUserDevicePasswordPayload,
 } from "./schema";
 
 /**
@@ -36,7 +36,7 @@ export const usersService = {
   },
 
   resetUserDevicePassword: async (
-    data: ResetPasswordPayload
+    data: ResetUserDevicePasswordPayload
   ): Promise<GenericResponse> => {
     const response = await api.post("/Accounts/ResetPassword", data);
     return response.data;
