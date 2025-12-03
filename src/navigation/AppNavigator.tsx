@@ -47,13 +47,14 @@ const Tab = createBottomTabNavigator<TabParamList>();
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const tabs = [
-  { id: "Home", label: "الرئيسية", iconName: "home" as const },
-  { id: "Users", label: "المستخدمون", iconName: "users" as const },
   {
     id: "Activity",
     label: "الحركات",
     iconName: "transfer" as const,
   },
+  { id: "Users", label: "المستخدمون", iconName: "users" as const },
+
+  { id: "Home", label: "الرئيسية", iconName: "home" as const },
 ];
 
 // Tab Navigator (navbar screens only)
@@ -79,7 +80,7 @@ function Tabs() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Users" component={UsersScreen} />
       <Tab.Screen name="Activity" component={ActivityScreen} />
-      <Tab.Screen name="Account" component={AccountScreen} />
+      {/* <Tab.Screen name="Account" component={AccountScreen} /> */}
     </Tab.Navigator>
   );
 }

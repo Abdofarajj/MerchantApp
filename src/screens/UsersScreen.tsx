@@ -35,43 +35,8 @@ export default function UsersScreen() {
     "Loading:",
     isLoading
   );
-  // Placeholder data that matches the Users schema
-  const placeholderUsers: GetUsersDeviceResponse = [
-    {
-      id: "1",
-      accountName: "acct_ahmed",
-      displayName: "أحمد علي",
-      email: "ahmed@example.com",
-      phoneNumber: "+966512345678",
-      userName: "ahmed",
-      accountCode: "AC001",
-      balance: 0,
-    },
-    {
-      id: "2",
-      accountName: "acct_sara",
-      displayName: "سارة محمد",
-      email: "sara@example.com",
-      phoneNumber: "+966598765432",
-      userName: "sara",
-      accountCode: "AC002",
-      balance: 0,
-    },
-    {
-      id: "3",
-      accountName: "acct_khaled",
-      displayName: "خالد حسن",
-      email: "",
-      phoneNumber: "+966500112233",
-      userName: "khaled",
-      accountCode: "AC003",
-      balance: 0,
-    },
-  ];
 
-  const users = (
-    data && Array.isArray(data) && data.length > 0 ? data : placeholderUsers
-  ) as GetUsersDeviceResponse;
+  const users = data as GetUsersDeviceResponse;
 
   return (
     <Screen>

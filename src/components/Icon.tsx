@@ -39,8 +39,9 @@ export const ICON_ASSETS: Record<string, number> = {
   home: require("../assets/icons/home.png"),
   users: require("../assets/icons/users.png"),
   transfer: require("../assets/icons/transfer.png"),
-
-  // logo: require('../../assets/icons/logo.png'),
+  moon: require("../assets/icons/moon.png"),
+  sun: require("../assets/icons/sun.png"),
+  share: require("../assets/icons/share.png"),
 };
 
 export function IconComponent(props: IconProps): React.ReactElement {

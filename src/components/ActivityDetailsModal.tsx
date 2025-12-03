@@ -1,3 +1,4 @@
+import * as FileSystem from "expo-file-system";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import React, { useEffect, useRef } from "react";
@@ -161,13 +162,49 @@ export function ActivityDetailsModal({
 
   const downloadReceiptAsPdf = async (html: string) => {
     try {
+      // Generate PDF from HTML
       const { uri } = await Print.printToFileAsync({ html });
+
+      // Create a unique filename with timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const fileName = `receipt-${item.id}-${timestamp}.pdf`;
+
+      // Try to save to document directory (bypass TypeScript issues)
+      const documentDir = (FileSystem as any).documentDirectory;
+      if (documentDir) {
+        const permanentUri = `${documentDir}${fileName}`;
+
+        // Copy the PDF to permanent storage
+        await FileSystem.copyAsync({
+          from: uri,
+          to: permanentUri,
+        });
+
+        // Show success message
+        alert(`تم حفظ الإيصال بنجاح!\nالملف: ${fileName}`);
+        console.log("PDF saved to:", permanentUri);
+      } else {
+        alert("غير قادر على الوصول إلى مساحة التخزين");
+      }
+    } catch (error) {
+      console.log("PDF download error:", error);
+      alert("حدث خطأ أثناء حفظ الإيصال");
+    }
+  };
+
+  const shareReceiptAsPdf = async (html: string) => {
+    try {
+      // Generate PDF from HTML
+      const { uri } = await Print.printToFileAsync({ html });
+
+      // Share the PDF
       await Sharing.shareAsync(uri, {
         mimeType: "application/pdf",
-        dialogTitle: "Share Receipt",
+        dialogTitle: "مشاركة الإيصال",
       });
     } catch (error) {
-      console.log("PDF error:", error);
+      console.log("PDF share error:", error);
+      alert("حدث خطأ أثناء مشاركة الإيصال");
     }
   };
 
@@ -565,18 +602,30 @@ export function ActivityDetailsModal({
             />
           )}
         </View>
-        <Button
-          text="تحميل واصل PDF  "
-          iconName="download"
-          backgroundColor={theme.colors.primary}
-          onPress={() => downloadReceiptAsPdf(generateReceiptHtml(item))}
-          style={{
-            marginTop: 20,
-            marginHorizontal: 20,
-            marginLeft: 20,
-            width: "90%",
-          }}
-        />
+        <View
+          style={{ flexDirection: "row", marginTop: 20, marginHorizontal: 20 }}
+        >
+          <Button
+            text="تحميل "
+            iconName="download"
+            backgroundColor={theme.colors.primary}
+            onPress={() => downloadReceiptAsPdf(generateReceiptHtml(item))}
+            style={{
+              flex: 1,
+              marginRight: 10,
+            }}
+          />
+          <Button
+            text="مشاركة "
+            iconName="share"
+            backgroundColor={theme.colors.secondary}
+            onPress={() => shareReceiptAsPdf(generateReceiptHtml(item))}
+            style={{
+              flex: 1,
+              marginLeft: 10,
+            }}
+          />
+        </View>
       </TouchableOpacity>
       <ConfirmationModal
         ref={confirmationModalRef}

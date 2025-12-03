@@ -75,19 +75,17 @@ export default function ActivityCard({
 
       {/* Right side box - fixed width of 50 */}
       <View style={styles.rightBox}>
-        <Icon
-          iconName={
-            isRecharge
-              ? "bolt"
-              : isPay
-                ? "call-made"
-                : isCollect
-                  ? "call-received"
-                  : "help"
-          }
-          iconSize={30}
-          iconColor="#000000ff"
-        />
+        {isCollect ? (
+          <View style={{ transform: [{ rotate: "180deg" }] }}>
+            <Icon iconName="arrow" iconSize={30} iconColor="#000000ff" />
+          </View>
+        ) : (
+          <Icon
+            iconName={isRecharge ? "plus" : isPay ? "arrow" : "help"}
+            iconSize={isRecharge ? 20 : 30}
+            iconColor="#000000ff"
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -100,7 +98,8 @@ const getStyles = (theme: any, type: string) =>
       backgroundColor: theme.colors.surface,
       padding: 15,
       marginVertical: 5,
-      marginHorizontal: 10,
+      marginHorizontal: 8,
+      borderRadius: 10,
     },
     leftArea: {
       flex: 1,
@@ -126,5 +125,6 @@ const getStyles = (theme: any, type: string) =>
     rightBox: {
       width: 40,
       justifyContent: "center",
+      alignItems: "center",
     },
   });
