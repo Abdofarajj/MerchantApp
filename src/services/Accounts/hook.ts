@@ -4,8 +4,7 @@ import {
   CreateUserRequest,
   EditUserRequest,
   LoginRequest,
-  RefreshTokenRequest,
-  ResetPasswordRequest,
+  RefreshTokenRequest
 } from "./schema";
 import { accountsService } from "./service";
 
@@ -44,14 +43,6 @@ export const useGetMyUserDeviceQuery = () => {
   return useQuery({
     queryKey: ["myUserDevice"],
     queryFn: accountsService.getMyUserDevice,
-  });
-};
-
-// Reset Password
-export const useResetPasswordMutation = () => {
-  return useMutation({
-    mutationFn: (data: ResetPasswordRequest) =>
-      accountsService.resetPassword(data),
   });
 };
 

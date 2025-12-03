@@ -14,9 +14,7 @@ import {
   LoginResponse,
   LogoutResponse,
   RefreshTokenRequest,
-  RefreshTokenResponse,
-  ResetPasswordRequest,
-  ResetPasswordResponse,
+  RefreshTokenResponse
 } from "./schema";
 
 // TODO: INJECT API_URL FROM Config.API_URL
@@ -58,16 +56,6 @@ export const accountsService = {
     const response = await api.get("/Accounts/GetMyUserDevice");
     return response.data;
   },
-
-  // Reset Password
-  resetPassword: async (
-    data: ResetPasswordRequest
-  ): Promise<ResetPasswordResponse> => {
-    // TODO: ADD ENDPOINT HERE — e.g. '/Accounts/ResetPassword'
-    const response = await api.post("/Accounts/ResetPassword", data);
-    return response.data;
-  },
-
   // Change Password
   changePassword: async (
     data: ChangePasswordRequest
