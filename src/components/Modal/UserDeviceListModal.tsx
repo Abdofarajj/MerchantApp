@@ -85,4 +85,4 @@ export const UserDeviceListModal = forwardRef<
   );
 });
 
-UserDeviceListModal.displayName = "UserDeviceList"
+UserDeviceListModal.displayName = "UserDeviceList";

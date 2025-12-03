@@ -14,7 +14,7 @@ import {
   LoginResponse,
   LogoutResponse,
   RefreshTokenRequest,
-  RefreshTokenResponse
+  RefreshTokenResponse,
 } from "./schema";
 
 // TODO: INJECT API_URL FROM Config.API_URL

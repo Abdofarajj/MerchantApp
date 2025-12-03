@@ -4,7 +4,7 @@ import {
   CreateUserRequest,
   EditUserRequest,
   LoginRequest,
-  RefreshTokenRequest
+  RefreshTokenRequest,
 } from "./schema";
 import { accountsService } from "./service";
 

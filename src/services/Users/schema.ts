@@ -46,4 +46,6 @@ export type GetUsersDeviceResponse = z.infer<typeof GetUsersResponseSchema>;
 export type AddUserPayload = z.infer<typeof AddUserSchema>;
 export type GenericResponse = z.infer<typeof ResponseSchema>;
 export type EditUserPayload = z.infer<typeof EditUserSchema>;
-export type ResetUserDevicePasswordPayload = z.infer<typeof ResetUserDevicePasswordSchema>;
+export type ResetUserDevicePasswordPayload = z.infer<
+  typeof ResetUserDevicePasswordSchema
+>;
