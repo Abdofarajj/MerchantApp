@@ -1,15 +1,15 @@
-import { Ionicons } from "@expo/vector-icons";
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import {
   ActivityIndicator,
+  Modal,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
-import Modal from "react-native-modal";
 
 import { darkTheme, lightTheme } from "../../theme";
+import { IconComponent } from "../Icon";
 import Text from "../Text";
 
 interface SuccessModalProps {
@@ -94,14 +94,6 @@ export const SuccessModal = forwardRef<SuccessModalRef, SuccessModalProps>(
         justifyContent: "center",
         marginBottom: theme.spacing[2],
       },
-      successIcon: {
-        width: 48,
-        height: 48,
-        borderRadius: 24,
-        backgroundColor: "#4CAF50",
-        alignItems: "center",
-        justifyContent: "center",
-      },
       loadingContainer: {
         alignItems: "center",
         justifyContent: "center",
@@ -122,40 +114,47 @@ export const SuccessModal = forwardRef<SuccessModalRef, SuccessModalProps>(
 
     return (
       <Modal
-        isVisible={isVisible}
-        style={styles.modal}
-        onBackdropPress={() => setIsVisible(false)}
-        onBackButtonPress={() => setIsVisible(false)}
-        animationIn="fadeIn"
-        animationOut="fadeOut"
-        backdropOpacity={0.5}
+        visible={isVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setIsVisible(false)}
       >
-        <View style={styles.container}>
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => setIsVisible(false)}
-            activeOpacity={0.7}
-          >
-            <Ionicons name="close" size={20} color="rgba(128, 128, 128, 0.7)" />
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.backdrop}
+          onPress={() => setIsVisible(false)}
+          activeOpacity={1}
+        >
+          <View style={styles.container} onStartShouldSetResponder={() => true}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setIsVisible(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={{ fontSize: 20, color: "rgba(128, 128, 128, 0.7)" }}>
+                ×
+              </Text>
+            </TouchableOpacity>
 
-          {loading && (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="large" color={theme.colors.primary} />
-            </View>
-          )}
-
-          {success && (
-            <View style={styles.successContainer}>
-              <View style={styles.successIconContainer}>
-                <View style={styles.successIcon}>
-                  <Ionicons name="checkmark" size={24} color="white" />
-                </View>
+            {loading && (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={theme.colors.primary} />
               </View>
-              <Text style={styles.message}>{message}</Text>
-            </View>
-          )}
-        </View>
+            )}
+
+            {success && (
+              <View style={styles.successContainer}>
+                <View style={styles.successIconContainer}>
+                  <IconComponent
+                    iconName="checkCircle"
+                    iconSize={48}
+                    iconColor="#4CAF50"
+                  />
+                </View>
+                <Text style={styles.message}>{message}</Text>
+              </View>
+            )}
+          </View>
+        </TouchableOpacity>
       </Modal>
     );
   }

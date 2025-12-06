@@ -1,4 +1,3 @@
-import { MaterialIcons } from "@expo/vector-icons"; // material design icons from expo
 import React from "react";
 import {
   Image,
@@ -25,23 +24,35 @@ export interface IconProps extends Omit<TouchableOpacityProps, "style"> {
  * This avoids dynamic require(...) which Metro doesn't allow.
  *
  * Example:
- *   ICON_ASSETS.person = require('../../assets/icons/person.png')
+ *   ICON_ASSETS.person = require('../assets/icons/person.png')
  *
  * Add only files that actually exist.
  */
 export const ICON_ASSETS: Record<string, number> = {
   pos: require("../assets/icons/pos.png"),
-  collect: require("../assets/icons/give-money.png"),
-  recharge: require("../assets/icons/deposit.png"),
   download: require("../assets/icons/download.png"),
   plus: require("../assets/icons/plus.png"),
   arrow: require("../assets/icons/arrow.png"),
+  arrowBack: require("../assets/icons/arrow-back.png"),
   home: require("../assets/icons/home.png"),
   users: require("../assets/icons/users.png"),
   transfer: require("../assets/icons/transfer.png"),
-  moon: require("../assets/icons/moon.png"),
-  sun: require("../assets/icons/sun.png"),
   share: require("../assets/icons/share.png"),
+  back: require("../assets/icons/back.png"),
+  person: require("../assets/icons/person.png"),
+  checkCircle: require("../assets/icons/check-circle.png"),
+  schedule: require("../assets/icons/schedule.png"),
+  email: require("../assets/icons/email.png"),
+  phone: require("../assets/icons/phone.png"),
+  pin: require("../assets/icons/pin.png"),
+  support: require("../assets/icons/support.png"),
+  edit: require("../assets/icons/edit.png"),
+  delete: require("../assets/icons/delete.png"),
+  eye: require("../assets/icons/eye.png"),
+  eyeOff: require("../assets/icons/eye-off.png"),
+  closeCircle: require("../assets/icons/close-circle.png"),
+  informationCircle: require("../assets/icons/information-circle.png"),
+  return: require("../assets/icons/return.png"),
 };
 
 export function IconComponent(props: IconProps): React.ReactElement {
@@ -78,54 +89,6 @@ export function IconComponent(props: IconProps): React.ReactElement {
             tintColor: iconColor,
           }}
           resizeMode="contain"
-        />
-      </View>
-    );
-    if (onPress) {
-      return (
-        <TouchableOpacity
-          activeOpacity={0.75}
-          onPress={onPress}
-          style={undefined}
-          {...restProps}
-        >
-          {iconElement}
-        </TouchableOpacity>
-      );
-    } else {
-      return iconElement;
-    }
-  }
-
-  // 2) Check MaterialIcons glyph map for the name and render MaterialIcons if available
-  let isMaterialIcon = false;
-  if (typeof iconName === "string") {
-    try {
-      // getRawGlyphMap exists on vector icon components; guard in try/catch
-      const glyphMap = (MaterialIcons as any).getRawGlyphMap?.();
-      if (
-        glyphMap &&
-        Object.prototype.hasOwnProperty.call(glyphMap, iconName)
-      ) {
-        isMaterialIcon = true;
-      }
-    } catch {
-      isMaterialIcon = false;
-    }
-  }
-
-  if (isMaterialIcon) {
-    const iconElement = (
-      <View
-        style={[
-          containerStyle,
-          { justifyContent: "center", alignItems: "center" },
-        ]}
-      >
-        <MaterialIcons
-          name={iconName as any}
-          size={iconSize}
-          color={iconColor}
         />
       </View>
     );

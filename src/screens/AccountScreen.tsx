@@ -58,12 +58,12 @@ export default function AccountScreen() {
           {
             label: "الهاتف",
             value: userInfo?.phoneNumber ?? snapshot?.phoneNumber ?? "غير محدد",
-            icon: "call",
+            icon: "phone",
           },
           {
             label: "البريد الإلكتروني",
             value: userInfo?.email ?? snapshot?.email ?? "غير متوفر",
-            icon: "mail-outline",
+            icon: "email",
           },
         ],
       },
@@ -102,7 +102,7 @@ export default function AccountScreen() {
         style={{ flex: 1 }}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: insets.bottom + 140 },
+          { paddingBottom: insets.bottom + 10 },
         ]}
         showsVerticalScrollIndicator={false}
       >
@@ -208,7 +208,7 @@ export default function AccountScreen() {
               <InfoRow
                 hideLabel={true}
                 value={userInfo.supportPhone}
-                iconName="support-agent"
+                iconName="support"
                 iconColor={theme.colors.primary}
                 valueStyle={{
                   color: theme.colors.text,
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 20,
     gap: 16,
-    paddingBottom: 40,
+    // paddingBottom: -40,
   },
   heroCard: {
     flexDirection: "row-reverse",

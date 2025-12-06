@@ -1,7 +1,7 @@
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
-import FloatingActionButton from "../components/FloatingActionButton";
+import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
 import UserCard from "../components/UserCard";
 import { useHeader } from "../hooks/useHeader";
@@ -16,7 +16,6 @@ export default function UsersScreen() {
   useHeader({
     title: "مستخدموا الاجهزة",
     showBackButton: false,
-    backgroundColor: theme.colors.background,
   });
 
   const { data, error, isLoading, refetch, isStale } = useGetUserDeviceQuery();
@@ -34,7 +33,7 @@ export default function UsersScreen() {
     isLoading
   );
 
-  const users = data as GetUsersDeviceResponse;
+  const users = (data as GetUsersDeviceResponse) || [];
 
   return (
     <Screen>
@@ -57,12 +56,18 @@ export default function UsersScreen() {
           ))}
         </View>
       </ScrollView>
-      <FloatingActionButton
-        onPress={() => {
-          console.log("Add Pressed");
-          navigation.navigate("AddUser");
-        }}
-      />
+      <View style={styles.floatingButtonContainer}>
+        <QuickActionButton
+          title=""
+          icon="plus"
+          iconColor={theme.colors.onPrimary}
+          iconBg={theme.colors.primary}
+          onPress={() => {
+            console.log("Add Pressed");
+            navigation.navigate("AddUser");
+          }}
+        />
+      </View>
     </Screen>
   );
 }
@@ -70,11 +75,16 @@ export default function UsersScreen() {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    paddingBottom: 220,
+    paddingBottom: 120,
   },
   list: {
     width: "100%",
     maxWidth: 960,
     alignSelf: "center",
+  },
+  floatingButtonContainer: {
+    position: "absolute",
+    bottom: 40,
+    right: 0,
   },
 });

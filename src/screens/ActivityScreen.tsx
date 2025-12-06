@@ -1,26 +1,23 @@
-import { useFocusEffect } from "@react-navigation/native";
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Dimensions,
   FlatList,
   RefreshControl,
+  SectionList,
   StyleSheet,
   TouchableOpacity,
   useColorScheme,
   View,
 } from "react-native";
 import ActivityCard from "../components/ActivityCard";
-import { ActivityDetailsModal } from "../components/ActivityDetailsModal";
+import { ActivityDetailsModal } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
+import { useActivity } from "../hooks/useActivity";
 import { useHeader } from "../hooks/useHeader";
-import { useGetChargeOrdersByMerchantQuery } from "../services/ChargeOrders";
 import { useDeleteChargeOrderMutation } from "../services/ChargeOrders/hook";
-import {
-  useGetAllReceiptCharge,
-  useGetAllReceiptReCharge,
-} from "../services/Documents";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 
@@ -37,9 +34,8 @@ export default function ActivityScreen() {
     backgroundColor: theme.colors.background,
   });
   const [activeTab, setActiveTab] = useState<
-    "الكل" | "شحن" | "تسديد" | "تصفية"
-  >("الكل");
-  const [pageNumber, setPageNumber] = useState(1);
+    "الكل" | "تصفية" | "تسديد" | "شحن"
+  >("شحن");
   const [refreshing, setRefreshing] = useState(false);
 
   const toast = useToast();
@@ -49,121 +45,36 @@ export default function ActivityScreen() {
   // Animation for tab indicator
   const tabIndicatorPosition = useRef(new Animated.Value(0)).current;
 
-  // API hooks
-  const {
-    data: rechargeData,
-    isLoading: rechargeLoading,
-    error: rechargeError,
-    refetch: refetchRecharge,
-  } = useGetChargeOrdersByMerchantQuery({
-    pageSize: 10,
-    pageNumber,
-  });
+  // Activity hook
+  const { combinedData, isLoading, error, refetchAll, loadMore } =
+    useActivity(activeTab);
 
-  const {
-    data: payData,
-    isLoading: payLoading,
-    error: payError,
-    refetch: refetchPay,
-  } = useGetAllReceiptCharge({
-    pageSize: 10,
-    pageNumber: 1,
-  });
-
-  const {
-    data: collectData,
-    isLoading: collectLoading,
-    error: collectError,
-    refetch: refetchCollect,
-  } = useGetAllReceiptReCharge({
-    pageSize: 10,
-    pageNumber: 1,
-  });
+  // Update tab indicator position when activeTab changes
+  useEffect(() => {
+    const tabIndex = ["الكل", "تصفية", "تسديد", "شحن"].indexOf(activeTab);
+    const targetPosition = tabIndex * tabWidth;
+    tabIndicatorPosition.setValue(targetPosition);
+  }, [activeTab, tabIndicatorPosition]);
 
   // Mutation for deleting charge orders
   const deleteChargeOrderMutation = useDeleteChargeOrderMutation();
-
-  // Refetch data on screen focus
-  useFocusEffect(
-    useCallback(() => {
-      refetchRecharge();
-      refetchPay();
-      refetchCollect();
-    }, [refetchRecharge, refetchPay, refetchCollect])
-  );
-
-  // Combined data based on active tab
-  const combinedData = useMemo(() => {
-    let items: any[] = [];
-
-    switch (activeTab) {
-      case "الكل":
-        items = [
-          ...(rechargeData?.items || []).map((item) => ({
-            ...item,
-            type: "recharge",
-          })),
-          ...(payData?.items || []).map((item) => ({ ...item, type: "pay" })),
-          ...(collectData?.items || []).map((item) => ({
-            ...item,
-            type: "collect",
-          })),
-        ];
-        break;
-      case "شحن":
-        items = (rechargeData?.items || []).map((item) => ({
-          ...item,
-          type: "recharge",
-        }));
-        break;
-      case "تسديد":
-        items = (payData?.items || []).map((item) => ({
-          ...item,
-          type: "pay",
-        }));
-        break;
-      case "تصفية":
-        items = (collectData?.items || []).map((item) => ({
-          ...item,
-          type: "collect",
-        }));
-        break;
-    }
-
-    // Sort by status (pending first) then by date
-    return items.sort((a, b) => {
-      // Pending items first
-      if (a.isApproved !== b.isApproved) {
-        return a.isApproved ? 1 : -1;
-      }
-      // Then sort by date (newest first)
-      const dateA = new Date(a.insertDate || a.insertDate);
-      const dateB = new Date(b.insertDate || b.insertDate);
-      return dateB.getTime() - dateA.getTime();
-    });
-  }, [activeTab, rechargeData, payData, collectData]);
-
-  const isLoading = rechargeLoading || payLoading || collectLoading;
-  const error = rechargeError || payError || collectError;
 
   const styles = activityScreenStyles(theme);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    setPageNumber(1);
-    await Promise.all([refetchRecharge(), refetchPay(), refetchCollect()]);
+    await refetchAll();
     setRefreshing(false);
   };
 
   const handleLoadMore = () => {
-    // For now, we'll keep it simple and not implement pagination for all tabs
-    // This can be enhanced later with proper pagination per tab
+    loadMore();
   };
 
-  const handleTabPress = (tab: "الكل" | "شحن" | "تسديد" | "تصفية") => {
+  const handleTabPress = (tab: "الكل" | "تصفية" | "تسديد" | "شحن") => {
     if (tab !== activeTab) {
       setActiveTab(tab);
-      const tabIndex = ["الكل", "شحن", "تسديد", "تصفية"].indexOf(tab);
+      const tabIndex = ["الكل", "تصفية", "تسديد", "شحن"].indexOf(tab);
       const targetPosition = tabIndex * tabWidth;
 
       Animated.timing(tabIndicatorPosition, {
@@ -185,7 +96,7 @@ export default function ActivityScreen() {
       {
         onSuccess: (response) => {
           toast.success(response.messageName);
-          refetchRecharge();
+          refetchAll();
           setModalVisible(false);
         },
         onError: (error: any) => {
@@ -235,7 +146,7 @@ export default function ActivityScreen() {
           ]}
         />
 
-        {["الكل", "شحن", "تسديد", "تصفية"].map((tab, index) => (
+        {["الكل", "تصفية", "تسديد", "شحن"].map((tab, index) => (
           <TouchableOpacity
             key={tab}
             style={styles.tab}
@@ -256,9 +167,9 @@ export default function ActivityScreen() {
         ))}
       </View>
 
-      <FlatList
+      <SectionList
         style={styles.list}
-        data={combinedData}
+        sections={combinedData}
         keyExtractor={(item) => `${item.type}-${item.id}`}
         renderItem={({ item }) => (
           <ActivityCard
@@ -267,6 +178,15 @@ export default function ActivityScreen() {
             theme={theme}
           />
         )}
+        renderSectionHeader={({ section: { title } }) => {
+          const dateObj = new Date(title);
+          const formattedDate = `${dateObj.getFullYear()}/${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}`;
+          return (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionHeaderText}>{formattedDate}</Text>
+            </View>
+          );
+        }}
         contentContainerStyle={{ paddingBottom: 100 }}
         refreshControl={
           <RefreshControl
@@ -278,11 +198,15 @@ export default function ActivityScreen() {
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
-          !isLoading ? (
+          isLoading ? (
+            <View style={styles.emptyContainer}>
+              <ActivityIndicator size="large" color={theme.colors.primary} />
+            </View>
+          ) : (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>لا توجد أنشطة</Text>
             </View>
-          ) : null
+          )
         }
         ListFooterComponent={
           isLoading && combinedData.length ? (
@@ -331,6 +255,7 @@ const activityScreenStyles = (theme: any) =>
     },
     tabText: {
       fontSize: 14,
+      textAlign: "right",
     },
     activeTabText: {
       color: "white",
@@ -356,5 +281,16 @@ const activityScreenStyles = (theme: any) =>
       textAlign: "center",
       color: theme.colors.textSecondary,
       padding: theme.spacing[4],
+    },
+    sectionHeader: {
+      padding: theme.spacing[2],
+      marginHorizontal: theme.spacing[4],
+      marginTop: theme.spacing[2],
+    },
+    sectionHeaderText: {
+      textAlign: "right",
+      fontSize: 16,
+      color: theme.colors.text,
+      fontWeight: "bold",
     },
   });

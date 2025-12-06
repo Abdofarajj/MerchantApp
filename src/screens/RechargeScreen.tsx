@@ -31,6 +31,7 @@ export default function RechargeScreen() {
   useHeader({
     title: "ادخل قيمة",
     showBackButton: true,
+    backgroundColor: "white",
   });
 
   // Auto-focus the input when component mounts

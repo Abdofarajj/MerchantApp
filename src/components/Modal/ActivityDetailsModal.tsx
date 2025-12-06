@@ -1,4 +1,4 @@
-import * as FileSystem from "expo-file-system";
+import * as FileSystem from "expo-file-system/legacy";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import React, { useEffect, useRef } from "react";
@@ -9,14 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Button from "./Button";
-import { IconComponent } from "./Icon";
-import InfoRow from "./InfoRow";
-import {
-  ConfirmationModal,
-  ConfirmationModalRef,
-} from "./Modal/ConfirmationModal";
-import Text from "./Text";
+import { useToast } from "../../utils/toast";
+import Button from "../Button";
+import { IconComponent } from "../Icon";
+import InfoRow from "../InfoRow";
+import Text from "../Text";
+import { ConfirmationModal, ConfirmationModalRef } from "./ConfirmationModal";
 
 interface ActivityDetailsModalProps {
   visible: boolean;
@@ -35,6 +33,7 @@ export function ActivityDetailsModal({
 }: ActivityDetailsModalProps) {
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const confirmationModalRef = useRef<ConfirmationModalRef>(null);
+  const toast = useToast();
 
   useEffect(() => {
     Animated.loop(
@@ -160,38 +159,6 @@ export function ActivityDetailsModal({
     },
   });
 
-  const downloadReceiptAsPdf = async (html: string) => {
-    try {
-      // Generate PDF from HTML
-      const { uri } = await Print.printToFileAsync({ html });
-
-      // Create a unique filename with timestamp
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const fileName = `receipt-${item.id}-${timestamp}.pdf`;
-
-      // Try to save to document directory (bypass TypeScript issues)
-      const documentDir = (FileSystem as any).documentDirectory;
-      if (documentDir) {
-        const permanentUri = `${documentDir}${fileName}`;
-
-        // Copy the PDF to permanent storage
-        await FileSystem.copyAsync({
-          from: uri,
-          to: permanentUri,
-        });
-
-        // Show success message
-        alert(`تم حفظ الإيصال بنجاح!\nالملف: ${fileName}`);
-        console.log("PDF saved to:", permanentUri);
-      } else {
-        alert("غير قادر على الوصول إلى مساحة التخزين");
-      }
-    } catch (error) {
-      console.log("PDF download error:", error);
-      alert("حدث خطأ أثناء حفظ الإيصال");
-    }
-  };
-
   const shareReceiptAsPdf = async (html: string) => {
     try {
       // Generate PDF from HTML
@@ -202,9 +169,12 @@ export function ActivityDetailsModal({
         mimeType: "application/pdf",
         dialogTitle: "مشاركة الإيصال",
       });
+
+      // Clean up temporary file
+      await FileSystem.deleteAsync(uri);
     } catch (error) {
-      console.log("PDF share error:", error);
-      alert("حدث خطأ أثناء مشاركة الإيصال");
+      console.error("PDF share error:", error);
+      toast.error("حدث خطأ أثناء مشاركة الإيصال");
     }
   };
 
@@ -483,36 +453,6 @@ export function ActivityDetailsModal({
           }
         </div>
 
-        ${
-          isChargeOrder
-            ? `
-        <!-- ROW 7 -->
-        <div class="row">
-          <div class="row-title">أوامر الشحن</div>
-
-          ${
-            item.chargeDocumentId
-              ? `
-          <div class="col">
-            <span class="label">معرف الوثيقة:</span>
-            <span class="value">${item.chargeDocumentId}</span>
-          </div>`
-              : ""
-          }
-
-          ${
-            item.updateToken
-              ? `
-          <div class="col">
-            <span class="label">رمز التحديث:</span>
-            <span class="value">${item.updateToken}</span>
-          </div>`
-              : ""
-          }
-        </div>`
-            : ""
-        }
-
       </div>
     </body>
   </html>
@@ -549,7 +489,7 @@ export function ActivityDetailsModal({
           />
           <View style={styles.statusIcon}>
             <IconComponent
-              iconName={item.isApproved ? "check-circle" : "schedule"}
+              iconName={item.isApproved ? "checkCircle" : "schedule"}
               iconSize={100}
               iconColor={item.isApproved ? "green" : "#ffc70dff"}
               iconContainerStyle={{ backgroundColor: theme.colors.surface }}
@@ -584,7 +524,7 @@ export function ActivityDetailsModal({
               <Text style={styles.accountText}>{toAccount}</Text>
               <View style={styles.arrow}>
                 <IconComponent
-                  iconName="arrow-back"
+                  iconName="arrowBack"
                   iconSize={24}
                   iconColor={theme.colors.primary}
                 />
@@ -602,28 +542,13 @@ export function ActivityDetailsModal({
             />
           )}
         </View>
-        <View
-          style={{ flexDirection: "row", marginTop: 20, marginHorizontal: 20 }}
-        >
-          <Button
-            text="تحميل "
-            iconName="download"
-            backgroundColor={theme.colors.primary}
-            onPress={() => downloadReceiptAsPdf(generateReceiptHtml(item))}
-            style={{
-              flex: 1,
-              marginRight: 10,
-            }}
-          />
+        <View>
           <Button
             text="مشاركة "
             iconName="share"
-            backgroundColor={theme.colors.secondary}
+            backgroundColor={theme.colors.primary}
             onPress={() => shareReceiptAsPdf(generateReceiptHtml(item))}
-            style={{
-              flex: 1,
-              marginLeft: 10,
-            }}
+            width={100}
           />
         </View>
       </TouchableOpacity>

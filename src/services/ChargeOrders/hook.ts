@@ -8,12 +8,13 @@ import { chargeOrdersService } from "./service";
 
 // Get Charge Orders by Merchant
 export const useGetChargeOrdersByMerchantQuery = (
-  data: GetChargeOrdersByMerchantRequest
+  data: GetChargeOrdersByMerchantRequest,
+  options?: { enabled?: boolean }
 ) => {
   return useQuery({
     queryKey: ["chargeOrdersByMerchant", data],
     queryFn: () => chargeOrdersService.getChargeOrdersByMerchant(data),
-    enabled: !!data.pageSize && !!data.pageNumber,
+    enabled: (options?.enabled ?? true) && !!data.pageSize && !!data.pageNumber,
   });
 };
 

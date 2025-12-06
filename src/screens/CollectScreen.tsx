@@ -3,6 +3,7 @@ import {
   Animated,
   Dimensions,
   KeyboardAvoidingView,
+  Modal,
   Platform,
   StyleSheet,
   TextInput,
@@ -10,6 +11,7 @@ import {
   View,
 } from "react-native";
 import Button from "../components/Button";
+import { IconComponent } from "../components/Icon";
 import type { SuccessModalRef } from "../components/Modal";
 import { SuccessModal } from "../components/Modal";
 import Screen from "../components/Screen";
@@ -29,6 +31,7 @@ export default function CollectScreen() {
   const [activeTab, setActiveTab] = useState<"تسديد" | "تصفية">("تسديد");
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showDescModal, setShowDescModal] = useState(false);
   const { userInfo } = useAuthStore();
   const textInputRef = useRef<TextInput>(null);
   const confirmationModalRef = useRef<SuccessModalRef>(null);
@@ -44,6 +47,7 @@ export default function CollectScreen() {
   useHeader({
     title: "تسوية",
     showBackButton: true,
+    backgroundColor: "white",
   });
 
   const isAmountValid = parseFloat(amount) >= 1;
@@ -116,6 +120,16 @@ export default function CollectScreen() {
               >
                 تصفية
               </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Info Icon */}
+          <View style={styles.infoContainer}>
+            <TouchableOpacity
+              onPress={() => setShowDescModal(true)}
+              style={styles.infoButton}
+            >
+              <IconComponent iconName="informationCircle" iconSize={24} />
             </TouchableOpacity>
           </View>
 
@@ -209,6 +223,29 @@ export default function CollectScreen() {
             setAmount("");
           }}
         />
+
+        <Modal
+          visible={showDescModal}
+          transparent
+          animationType="slide"
+          onRequestClose={() => setShowDescModal(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.descModalContent}>
+              <Text style={styles.descText}>
+                • تسديد: عملية دفع المبالغ المالية التي عليك للموزّع
+                {"\n\n"}• تصفية: عملية تحصيل وتسوية المبالغ المالية التي يدين
+                بها لك الموزّع
+              </Text>
+              <TouchableOpacity
+                onPress={() => setShowDescModal(false)}
+                style={styles.closeButton}
+              >
+                <Text style={styles.closeText}>إغلاق</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
       </Screen>
     </KeyboardAvoidingView>
   );
@@ -262,5 +299,40 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     backgroundColor: "transparent",
     opacity: 1,
+  },
+  infoContainer: {
+    alignItems: "flex-end",
+    marginTop: 20,
+  },
+  infoButton: {
+    padding: 8,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  descModalContent: {
+    width: "95%",
+    height: 200,
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
+  },
+  descText: {
+    fontSize: 13,
+    textAlign: "right",
+    marginBottom: 20,
+  },
+  closeButton: {
+    alignSelf: "flex-end",
+    padding: 10,
+    backgroundColor: "#007AFF",
+    borderRadius: 5,
+  },
+  closeText: {
+    color: "white",
+    fontSize: 16,
   },
 });

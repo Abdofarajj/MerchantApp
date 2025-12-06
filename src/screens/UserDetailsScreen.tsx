@@ -13,7 +13,7 @@ import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
 import { RootStackParamList } from "../navigation/AppNavigator";
-import { usedeleteUserDeviceMutation } from "../services";
+import { useDeleteUserDeviceMutation } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 
@@ -25,7 +25,7 @@ export default function UserDetailsScreen() {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   useHeader({ title: "تفاصيل مستخدم الجهاز", showBackButton: true });
 
-  const deleteUserDeviceMutation = usedeleteUserDeviceMutation();
+  const deleteUserDeviceMutation = useDeleteUserDeviceMutation();
   const { error } = useToast();
 
   const deleteConfirmationModalRef = useRef<ConfirmationModalRef>(null);
@@ -37,12 +37,12 @@ export default function UserDetailsScreen() {
           {
             label: "اسم الحساب",
             value: userInfo?.accountName ?? "-",
-            icon: "account-balance",
+            icon: "users",
           },
           {
             label: "اسم المستخدم",
             value: userInfo?.userName ?? "-",
-            icon: "person-outline",
+            icon: "person",
           },
         ],
       },
@@ -52,12 +52,12 @@ export default function UserDetailsScreen() {
           {
             label: "الهاتف",
             value: userInfo?.phoneNumber ?? "غير محدد",
-            icon: "call",
+            icon: "phone",
           },
           {
             label: "البريد الإلكتروني",
             value: userInfo?.email ?? "غير متوفر",
-            icon: "mail-outline",
+            icon: "email",
           },
         ],
       },

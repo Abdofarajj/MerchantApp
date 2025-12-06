@@ -1,6 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
-import { StyleSheet, useColorScheme, View } from "react-native";
-import Modal from "react-native-modal";
+import {
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 
 import { usePosDetails } from "../../hooks/usePosDetails";
 import { darkTheme, lightTheme } from "../../theme";
@@ -62,25 +67,28 @@ export const UserDeviceListModal = forwardRef<
 
   return (
     <Modal
-      isVisible={isVisible}
-      style={styles.modal}
-      onBackdropPress={() => setIsVisible(false)}
-      onBackButtonPress={() => setIsVisible(false)}
-      animationIn="fadeIn"
-      animationOut="fadeOut"
-      backdropOpacity={0.5}
+      visible={isVisible}
+      transparent
+      animationType="fade"
+      onRequestClose={() => setIsVisible(false)}
     >
-      <View style={styles.container}>
-        <POSDevicesSection
-          posData={posData}
-          posLoading={posLoading}
-          posError={posError}
-          onDevicePress={(device) => {
-            setID(device.id);
-            setIsVisible(false);
-          }}
-        />
-      </View>
+      <TouchableOpacity
+        style={styles.modal}
+        onPress={() => setIsVisible(false)}
+        activeOpacity={1}
+      >
+        <View style={styles.container} onStartShouldSetResponder={() => true}>
+          <POSDevicesSection
+            posData={posData}
+            posLoading={posLoading}
+            posError={posError}
+            onDevicePress={(device) => {
+              setID(device.id);
+              setIsVisible(false);
+            }}
+          />
+        </View>
+      </TouchableOpacity>
     </Modal>
   );
 });

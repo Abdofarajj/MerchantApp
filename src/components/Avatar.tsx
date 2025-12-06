@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { IconComponent } from "./Icon";
 
 interface AvatarProps {
   style?: any;
@@ -9,7 +9,7 @@ interface AvatarProps {
 export default function Avatar({ style }: AvatarProps) {
   return (
     <View style={[styles.avatar, style]}>
-      <Ionicons name="person" size={20} color="black" />
+      <IconComponent iconName="person" iconSize={25} iconColor="white" />
     </View>
   );
 }

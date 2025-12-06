@@ -64,9 +64,11 @@ export default function QuickActionButton({
     >
       <LinearGradient
         colors={
-          iconBg === theme.colors.white
-            ? [theme.colors.white, theme.colors.white]
-            : [theme.colors.black, theme.colors.background3]
+          iconBg === theme.colors.primary
+            ? [theme.colors.primary, theme.colors.secondary]
+            : iconBg === theme.colors.white
+              ? [theme.colors.white, theme.colors.white]
+              : [theme.colors.black, theme.colors.background3]
         }
         style={styles.iconContainer}
         start={{ x: 1, y: 0 }}

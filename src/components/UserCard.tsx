@@ -13,10 +13,7 @@ import {
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import Text from "../components/Text";
 import { RootStackParamList } from "../navigation/AppNavigator";
-import {
-  usedeleteUserDeviceMutation as useDeleteUserDeviceMutation,
-  UserDevice,
-} from "../services";
+import { useDeleteUserDeviceMutation, UserDevice } from "../services";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 import { IconComponent } from "./Icon";

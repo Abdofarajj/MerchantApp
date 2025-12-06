@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { accountsService } from "../services/Accounts/service";
+import { GetChargeOrdersResponse } from "../services/Dashboards/schema";
+import { dashboardsService } from "../services/Dashboards/service";
 import { createSignalRConnection } from "../services/SignalR";
 import { useAuthStore } from "../store/authStore";
 import { useSignalRStore } from "../store/signalR.store";
@@ -11,6 +13,8 @@ export interface DashboardData {
 
 export const useHomeDetails = () => {
   const [data, setData] = useState<DashboardData | null>(null);
+  const [chargeOrders, setChargeOrders] =
+    useState<GetChargeOrdersResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const signalRBalance = useSignalRStore((state) => state.balance);
@@ -44,6 +48,15 @@ export const useHomeDetails = () => {
           // Don't fail the whole dashboard load if SignalR fails
         }
 
+        // Fetch charge orders
+        try {
+          const chargeOrdersData = await dashboardsService.getChargeOrders();
+          setChargeOrders(chargeOrdersData);
+        } catch (chargeOrdersError) {
+          console.warn("Failed to fetch charge orders:", chargeOrdersError);
+          // Don't fail the whole dashboard load if charge orders fail
+        }
+
         // Wait for userInfo to be available
         if (userInfo) {
           const realData: DashboardData = {
@@ -66,5 +79,12 @@ export const useHomeDetails = () => {
     }
   }, [userInfo]);
 
-  return { data, isLoading, error, signalRBalance, signalRConnected };
+  return {
+    data,
+    isLoading,
+    error,
+    signalRBalance,
+    signalRConnected,
+    chargeOrders,
+  };
 };

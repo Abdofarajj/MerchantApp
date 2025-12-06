@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { StyleSheet, View } from "react-native";
-import { documentsService } from "../services/Documents/service";
+import { useReferenceDevice } from "../services/Documents/hook";
 import { useToast } from "../utils/toast";
 import Button from "./Button";
 import { ConfirmationModal, ConfirmationModalRef } from "./Modal";
@@ -19,18 +19,18 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
 }) => {
   const paid = totalDeposit - remainingBalance;
   const confirmationModalRef = useRef<ConfirmationModalRef>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
+  const referenceDeviceMutation = useReferenceDevice();
 
   const handleConfirm = async () => {
+    console.log("deviceId:", deviceId);
     if (!deviceId) {
       toast.error("Device ID is required");
       return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await documentsService.referenceDevice(deviceId);
+      const response = await referenceDeviceMutation.mutateAsync(deviceId);
 
       if (response.isError) {
         toast.error(response.messageName);
@@ -42,8 +42,6 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
     } catch (error) {
       console.error("Error calling referenceDevice:", error);
       toast.error("Failed to reference device");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -56,13 +54,13 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
       <Button
         onPress={() => confirmationModalRef.current?.present()}
         gradientColors={["#1a1a1a", "#424242ff"]}
-        iconName="undo"
+        iconName="return"
         iconSize={40}
         iconColor="white"
         height={40}
         width={100}
         style={{ alignSelf: "flex-end" }}
-        disabled={isLoading}
+        disabled={referenceDeviceMutation.isPending}
       />
       <ConfirmationModal
         ref={confirmationModalRef}

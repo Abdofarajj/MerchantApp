@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
@@ -10,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Button } from "react-native-paper";
+import { IconComponent } from "../components/Icon";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
 import { useHeader } from "../hooks/useHeader";
@@ -31,7 +31,7 @@ export default function ResetPasswordScreen() {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { error, success } = useToast();
 
-  useHeader({ title: "تغيير كلمة المرور", showBackButton: true });
+  useHeader({ title: "", showBackButton: true });
 
   const handleChangePassword = () => {
     if (!oldPassword || !newPassword || !confirmPassword) {
@@ -164,10 +164,10 @@ export default function ResetPasswordScreen() {
               style={styles.passwordIcon}
               onPress={() => setShowOldPassword(!showOldPassword)}
             >
-              <Ionicons
-                name={showOldPassword ? "eye" : "eye-off"}
-                size={24}
-                color={theme.colors.textSecondary}
+              <IconComponent
+                iconName={showOldPassword ? "eye" : "eyeOff"}
+                iconSize={24}
+                iconColor={theme.colors.textSecondary}
               />
             </TouchableOpacity>
           </View>
@@ -187,10 +187,10 @@ export default function ResetPasswordScreen() {
               style={styles.passwordIcon}
               onPress={() => setShowNewPassword(!showNewPassword)}
             >
-              <Ionicons
-                name={showNewPassword ? "eye" : "eye-off"}
-                size={24}
-                color={theme.colors.textSecondary}
+              <IconComponent
+                iconName={showNewPassword ? "eye" : "eyeOff"}
+                iconSize={24}
+                iconColor={theme.colors.textSecondary}
               />
             </TouchableOpacity>
           </View>
@@ -210,10 +210,10 @@ export default function ResetPasswordScreen() {
               style={styles.passwordIcon}
               onPress={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              <Ionicons
-                name={showConfirmPassword ? "eye" : "eye-off"}
-                size={24}
-                color={theme.colors.textSecondary}
+              <IconComponent
+                iconName={showConfirmPassword ? "eye" : "eyeOff"}
+                iconSize={24}
+                iconColor={theme.colors.textSecondary}
               />
             </TouchableOpacity>
           </View>

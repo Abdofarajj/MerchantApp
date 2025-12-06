@@ -1,6 +1,6 @@
-import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { IconComponent } from "./Icon";
 import Text from "./Text";
 
 interface PaginationProps {
@@ -28,10 +28,10 @@ export default function Pagination({
           style={styles.button}
           onPress={() => onPageChange(currentPage - 1)}
         >
-          <Ionicons
-            name="chevron-back"
-            size={20}
-            color={theme.colors.primary}
+          <IconComponent
+            iconName="back"
+            iconSize={20}
+            iconColor={theme.colors.primary}
           />
         </TouchableOpacity>
       )}
@@ -67,10 +67,11 @@ export default function Pagination({
           style={styles.button}
           onPress={() => onPageChange(currentPage + 1)}
         >
-          <Ionicons
-            name="chevron-forward"
-            size={20}
-            color={theme.colors.primary}
+          <IconComponent
+            iconName="back"
+            iconSize={20}
+            iconColor={theme.colors.primary}
+            iconContainerStyle={{ transform: [{ scaleX: -1 }] }}
           />
         </TouchableOpacity>
       )}

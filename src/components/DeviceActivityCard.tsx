@@ -28,7 +28,6 @@ export default function DeviceActivityCard({
           source={{ uri: item.logoCardType }}
           style={styles.logoImage}
           contentFit="contain"
-          placeholder={require("../assets/images/empty.png")}
         />
       </View>
 
@@ -83,11 +82,6 @@ const getStyles = (theme: any) =>
       padding: 15,
       marginVertical: 5,
       marginHorizontal: 16,
-      shadowColor: "#0000008e",
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.12,
-      shadowRadius: 10,
-      elevation: 3,
     },
     rightArea: {
       flex: 1,

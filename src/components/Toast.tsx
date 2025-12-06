@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useRef } from "react";
 import {
   Animated,
@@ -7,6 +6,7 @@ import {
   useColorScheme,
 } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
+import { IconComponent } from "./Icon";
 import Text from "./Text";
 
 export type ToastType = "error" | "success" | "info";
@@ -53,23 +53,23 @@ export default function Toast({
       case "error":
         return {
           background: theme.colors.error,
-          icon: "close-circle",
+          icon: "closeCircle",
         };
       case "success":
         return {
           background: theme.colors.success,
-          icon: "checkmark-circle",
+          icon: "checkCircle",
         };
       case "info":
       default:
         return {
           background: theme.colors.primary,
-          icon: "information-circle",
+          icon: "informationCircle",
         };
     }
   };
 
-  const { background } = getToastColors();
+  const { background, icon } = getToastColors();
 
   const styles = StyleSheet.create({
     container: {
@@ -106,12 +106,12 @@ export default function Toast({
 
   return (
     <Animated.View style={[styles.container, { opacity }]}>
-      {/* <Ionicons
-        name={icon as any}
-        size={24}
-        color="white"
-        style={styles.icon}
-      /> */}
+      <IconComponent
+        iconName={icon}
+        iconSize={24}
+        iconColor="white"
+        iconContainerStyle={styles.icon}
+      />
       <Text style={styles.message} numberOfLines={2}>
         {message}
       </Text>
@@ -120,7 +120,7 @@ export default function Toast({
         onPress={onDismiss}
         activeOpacity={0.7}
       >
-        <Ionicons name="close" size={20} color="white" />
+        <IconComponent iconName="x" iconSize={30} iconColor="white" />
       </TouchableOpacity>
     </Animated.View>
   );

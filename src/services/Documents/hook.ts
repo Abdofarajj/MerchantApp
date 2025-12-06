@@ -27,18 +27,26 @@ export const useGetByAccount = (data: GetByAccountRequest) => {
   });
 };
 
-export const useGetAllReceiptCharge = (data: PaginationRequest) => {
+export const useGetAllReceiptCharge = (
+  data: PaginationRequest,
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: ["documents", "receiptCharge", data],
     queryFn: () => documentsService.getAllReceiptCharge(data),
+    enabled: options?.enabled ?? true,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 
-export const useGetAllReceiptReCharge = (data: PaginationRequest) => {
+export const useGetAllReceiptReCharge = (
+  data: PaginationRequest,
+  options?: { enabled?: boolean }
+) => {
   return useQuery({
     queryKey: ["documents", "receiptReCharge", data],
     queryFn: () => documentsService.getAllReceiptReCharge(data),
+    enabled: options?.enabled ?? true,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

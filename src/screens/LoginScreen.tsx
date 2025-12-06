@@ -1,15 +1,19 @@
-import { Ionicons } from "@expo/vector-icons";
 import NetInfo from "@react-native-community/netinfo";
 import { AxiosError } from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  Animated,
+  Keyboard,
+  Platform,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
   useColorScheme,
 } from "react-native";
-import { Button, Checkbox } from "react-native-paper";
+import { Checkbox } from "react-native-paper";
+import Button from "../components/Button";
+import { IconComponent } from "../components/Icon";
 import Text from "../components/Text";
 import { useLogin } from "../services/auth/hook";
 import { useAuthStore } from "../store/authStore";
@@ -27,6 +31,34 @@ export default function LoginScreen() {
   const { error } = useToast();
 
   const loginMutation = useLogin();
+  const animatedPadding = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const showListener = Keyboard.addListener(
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
+      (e) => {
+        Animated.timing(animatedPadding, {
+          toValue: e.endCoordinates.height + (Platform.OS === "ios" ? 20 : 0),
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+    const hideListener = Keyboard.addListener(
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
+      () => {
+        Animated.timing(animatedPadding, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+    return () => {
+      showListener.remove();
+      hideListener.remove();
+    };
+  }, [animatedPadding]);
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -81,6 +113,9 @@ export default function LoginScreen() {
   };
 
   const styles = StyleSheet.create({
+    keyboardContainer: {
+      flex: 1,
+    },
     container: {
       flex: 1,
       justifyContent: "center",
@@ -136,59 +171,62 @@ export default function LoginScreen() {
   });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>تطبيق التاجر</Text>
-      <Text style={styles.subtitle}>تسجيل الدخول إلى حسابك</Text>
-
-      <TextInput
-        style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-        placeholder="اسم المستخدم"
-        value={username}
-        onChangeText={setUsername}
-        autoCapitalize="none"
-      />
-
-      <View style={{ position: "relative" }}>
-        <TextInput
-          style={[styles.passwordInput, { fontFamily: "AlexandriaRegular" }]}
-          placeholder="كلمة المرور"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={!showPassword}
-          autoCapitalize="none"
-        />
-        <TouchableOpacity
-          style={{ position: "absolute", left: 10, top: 12 }}
-          onPress={() => setShowPassword(!showPassword)}
-        >
-          <Ionicons
-            name={showPassword ? "eye" : "eye-off"}
-            size={24}
-            color={theme.colors.text}
-          />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.checkboxContainer}>
-        <Checkbox
-          status={isRemember ? "checked" : "unchecked"}
-          onPress={() => setIsRemember(!isRemember)}
-          color={theme.colors.primary}
-        />
-        <Text style={styles.checkboxLabel}>تذكرني</Text>
-      </View>
-
-      <Button
-        style={styles.button}
-        mode="contained"
-        buttonColor={theme.colors.primary}
-        onPress={handleLogin}
-        loading={loginMutation.isPending}
-        disabled={loginMutation.isPending}
-        labelStyle={{ fontFamily: "AlexandriaRegular" }}
+    <View style={styles.keyboardContainer}>
+      <Animated.View
+        style={[styles.container, { paddingBottom: animatedPadding }]}
       >
-        {loginMutation.isPending ? "جاري تسجيل الدخول" : "تسجيل الدخول"}
-      </Button>
+        <Text style={styles.title}>تطبيق التاجر</Text>
+        <Text style={styles.subtitle}>تسجيل الدخول إلى حسابك</Text>
+
+        <TextInput
+          style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+          placeholder="اسم المستخدم"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+          showSoftInputOnFocus={true}
+        />
+
+        <View style={{ position: "relative" }}>
+          <TextInput
+            style={[styles.passwordInput, { fontFamily: "AlexandriaRegular" }]}
+            placeholder="كلمة المرور"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry={!showPassword}
+            autoCapitalize="none"
+            showSoftInputOnFocus={true}
+          />
+          <TouchableOpacity
+            style={{ position: "absolute", left: 10, top: 12 }}
+            onPress={() => setShowPassword(!showPassword)}
+          >
+            <IconComponent
+              iconName={showPassword ? "eye" : "eyeOff"}
+              iconSize={24}
+              iconColor={theme.colors.text}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.checkboxContainer}>
+          <Checkbox
+            status={isRemember ? "checked" : "unchecked"}
+            onPress={() => setIsRemember(!isRemember)}
+            color={theme.colors.primary}
+          />
+          <Text style={styles.checkboxLabel}>تذكرني</Text>
+        </View>
+
+        <Button
+          style={styles.button}
+          gradientColors={[theme.colors.primary, theme.colors.secondary]}
+          text={loginMutation.isPending ? "جاري تسجيل الدخول" : "تسجيل الدخول"}
+          onPress={handleLogin}
+          loading={loginMutation.isPending}
+          disabled={loginMutation.isPending}
+        />
+      </Animated.View>
     </View>
   );
 }

@@ -15,6 +15,7 @@ import { useColorScheme } from "../hooks/use-color-scheme";
 import useDeviceActivation from "../hooks/useDeviceActivation";
 import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 import { useGetByAccount } from "../services/Documents";
+import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 
 const AnimatedSection = ({
@@ -64,6 +65,7 @@ export default function POSManagement() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { isEnabled, toggleDevice } = useDeviceActivation(device);
+  const { userInfo } = useAuthStore();
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: deviceActivities,
@@ -91,7 +93,7 @@ export default function POSManagement() {
   };
 
   const callPhoneNumber = () => {
-    const phoneNumber = deviceActivities?.items?.[0]?.phoneNumber;
+    const phoneNumber = userInfo?.supportPhone;
     if (phoneNumber) {
       const url = `tel:${phoneNumber}`;
       Linking.openURL(url);
@@ -222,10 +224,7 @@ export default function POSManagement() {
 
   return (
     <Screen useSafeArea={false}>
-      <Header
-        title={"إدارة الجهاز"}
-        backgroundColor={theme.colors.background}
-      />
+      <Header title={"إدارة الجهاز"} />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 40 }}
@@ -269,7 +268,7 @@ export default function POSManagement() {
                   <View style={styles.iconsContainer}>
                     <View style={styles.icon}>
                       <IconComponent
-                        iconName="location-on"
+                        iconName="pin"
                         iconSize={25}
                         iconColor="white"
                         onPress={openLocationInMaps}
@@ -287,6 +286,7 @@ export default function POSManagement() {
                   <SecurityDepositCard
                     totalDeposit={securityDeposit}
                     remainingBalance={remainingSecurityDeposit}
+                    deviceId={device?.id}
                   />
                 </View>
               </>

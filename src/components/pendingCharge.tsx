@@ -3,32 +3,24 @@ import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { IconComponent as Icon } from "./Icon";
 import Text from "./Text";
 
-interface ActivityCardProps {
+interface PendingChargeProps {
   item: any;
   onPress: () => void;
+  onClose: () => void;
   theme: any;
 }
 
-export default function ActivityCard({
+export default function PendingCharge({
   item,
   onPress,
+  onClose,
   theme,
-}: ActivityCardProps) {
-  const isRecharge = item.type === "recharge";
-  const isPay = item.type === "pay";
-  const isCollect = item.type === "collect";
-  const isPayOrCollect = isPay || isCollect;
+}: PendingChargeProps) {
+  const row1Text = `شحن رصيد الى ${item.appUserName}`;
 
-  let row1Text = "";
-  if (isRecharge) {
-    row1Text = `شحن رصيد الى ${item.appUserName}`;
-  } else if (isPayOrCollect) {
-    row1Text = `${item.financialItemName} الى ${item.toAccountName}`;
-  }
-
-  const statusText = item.isApproved ? "تم الموافقة" : "معلق";
-  const amountText = `${item.amount}${isCollect ? "+" : isPay ? "" : ""} د.ل`;
-  const styles = getStyles(theme, item.type);
+  const statusText = "معلق";
+  const amountText = `${item.amount} د.ل`;
+  const styles = getStyles(theme);
 
   return (
     <TouchableOpacity
@@ -36,7 +28,10 @@ export default function ActivityCard({
       onPress={onPress}
       activeOpacity={0.8}
     >
-      {/* Left side area - takes remaining space */}
+      <View style={styles.amountView}>
+        <Text style={styles.amountText}>{amountText}</Text>
+      </View>
+      {/* Left side area - takes full space */}
       <View style={styles.leftArea}>
         {/* Row 1: Single Text aligned to the right */}
         <View style={styles.row}>
@@ -52,49 +47,36 @@ export default function ActivityCard({
               {statusText}
             </Text>
             <Icon
-              iconName={item.isApproved ? "checkCircle" : "schedule"}
+              iconName="schedule"
               iconSize={25}
-              iconColor={item.isApproved ? "green" : "#ffc70dff"}
+              iconColor="#ffc70dff"
               iconContainerStyle={{ marginLeft: 8 }}
             />
           </View>
-          <Text style={styles.amountText}>{amountText}</Text>
-        </View>
-
-        {/* Row 3: ID */}
-        <View style={styles.row}>
-          <Text weight="light" style={styles.rightAlignedText}>
-            #{item.id}
-          </Text>
         </View>
       </View>
 
-      {/* Right side box - fixed width of 50 */}
+      {/* Right side close button */}
       <View style={styles.rightBox}>
-        {isCollect ? (
-          <View style={{ transform: [{ rotate: "180deg" }] }}>
-            <Icon iconName="arrow" iconSize={30} iconColor="#000000ff" />
-          </View>
-        ) : (
+        <TouchableOpacity onPress={onClose}>
           <Icon
-            iconName={isRecharge ? "plus" : isPay ? "arrow" : "help"}
-            iconSize={isRecharge ? 20 : 30}
-            iconColor="#000000ff"
+            iconName="closeCircle"
+            iconSize={20}
+            iconColor={theme.colors.text}
           />
-        )}
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
 }
 
-const getStyles = (theme: any, type: string) =>
+const getStyles = (theme: any) =>
   StyleSheet.create({
     container: {
       flexDirection: "row",
-      backgroundColor: theme.colors.surface,
-      padding: 15,
-      marginVertical: 5,
-      marginHorizontal: 8,
+      backgroundColor: "rgba(236, 210, 90, 0.2)",
+      padding: 10,
+      marginHorizontal: 5,
       borderRadius: 10,
     },
     leftArea: {
@@ -115,8 +97,13 @@ const getStyles = (theme: any, type: string) =>
     },
     amountText: {
       textAlign: "right",
-      fontSize: 17,
-      color: type === "collect" ? "green" : theme.colors.text,
+      fontSize: 20,
+      color: theme.colors.text,
+    },
+    amountView: {
+      width: 80,
+      justifyContent: "center",
+      alignItems: "center",
     },
     rightBox: {
       width: 40,

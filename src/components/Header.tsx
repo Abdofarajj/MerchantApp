@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import {
@@ -8,13 +7,14 @@ import {
   useColorScheme,
 } from "react-native";
 import { darkTheme, lightTheme } from "../theme";
+import { IconComponent } from "./Icon";
 import Text from "./Text";
 
 export interface HeaderProps {
   title: string;
   showBackButton?: boolean;
   onBackPress?: () => void;
-  rightIcon?: keyof typeof Ionicons.glyphMap;
+  rightIcon?: string;
   onRightPress?: () => void;
   backgroundColor?: string;
 }
@@ -46,7 +46,7 @@ export default function Header({
       justifyContent: "center",
       paddingHorizontal: theme.spacing[4],
       paddingVertical: theme.spacing[3],
-      backgroundColor: backgroundColor || "white",
+      backgroundColor: backgroundColor || theme.colors.background,
       minHeight: 100,
     },
     leftSection: {
@@ -93,7 +93,7 @@ export default function Header({
           onPress={handleBackPress}
           activeOpacity={0.7}
         >
-          <Ionicons name="chevron-back" size={24} />
+          <IconComponent iconName="back" iconSize={24} />
         </TouchableOpacity>
       )}
 
@@ -107,7 +107,7 @@ export default function Header({
           onPress={onRightPress}
           activeOpacity={0.7}
         >
-          <Ionicons name={rightIcon} size={24} />
+          <IconComponent iconName={rightIcon} iconSize={24} />
         </TouchableOpacity>
       )}
     </View>

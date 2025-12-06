@@ -4,19 +4,17 @@ import {
   useNavigation,
 } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Animated,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from "react-native";
 import Avatar from "../components/Avatar";
-import {
-  RechargeBottomSheet,
-  RechargeBottomSheetRef,
-} from "../components/BottomSheet";
+import PendingCharge from "../components/pendingCharge";
 import POSDevicesSection from "../components/POSDevicesSection";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
@@ -43,10 +41,12 @@ type QuickAction = {
 const AnimatedSection = ({
   visible,
   delay = 0,
+  extraTransform = [],
   children,
 }: {
   visible: boolean;
   delay?: number;
+  extraTransform?: any[];
   children: React.ReactNode;
 }) => {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -73,7 +73,7 @@ const AnimatedSection = ({
     <Animated.View
       style={{
         opacity,
-        transform: [{ translateY }],
+        transform: [{ translateY }, ...extraTransform],
       }}
     >
       {children}
@@ -83,7 +83,8 @@ const AnimatedSection = ({
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { data, error, signalRBalance, signalRConnected } = useHomeDetails();
+  const { data, error, signalRBalance, signalRConnected, chargeOrders } =
+    useHomeDetails();
   const {
     data: posData,
     isLoading: posLoading,
@@ -94,9 +95,18 @@ export default function HomeScreen() {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { userInfo } = useAuthStore();
   const toast = useToast();
+  const [refreshing, setRefreshing] = useState(false);
 
-  // Bottom sheet refs
-  const rechargeSheetRef = useRef<RechargeBottomSheetRef>(null);
+  const posTranslateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const targetY = chargeOrders && chargeOrders.length > 0 ? -70 : 0;
+    Animated.timing(posTranslateY, {
+      toValue: targetY,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  }, [chargeOrders, posTranslateY]);
 
   // Log userInfo when component mounts or userInfo changes
   useEffect(() => {
@@ -111,6 +121,12 @@ export default function HomeScreen() {
       refetchPosData();
     }, [refetchPosData])
   );
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refetchPosData();
+    setRefreshing(false);
+  };
 
   const handleQuickAction = useCallback(
     (action: string) => {
@@ -133,8 +149,8 @@ export default function HomeScreen() {
         id: "recharge",
         label: "شحن",
         icon: "plus",
-        iconColor: theme.colors.white,
-        iconBg: theme.colors.primary,
+        iconColor: theme.colors.black,
+        iconBg: theme.colors.white,
         navigateTo: "requests",
       },
       {
@@ -146,7 +162,7 @@ export default function HomeScreen() {
         navigateTo: "devices",
       },
     ],
-    [theme.colors.white, theme.colors.primary, theme.colors.black]
+    [theme.colors.white, theme.colors.black]
   );
 
   const accountSnapshot = useMemo<AccountSnapshot>(
@@ -254,6 +270,13 @@ export default function HomeScreen() {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 100 }}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[theme.colors.primary]}
+          />
+        }
       >
         <LinearGradient
           colors={[theme.colors.secondary, theme.colors.primary]}
@@ -336,8 +359,27 @@ export default function HomeScreen() {
           </AnimatedSection>
         </LinearGradient>
 
+        {/* Pending Charges */}
+        <AnimatedSection visible={true} delay={800}>
+          <View style={{ marginTop: 20 }}>
+            {chargeOrders?.map((item) => (
+              <PendingCharge
+                key={item.id}
+                item={item}
+                onPress={() => {}}
+                onClose={() => {}}
+                theme={theme}
+              />
+            ))}
+          </View>
+        </AnimatedSection>
+
         {/* POS Devices */}
-        <AnimatedSection visible={true} delay={1000}>
+        <AnimatedSection
+          visible={true}
+          delay={1000}
+          extraTransform={[{ translateY: posTranslateY }]}
+        >
           <POSDevicesSection
             posData={posData}
             posLoading={posLoading}
@@ -348,9 +390,6 @@ export default function HomeScreen() {
           />
         </AnimatedSection>
       </ScrollView>
-
-      {/* Recharge Bottom Sheet */}
-      <RechargeBottomSheet ref={rechargeSheetRef} />
     </Screen>
   );
 }

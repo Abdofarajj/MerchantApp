@@ -1,7 +1,9 @@
 import api from "../api";
 import {
+  GetChargeOrdersResponse,
   GetReceiptChargeByStateResponse,
   GetReceiptReChargeByStateResponse,
+  GetReferenceDeviceByStateResponse,
 } from "./schema";
 
 // TODO: INJECT API_URL FROM Config.API_URL
@@ -24,6 +26,22 @@ export const dashboardsService = {
     const response = await api.get(
       `/Dashboards/GetReceiptReChargeByState/${id}`
     ); // id = 1 returns approved , if id = 2 not approved | youre collecting money
+    return response.data;
+  },
+
+  // Get Charge Orders
+  getChargeOrders: async (): Promise<GetChargeOrdersResponse> => {
+    const response = await api.get("/Dashboards/GetChargeOrders");
+    return response.data;
+  },
+
+  // Get Reference Device by State
+  getReferenceDeviceByState: async (
+    id: number
+  ): Promise<GetReferenceDeviceByStateResponse> => {
+    const response = await api.get(
+      `/Dashboards/GetReferenceDeviceByState/${id}`
+    );
     return response.data;
   },
 };

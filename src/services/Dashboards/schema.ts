@@ -28,6 +28,31 @@ export const getReceiptReChargeByStateResponseSchema = z.array(
   receiptChargeItemSchema
 );
 
+// Charge Order Item Schema
+export const chargeOrderItemSchema = z.object({
+  id: z.number(),
+  insertDate: z.string().datetime(),
+  merchantId: z.number(),
+  merchantName: z.string(),
+  distrputerId: z.number(),
+  distrputerName: z.string(),
+  appUserId: z.string(),
+  appUserName: z.string(),
+  amount: z.number(),
+  isApproved: z.boolean(),
+  chargeDocumentId: z.number(),
+  chargeDate: z.string().datetime(),
+  updateToken: z.string().uuid(),
+});
+
+// Get Charge Orders Response Schema
+export const getChargeOrdersResponseSchema = z.array(chargeOrderItemSchema);
+
+// Get Reference Device by State Response Schema
+export const getReferenceDeviceByStateResponseSchema = z.array(
+  receiptChargeItemSchema
+);
+
 // Type exports
 export type ReceiptChargeItem = z.infer<typeof receiptChargeItemSchema>;
 export type GetReceiptChargeByStateResponse = z.infer<
@@ -35,4 +60,11 @@ export type GetReceiptChargeByStateResponse = z.infer<
 >;
 export type GetReceiptReChargeByStateResponse = z.infer<
   typeof getReceiptReChargeByStateResponseSchema
+>;
+export type ChargeOrderItem = z.infer<typeof chargeOrderItemSchema>;
+export type GetChargeOrdersResponse = z.infer<
+  typeof getChargeOrdersResponseSchema
+>;
+export type GetReferenceDeviceByStateResponse = z.infer<
+  typeof getReferenceDeviceByStateResponseSchema
 >;
