@@ -75,7 +75,7 @@ export const ConfirmationModal = forwardRef<
         <Text style={styles.desc}>{desc}</Text>
         <View style={styles.buttonsContainer}>
           <Button
-            backgroundColor={theme.colors.background2}
+            backgroundColor={theme.colors.background}
             text="إلغاء"
             textColor="black"
             onPress={() => {

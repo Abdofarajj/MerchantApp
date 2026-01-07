@@ -152,7 +152,7 @@ export default function CollectScreen() {
           </View>
 
           {/* Confirm Button */}
-          <View>
+          <View style={{ marginBottom: 20 }}>
             <Button
               onPress={async () => {
                 const numAmount = parseFloat(amount);

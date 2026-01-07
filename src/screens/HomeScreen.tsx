@@ -22,6 +22,7 @@ import Text from "../components/Text";
 import { useColorScheme } from "../hooks/use-color-scheme";
 import { useHomeDetails } from "../hooks/useHomeDetails";
 import { usePosDetails } from "../hooks/usePosDetails";
+import { useSignalR } from "../hooks/useSignalR";
 import type { RootStackParamList } from "../navigation/AppNavigator";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
@@ -83,8 +84,14 @@ const AnimatedSection = ({
 
 export default function HomeScreen() {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { data, error, signalRBalance, signalRConnected, chargeOrders } =
-    useHomeDetails();
+  const {
+    data,
+    error,
+    signalRBalance,
+    signalRConnected,
+    chargeOrders,
+    refetch,
+  } = useHomeDetails();
   const {
     data: posData,
     isLoading: posLoading,
@@ -95,18 +102,14 @@ export default function HomeScreen() {
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { userInfo } = useAuthStore();
   const toast = useToast();
+  const { start: startSignalR } = useSignalR();
   const [refreshing, setRefreshing] = useState(false);
+  const [dismissedItems, setDismissedItems] = useState<Set<number>>(new Set());
+  const lastFetchRef = useRef(Date.now());
 
-  const posTranslateY = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    const targetY = chargeOrders && chargeOrders.length > 0 ? -70 : 0;
-    Animated.timing(posTranslateY, {
-      toValue: targetY,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [chargeOrders, posTranslateY]);
+  const hasVisiblePending = chargeOrders
+    ? chargeOrders.filter((item) => !dismissedItems.has(item.id)).length > 0
+    : false;
 
   // Log userInfo when component mounts or userInfo changes
   useEffect(() => {
@@ -118,14 +121,23 @@ export default function HomeScreen() {
   // Fallback: refetch on screen focus (optional, but recommended)
   useFocusEffect(
     useCallback(() => {
-      refetchPosData();
-    }, [refetchPosData])
+      const now = Date.now();
+      if (now - lastFetchRef.current > 5000) {
+        lastFetchRef.current = now;
+        refetch();
+        refetchPosData();
+      }
+    }, [refetch, refetchPosData])
   );
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await refetchPosData();
+    await Promise.all([refetch(), refetchPosData(), startSignalR()]);
     setRefreshing(false);
+  };
+
+  const handleClose = (item: any) => {
+    setDismissedItems((prev) => new Set(prev).add(item.id));
   };
 
   const handleQuickAction = useCallback(
@@ -300,7 +312,7 @@ export default function HomeScreen() {
                     textAlign: "right",
                   }}
                 >
-                  مرحبا
+                  مرحبًا
                 </Text>
                 <Text
                   style={{
@@ -362,24 +374,24 @@ export default function HomeScreen() {
         {/* Pending Charges */}
         <AnimatedSection visible={true} delay={800}>
           <View style={{ marginTop: 20 }}>
-            {chargeOrders?.map((item) => (
-              <PendingCharge
-                key={item.id}
-                item={item}
-                onPress={() => {}}
-                onClose={() => {}}
-                theme={theme}
-              />
-            ))}
+            {chargeOrders
+              ?.filter((item) => !dismissedItems.has(item.id))
+              .map((item) => (
+                <PendingCharge
+                  key={item.id}
+                  item={item}
+                  onPress={() => {
+                    (navigation as any).navigate("Activity");
+                  }}
+                  onClose={() => handleClose(item)}
+                  theme={theme}
+                />
+              ))}
           </View>
         </AnimatedSection>
 
         {/* POS Devices */}
-        <AnimatedSection
-          visible={true}
-          delay={1000}
-          extraTransform={[{ translateY: posTranslateY }]}
-        >
+        <AnimatedSection visible={true} delay={1000}>
           <POSDevicesSection
             posData={posData}
             posLoading={posLoading}
@@ -387,6 +399,7 @@ export default function HomeScreen() {
             onDevicePress={(device) =>
               (navigation as any).navigate("POSManagement", { device })
             }
+            hasPending={hasVisiblePending}
           />
         </AnimatedSection>
       </ScrollView>

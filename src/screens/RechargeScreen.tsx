@@ -102,7 +102,7 @@ export default function RechargeScreen() {
             </View>
           </View>
 
-          <View>
+          <View style={{ marginBottom: 20 }}>
             <Button
               onPress={async () => {
                 const numAmount = parseFloat(amount);

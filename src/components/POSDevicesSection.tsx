@@ -9,6 +9,7 @@ interface POSDevicesSectionProps {
   posLoading: boolean;
   posError: any;
   onDevicePress?: (device: any) => void;
+  hasPending?: boolean;
 }
 
 export default function POSDevicesSection({
@@ -16,6 +17,7 @@ export default function POSDevicesSection({
   posLoading,
   posError,
   onDevicePress,
+  hasPending = false,
 }: POSDevicesSectionProps) {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;

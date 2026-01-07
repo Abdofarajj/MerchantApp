@@ -1,5 +1,9 @@
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
+import React, { useCallback, useEffect, useRef } from "react";
 import { ScrollView, StyleSheet, useColorScheme, View } from "react-native";
 import QuickActionButton from "../components/QuickActionButton";
 import Screen from "../components/Screen";
@@ -24,6 +28,19 @@ export default function UsersScreen() {
       refetch();
     }
   }, [isStale, refetch]);
+
+  const lastFetchRef = useRef(Date.now());
+
+  useFocusEffect(
+    useCallback(() => {
+      const now = Date.now();
+      if (now - lastFetchRef.current > 5000) {
+        lastFetchRef.current = now;
+        refetch();
+      }
+    }, [refetch])
+  );
+
   console.log(
     "User Device Data:",
     data,

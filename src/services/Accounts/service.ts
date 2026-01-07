@@ -24,6 +24,7 @@ export const accountsService = {
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     // TODO: ADD ENDPOINT HERE — e.g. '/Accounts/Login'
     const response = await api.post("/Accounts/Login", data);
+    console.log("Accounts/Login response:", response);
     return response.data;
   },
 

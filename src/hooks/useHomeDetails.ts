@@ -34,50 +34,56 @@ export const useHomeDetails = () => {
     }
   }, [token, userInfo, setUserInfo]);
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
+  const fetchDashboard = async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      // Start SignalR connection
       try {
-        setIsLoading(true);
-        setError(null);
-
-        // Start SignalR connection
-        try {
-          await createSignalRConnection();
-        } catch (signalRError) {
-          console.warn("Failed to start SignalR connection:", signalRError);
-          // Don't fail the whole dashboard load if SignalR fails
-        }
-
-        // Fetch charge orders
-        try {
-          const chargeOrdersData = await dashboardsService.getChargeOrders();
-          setChargeOrders(chargeOrdersData);
-        } catch (chargeOrdersError) {
-          console.warn("Failed to fetch charge orders:", chargeOrdersError);
-          // Don't fail the whole dashboard load if charge orders fail
-        }
-
-        // Wait for userInfo to be available
-        if (userInfo) {
-          const realData: DashboardData = {
-            balance: userInfo.cardBalance,
-            currency: "د.ل",
-          };
-          setData(realData);
-        } else {
-          setError("معلومات المستخدم غير متوفرة");
-        }
-      } catch {
-        setError("فشل في جلب البيانات");
-      } finally {
-        setIsLoading(false);
+        await createSignalRConnection();
+      } catch (signalRError) {
+        console.warn("Failed to start SignalR connection:", signalRError);
+        // Don't fail the whole dashboard load if SignalR fails
       }
-    };
 
+      // Fetch charge orders
+      try {
+        const chargeOrdersData = await dashboardsService.getChargeOrders();
+        setChargeOrders(chargeOrdersData);
+      } catch (chargeOrdersError) {
+        console.warn("Failed to fetch charge orders:", chargeOrdersError);
+        // Don't fail the whole dashboard load if charge orders fail
+      }
+
+      // Wait for userInfo to be available
+      if (userInfo) {
+        const realData: DashboardData = {
+          balance: userInfo.cardBalance,
+          currency: "د.ل",
+        };
+        setData(realData);
+      } else {
+        setError("معلومات المستخدم غير متوفرة");
+      }
+    } catch {
+      setError("فشل في جلب البيانات");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (userInfo) {
       fetchDashboard();
     }
   }, [userInfo]);
+
+  const refetch = async () => {
+    if (userInfo) {
+      await fetchDashboard();
+    }
+  };
 
   return {
     data,
@@ -86,5 +92,6 @@ export const useHomeDetails = () => {
     signalRBalance,
     signalRConnected,
     chargeOrders,
+    refetch,
   };
 };

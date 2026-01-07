@@ -31,7 +31,7 @@ export default function CustomTabBar({
   const containerBackground =
     colorScheme === "dark"
       ? theme.colors.surfaceVariant
-      : "rgba(244, 244, 246, 0.95)";
+      : "rgba(255, 255, 255)";
 
   const styles = StyleSheet.create({
     wrapper: {

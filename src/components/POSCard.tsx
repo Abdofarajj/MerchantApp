@@ -94,7 +94,8 @@ export default function POSCard({ device, onPress }: POSCardProps) {
 const getStyles = (theme: any) =>
   StyleSheet.create({
     container: {
-      width: "50%",
+      flex: 1,
+      maxWidth: "50%",
     },
     card: {
       backgroundColor: theme.colors.posBackground,
@@ -104,7 +105,7 @@ const getStyles = (theme: any) =>
       // borderWidth: 1,
       borderColor: theme.colors.outline,
       padding: 8,
-      minHeight: 120, // Increased to accommodate proper spacing
+      height: 120, // Fixed height to prevent expansion
     },
     topHalf: {
       flexDirection: "row",

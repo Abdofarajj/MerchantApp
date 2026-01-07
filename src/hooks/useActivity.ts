@@ -15,6 +15,8 @@ export const useActivity = (activeTab: ActivityTab) => {
   const [rechargeItems, setRechargeItems] = useState<any[]>([]);
   const [payItems, setPayItems] = useState<any[]>([]);
   const [collectItems, setCollectItems] = useState<any[]>([]);
+
+  const [displayPage, setDisplayPage] = useState(1);
   // API hooks - only enabled based on activeTab
   const needsRecharge = activeTab === "الكل" || activeTab === "شحن";
   const needsPay = activeTab === "الكل" || activeTab === "تسديد";
@@ -65,6 +67,7 @@ export const useActivity = (activeTab: ActivityTab) => {
     }
   );
 
+
   // Accumulate items
   useEffect(() => {
     if (rechargeData?.items) {
@@ -73,7 +76,7 @@ export const useActivity = (activeTab: ActivityTab) => {
         const newItems = rechargeData.items.filter(
           (item) => !existingIds.has(item.id)
         );
-        return [...prev, ...newItems];
+        return [...newItems, ...prev];
       });
     }
   }, [rechargeData]);
@@ -85,7 +88,7 @@ export const useActivity = (activeTab: ActivityTab) => {
         const newItems = payData.items.filter(
           (item) => !existingIds.has(item.id)
         );
-        return [...prev, ...newItems];
+        return [...newItems, ...prev];
       });
     }
   }, [payData]);
@@ -97,7 +100,7 @@ export const useActivity = (activeTab: ActivityTab) => {
         const newItems = collectData.items.filter(
           (item) => !existingIds.has(item.id)
         );
-        return [...prev, ...newItems];
+        return [...newItems, ...prev];
       });
     }
   }, [collectData]);
@@ -140,8 +143,20 @@ export const useActivity = (activeTab: ActivityTab) => {
         break;
     }
 
+    // Sort items by date descending
+    items.sort((a, b) => {
+      const dateA = new Date(a.chargeDate || a.insertDate);
+      const dateB = new Date(b.chargeDate || b.insertDate);
+      return dateB.getTime() - dateA.getTime();
+    });
+
+    // Paginate: slice to 5 items per page
+    const start = (displayPage - 1) * 5;
+    const end = start + 5;
+    const pageItems = items.slice(start, end);
+
     // Group by date
-    const grouped = items.reduce(
+    const grouped = pageItems.reduce(
       (acc, item) => {
         const dateObj = item.chargeDate
           ? new Date(item.chargeDate)
@@ -171,7 +186,7 @@ export const useActivity = (activeTab: ActivityTab) => {
     });
 
     return sections;
-  }, [activeTab, rechargeItems, payItems, collectItems]);
+  }, [activeTab, rechargeItems, payItems, collectItems, displayPage]);
 
   const isLoading = rechargeLoading || payLoading || collectLoading;
   const error = rechargeError || payError || collectError;
@@ -194,11 +209,74 @@ export const useActivity = (activeTab: ActivityTab) => {
     }
   };
 
+  const reset = () => {
+    setRechargePage(1);
+    setPayPage(1);
+    setCollectPage(1);
+    setRechargeItems([]);
+    setPayItems([]);
+    setCollectItems([]);
+  };
+
+  const resetTab = (tab: ActivityTab) => {
+    if (tab === "شحن" || tab === "الكل") {
+      setRechargePage(1);
+      setRechargeItems([]);
+    }
+    if (tab === "تسديد" || tab === "الكل") {
+      setPayPage(1);
+      setPayItems([]);
+    }
+    if (tab === "تصفية" || tab === "الكل") {
+      setCollectPage(1);
+      setCollectItems([]);
+    }
+    setDisplayPage(1);
+  };
+
+  // Calculate pagination props
+  const getTotalItems = () => {
+    switch (activeTab) {
+      case "الكل":
+        return rechargeItems.length + payItems.length + collectItems.length;
+      case "شحن":
+        return rechargeItems.length;
+      case "تسديد":
+        return payItems.length;
+      case "تصفية":
+        return collectItems.length;
+      default:
+        return 0;
+    }
+  };
+
+  const totalItems = getTotalItems();
+  const currentPage = displayPage;
+  const hasNextPage = totalItems > displayPage * 5;
+  const hasPreviousPage = displayPage > 1;
+
+  const onPageChange = (page: number) => {
+    setDisplayPage(page);
+    // If trying to go to next page and no more items loaded, load more
+    if (page > displayPage && !hasNextPage) {
+      loadMore();
+    }
+  };
+
   return {
     combinedData,
     isLoading,
     error,
     refetchAll,
+    refetchRecharge,
+    refetchPay,
+    refetchCollect,
     loadMore,
+    reset,
+    resetTab,
+    currentPage,
+    hasNextPage,
+    hasPreviousPage,
+    onPageChange,
   };
 };

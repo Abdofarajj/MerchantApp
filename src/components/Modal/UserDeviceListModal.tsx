@@ -43,7 +43,10 @@ export const UserDeviceListModal = forwardRef<
   }));
 
   const styles = StyleSheet.create({
-    modal: {},
+    modal: {
+      flex: 1,
+      justifyContent: "center",
+    },
     container: {
       alignSelf: "center",
       backgroundColor: theme.colors.surface,

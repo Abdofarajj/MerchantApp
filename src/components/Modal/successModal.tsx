@@ -61,12 +61,15 @@ export const SuccessModal = forwardRef<SuccessModalRef, SuccessModalProps>(
     const styles = StyleSheet.create({
       modal: {
         margin: 0,
-        justifyContent: "center",
-        alignItems: "center",
       },
       backdrop: {
-        ...StyleSheet.absoluteFillObject,
+        flex: 1,
         backgroundColor: "rgba(0, 0, 0, 0.5)",
+      },
+      modalContent: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
       },
       container: {
         backgroundColor: theme.colors.surface,
@@ -124,35 +127,45 @@ export const SuccessModal = forwardRef<SuccessModalRef, SuccessModalProps>(
           onPress={() => setIsVisible(false)}
           activeOpacity={1}
         >
-          <View style={styles.container} onStartShouldSetResponder={() => true}>
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={() => setIsVisible(false)}
-              activeOpacity={0.7}
+          <View style={styles.modalContent}>
+            <View
+              style={styles.container}
+              onStartShouldSetResponder={() => true}
             >
-              <Text style={{ fontSize: 20, color: "rgba(128, 128, 128, 0.7)" }}>
-                ×
-              </Text>
-            </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setIsVisible(false)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={{ fontSize: 30, color: "rgba(128, 128, 128, 0.7)" }}
+                >
+                  ×
+                </Text>
+              </TouchableOpacity>
 
-            {loading && (
-              <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color={theme.colors.primary} />
-              </View>
-            )}
-
-            {success && (
-              <View style={styles.successContainer}>
-                <View style={styles.successIconContainer}>
-                  <IconComponent
-                    iconName="checkCircle"
-                    iconSize={48}
-                    iconColor="#4CAF50"
+              {loading && (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator
+                    size="large"
+                    color={theme.colors.primary}
                   />
                 </View>
-                <Text style={styles.message}>{message}</Text>
-              </View>
-            )}
+              )}
+
+              {success && (
+                <View style={styles.successContainer}>
+                  <View style={styles.successIconContainer}>
+                    <IconComponent
+                      iconName="checkCircle"
+                      iconSize={48}
+                      iconColor="#4CAF50"
+                    />
+                  </View>
+                  <Text style={styles.message}>{message}</Text>
+                </View>
+              )}
+            </View>
           </View>
         </TouchableOpacity>
       </Modal>

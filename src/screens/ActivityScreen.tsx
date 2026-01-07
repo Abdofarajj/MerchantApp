@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
@@ -15,7 +16,7 @@ import ActivityCard from "../components/ActivityCard";
 import { ActivityDetailsModal } from "../components/Modal";
 import Screen from "../components/Screen";
 import Text from "../components/Text";
-import { useActivity } from "../hooks/useActivity";
+import { ActivityItem, useActivityFeed } from "../hooks/useActivityFeed";
 import { useHeader } from "../hooks/useHeader";
 import { useDeleteChargeOrderMutation } from "../services/ChargeOrders/hook";
 import { darkTheme, lightTheme } from "../theme";
@@ -28,15 +29,15 @@ const tabWidth = (tabBarWidth - 12) / 4; // 4 tabs with 3 gaps
 export default function ActivityScreen() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
+  const queryClient = useQueryClient();
   useHeader({
-    title: "الحركات",
+    title: "الطلبات",
     showBackButton: false,
     backgroundColor: theme.colors.background,
   });
   const [activeTab, setActiveTab] = useState<
     "الكل" | "تصفية" | "تسديد" | "شحن"
   >("شحن");
-  const [refreshing, setRefreshing] = useState(false);
 
   const toast = useToast();
   const [modalVisible, setModalVisible] = useState(false);
@@ -44,10 +45,41 @@ export default function ActivityScreen() {
 
   // Animation for tab indicator
   const tabIndicatorPosition = useRef(new Animated.Value(0)).current;
+  const lastFetchRef = useRef(Date.now());
 
   // Activity hook
-  const { combinedData, isLoading, error, refetchAll, loadMore } =
-    useActivity(activeTab);
+  const {
+    data,
+    isLoading,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useActivityFeed(activeTab);
+
+  // Compute sections from data
+  const sections = useMemo(() => {
+    const items = (data?.pages as ActivityItem[]) || [];
+    const grouped = items.reduce(
+      (acc, item) => {
+        const dateObj = new Date(item.date);
+        const dateKey = dateObj.toISOString().split("T")[0];
+        if (!acc[dateKey]) {
+          acc[dateKey] = [];
+        }
+        acc[dateKey].push(item);
+        return acc;
+      },
+      {} as Record<string, ActivityItem[]>
+    );
+    const sortedGroups = Object.keys(grouped).sort((a, b) =>
+      b.localeCompare(a)
+    );
+    return sortedGroups.map((dateKey) => ({
+      title: dateKey,
+      data: grouped[dateKey],
+    }));
+  }, [data?.pages]);
 
   // Update tab indicator position when activeTab changes
   useEffect(() => {
@@ -61,18 +93,23 @@ export default function ActivityScreen() {
 
   const styles = activityScreenStyles(theme);
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    await refetchAll();
-    setRefreshing(false);
-  };
-
-  const handleLoadMore = () => {
-    loadMore();
-  };
-
   const handleTabPress = (tab: "الكل" | "تصفية" | "تسديد" | "شحن") => {
     if (tab !== activeTab) {
+      // Invalidate queries for the new tab to fetch latest data
+      if (tab === "الكل" || tab === "شحن") {
+        queryClient.invalidateQueries({
+          queryKey: ["activityFeed", "recharge"],
+        });
+      }
+      if (tab === "الكل" || tab === "تسديد" || tab === "تصفية") {
+        queryClient.invalidateQueries({ queryKey: ["activityFeed", "pay"] });
+        queryClient.invalidateQueries({
+          queryKey: ["activityFeed", "collect"],
+        });
+      }
+      if (tab === "الكل") {
+        queryClient.invalidateQueries({ queryKey: ["activityFeed", "all"] });
+      }
       setActiveTab(tab);
       const tabIndex = ["الكل", "تصفية", "تسديد", "شحن"].indexOf(tab);
       const targetPosition = tabIndex * tabWidth;
@@ -85,8 +122,8 @@ export default function ActivityScreen() {
     }
   };
 
-  const handleItemPress = (item: any) => {
-    setSelectedItem(item);
+  const handleItemPress = (item: ActivityItem) => {
+    setSelectedItem(item.raw);
     setModalVisible(true);
   };
 
@@ -96,7 +133,17 @@ export default function ActivityScreen() {
       {
         onSuccess: (response) => {
           toast.success(response.messageName);
-          refetchAll();
+          // Refresh the list after deletion
+          if (activeTab === "الكل" || activeTab === "شحن") {
+            queryClient.invalidateQueries({
+              queryKey: ["activityFeed", "recharge"],
+            });
+          }
+          if (activeTab === "الكل") {
+            queryClient.invalidateQueries({
+              queryKey: ["activityFeed", "all"],
+            });
+          }
           setModalVisible(false);
         },
         onError: (error: any) => {
@@ -116,13 +163,6 @@ export default function ActivityScreen() {
           keyExtractor={() => "error"}
           renderItem={() => null}
           contentContainerStyle={{ flex: 1, justifyContent: "center" }}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={handleRefresh}
-              colors={[theme.colors.primary]}
-            />
-          }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>
@@ -145,7 +185,6 @@ export default function ActivityScreen() {
             { transform: [{ translateX: tabIndicatorPosition }] },
           ]}
         />
-
         {["الكل", "تصفية", "تسديد", "شحن"].map((tab, index) => (
           <TouchableOpacity
             key={tab}
@@ -169,15 +208,32 @@ export default function ActivityScreen() {
 
       <SectionList
         style={styles.list}
-        sections={combinedData}
+        sections={sections}
         keyExtractor={(item) => `${item.type}-${item.id}`}
-        renderItem={({ item }) => (
-          <ActivityCard
-            item={item}
-            onPress={() => handleItemPress(item)}
-            theme={theme}
-          />
-        )}
+        renderItem={({ item }) => {
+          // Map ActivityItem back to old format for ActivityCard
+          let cardItem: any = {
+            id: item.raw.id,
+            type: item.type.toLowerCase(),
+            isApproved: item.isApproved,
+            amount: item.amount,
+          };
+
+          if (item.type === "RECHARGE") {
+            cardItem.appUserName = item.merchantName;
+          } else if (item.type === "PAY" || item.type === "COLLECT") {
+            cardItem.financialItemName = item.financialItemName;
+            cardItem.toAccountName = item.toAccountName;
+          }
+
+          return (
+            <ActivityCard
+              item={cardItem}
+              onPress={() => handleItemPress(item)}
+              theme={theme}
+            />
+          );
+        }}
         renderSectionHeader={({ section: { title } }) => {
           const dateObj = new Date(title);
           const formattedDate = `${dateObj.getFullYear()}/${String(dateObj.getMonth() + 1).padStart(2, "0")}/${String(dateObj.getDate()).padStart(2, "0")}`;
@@ -190,12 +246,40 @@ export default function ActivityScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
+            refreshing={false}
+            onRefresh={() => {
+              // Refresh the current tab
+              if (activeTab === "الكل" || activeTab === "شحن") {
+                queryClient.invalidateQueries({
+                  queryKey: ["activityFeed", "recharge"],
+                });
+              }
+              if (
+                activeTab === "الكل" ||
+                activeTab === "تسديد" ||
+                activeTab === "تصفية"
+              ) {
+                queryClient.invalidateQueries({
+                  queryKey: ["activityFeed", "pay"],
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ["activityFeed", "collect"],
+                });
+              }
+              if (activeTab === "الكل") {
+                queryClient.invalidateQueries({
+                  queryKey: ["activityFeed", "all"],
+                });
+              }
+            }}
             colors={[theme.colors.primary]}
           />
         }
-        onEndReached={handleLoadMore}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        }}
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
           isLoading ? (
@@ -209,8 +293,11 @@ export default function ActivityScreen() {
           )
         }
         ListFooterComponent={
-          isLoading && combinedData.length ? (
-            <Text style={styles.loadingText}>جاري التحميل...</Text>
+          isFetchingNextPage ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={theme.colors.primary} />
+              <Text style={styles.loadingText}>جاري التحميل...</Text>
+            </View>
           ) : null
         }
       />
@@ -292,5 +379,9 @@ const activityScreenStyles = (theme: any) =>
       fontSize: 16,
       color: theme.colors.text,
       fontWeight: "bold",
+    },
+    loadingContainer: {
+      padding: theme.spacing[4],
+      alignItems: "center",
     },
   });

@@ -2,6 +2,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { AxiosError } from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import {
+  ActivityIndicator,
   Animated,
   Keyboard,
   Platform,
@@ -105,7 +106,16 @@ export default function LoginScreen() {
           ) {
             error("لا يوجد اتصال بالإنترنت");
           } else {
-            error("فشل تسجيل الدخول");
+            const axiosError = loginError as AxiosError;
+            const data = axiosError.response?.data;
+            const errorMessage =
+              typeof data === "string"
+                ? data
+                : (data as any)?.messageName || (data as any)?.message;
+            const statusCode = axiosError.response?.status;
+            if (errorMessage) {
+              error(`${errorMessage}`);
+            }
           }
         },
       }
@@ -172,61 +182,80 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.keyboardContainer}>
-      <Animated.View
-        style={[styles.container, { paddingBottom: animatedPadding }]}
-      >
-        <Text style={styles.title}>تطبيق التاجر</Text>
-        <Text style={styles.subtitle}>تسجيل الدخول إلى حسابك</Text>
+      {loginMutation.isPending ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: theme.colors.background,
+          }}
+        >
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+          <Text style={{ marginTop: 10, color: theme.colors.text }}>
+            جاري تسجيل الدخول
+          </Text>
+        </View>
+      ) : (
+        <Animated.View
+          style={[styles.container, { paddingBottom: animatedPadding }]}
+        >
+          <Text style={styles.title}>تطبيق التاجر</Text>
+          <Text style={styles.subtitle}>تسجيل الدخول إلى حسابك</Text>
 
-        <TextInput
-          style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
-          placeholder="اسم المستخدم"
-          value={username}
-          onChangeText={setUsername}
-          autoCapitalize="none"
-          showSoftInputOnFocus={true}
-        />
-
-        <View style={{ position: "relative" }}>
           <TextInput
-            style={[styles.passwordInput, { fontFamily: "AlexandriaRegular" }]}
-            placeholder="كلمة المرور"
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry={!showPassword}
+            style={[styles.input, { fontFamily: "AlexandriaRegular" }]}
+            placeholder="اسم المستخدم"
+            value={username}
+            onChangeText={setUsername}
             autoCapitalize="none"
             showSoftInputOnFocus={true}
           />
-          <TouchableOpacity
-            style={{ position: "absolute", left: 10, top: 12 }}
-            onPress={() => setShowPassword(!showPassword)}
-          >
-            <IconComponent
-              iconName={showPassword ? "eye" : "eyeOff"}
-              iconSize={24}
-              iconColor={theme.colors.text}
+
+          <View style={{ position: "relative" }}>
+            <TextInput
+              style={[
+                styles.passwordInput,
+                { fontFamily: "AlexandriaRegular" },
+              ]}
+              placeholder="كلمة المرور"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={!showPassword}
+              autoCapitalize="none"
+              showSoftInputOnFocus={true}
             />
-          </TouchableOpacity>
-        </View>
+            <TouchableOpacity
+              style={{ position: "absolute", left: 10, top: 12 }}
+              onPress={() => setShowPassword(!showPassword)}
+            >
+              <IconComponent
+                iconName={showPassword ? "eye" : "eyeOff"}
+                iconSize={24}
+                iconColor={theme.colors.text}
+              />
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.checkboxContainer}>
-          <Checkbox
-            status={isRemember ? "checked" : "unchecked"}
-            onPress={() => setIsRemember(!isRemember)}
-            color={theme.colors.primary}
+          <View style={styles.checkboxContainer}>
+            <Checkbox
+              status={isRemember ? "checked" : "unchecked"}
+              onPress={() => setIsRemember(!isRemember)}
+              color={theme.colors.primary}
+            />
+            <Text style={styles.checkboxLabel}>تذكرني</Text>
+          </View>
+
+          <Button
+            style={styles.button}
+            gradientColors={[theme.colors.primary, theme.colors.secondary]}
+            text="تسجيل الدخول"
+            onPress={handleLogin}
+            loading={false}
+            disabled={false}
           />
-          <Text style={styles.checkboxLabel}>تذكرني</Text>
-        </View>
-
-        <Button
-          style={styles.button}
-          gradientColors={[theme.colors.primary, theme.colors.secondary]}
-          text={loginMutation.isPending ? "جاري تسجيل الدخول" : "تسجيل الدخول"}
-          onPress={handleLogin}
-          loading={loginMutation.isPending}
-          disabled={loginMutation.isPending}
-        />
-      </Animated.View>
+        </Animated.View>
+      )}
     </View>
   );
 }

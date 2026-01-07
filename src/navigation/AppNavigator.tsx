@@ -4,6 +4,7 @@ import {
 } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 import CustomTabBar from "../components/CustomTabBar";
 import AccountScreen from "../screens/AccountScreen";
 import ActivityScreen from "../screens/ActivityScreen";
@@ -49,7 +50,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const tabs = [
   {
     id: "Activity",
-    label: "الحركات",
+    label: "الطلبات",
     iconName: "transfer" as const,
   },
   { id: "Users", label: "المستخدمون", iconName: "users" as const },
@@ -88,16 +89,18 @@ function Tabs() {
 // Root Stack Navigator
 export default function AppNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Tabs" component={Tabs} />
-      <Stack.Screen name="Recharge" component={RechargeScreen} />
-      <Stack.Screen name="Collect" component={CollectScreen} />
-      <Stack.Screen name="Account" component={AccountScreen} />
-      <Stack.Screen name="POSManagement" component={POSManagement} />
-      <Stack.Screen name="AddUser" component={AddUserScreen} />
-      <Stack.Screen name="EditUser" component={EditUserScreen} />
-      <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
-      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-    </Stack.Navigator>
+    <SafeAreaView edges={["bottom"]} style={{ flex: 1 }}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Tabs" component={Tabs} />
+        <Stack.Screen name="Recharge" component={RechargeScreen} />
+        <Stack.Screen name="Collect" component={CollectScreen} />
+        <Stack.Screen name="Account" component={AccountScreen} />
+        <Stack.Screen name="POSManagement" component={POSManagement} />
+        <Stack.Screen name="AddUser" component={AddUserScreen} />
+        <Stack.Screen name="EditUser" component={EditUserScreen} />
+        <Stack.Screen name="UserDetails" component={UserDetailsScreen} />
+        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
+      </Stack.Navigator>
+    </SafeAreaView>
   );
 }
