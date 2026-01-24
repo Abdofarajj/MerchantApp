@@ -112,7 +112,6 @@ export default function LoginScreen() {
               typeof data === "string"
                 ? data
                 : (data as any)?.messageName || (data as any)?.message;
-            const statusCode = axiosError.response?.status;
             if (errorMessage) {
               error(`${errorMessage}`);
             }

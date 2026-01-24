@@ -161,7 +161,10 @@ export default function AccountScreen() {
               weight="bold"
               style={[styles.statValue, { color: theme.colors.warning }]}
             >
-              {reserved.toLocaleString()} {currency}
+              {reserved < 0
+                ? `${Math.abs(reserved).toLocaleString()}-`
+                : reserved.toLocaleString()}{" "}
+              {currency}
             </Text>
           </View>
         </View>

@@ -17,6 +17,7 @@ import { DeviceMerchant } from "../services/DeviceMerchants/schema";
 import { useGetByAccount } from "../services/Documents";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
+import { useToast } from "../utils/toast";
 
 const AnimatedSection = ({
   visible,
@@ -62,10 +63,12 @@ const AnimatedSection = ({
 export default function POSManagement() {
   const route = useRoute();
   const { device } = route.params as { device: DeviceMerchant };
+  console.log("Device object:", device);
   const colorScheme = useColorScheme();
   const theme = colorScheme === "dark" ? darkTheme : lightTheme;
   const { isEnabled, toggleDevice } = useDeviceActivation(device);
   const { userInfo } = useAuthStore();
+  const { error } = useToast();
   const [currentPage, setCurrentPage] = useState(1);
   const {
     data: deviceActivities,
@@ -86,9 +89,16 @@ export default function POSManagement() {
   const openLocationInMaps = () => {
     const latitude = device?.linthtude;
     const longitude = device?.longtude;
+    console.log("Opening maps with lat:", latitude, "lng:", longitude);
     if (latitude && longitude) {
       const url = `https://www.google.com/maps?q=${latitude},${longitude}`;
-      Linking.openURL(url);
+      console.log("Maps URL:", url);
+      Linking.openURL(url).catch((err) => {
+        console.error("Failed to open maps:", err);
+      });
+    } else {
+      console.log("No valid coordinates");
+      error("الجهاز لا يحتوي على موقع مسجل");
     }
   };
 
@@ -210,7 +220,8 @@ export default function POSManagement() {
     iconsContainer: {
       flexDirection: "column",
       alignItems: "center",
-      gap: theme.spacing[6],
+      justifyContent: "flex-end",
+      gap: theme.spacing[8],
     },
     icon: {
       width: 40,
@@ -249,7 +260,7 @@ export default function POSManagement() {
                   {/* Bottom horizontal section */}
                   <View style={styles.bottomSection}>
                     <Image
-                      source={require("../assets/images/A75Pro.png")}
+                      source={require("../assets/images/sunmiv2.png")}
                       style={styles.deviceImage}
                       contentFit="contain"
                     />

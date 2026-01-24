@@ -1,8 +1,16 @@
 import * as Font from "expo-font";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, AppRegistry, View } from "react-native";
+import {
+  ActivityIndicator,
+  AppRegistry,
+  I18nManager,
+  View,
+} from "react-native";
 import { AuthProvider } from "./src/contexts/AuthContext";
 import RootNavigator from "./src/navigation/RootNavigator";
+
+// Disable RTL to prevent direction switching
+I18nManager.allowRTL(false);
 
 export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(false);

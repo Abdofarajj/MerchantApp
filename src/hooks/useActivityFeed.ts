@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { chargeOrdersService } from "../services/ChargeOrders/service";
 import { documentsService } from "../services/Documents/service";
 
-export type ActivityType = 'RECHARGE' | 'PAY' | 'COLLECT';
+export type ActivityType = "RECHARGE" | "PAY" | "COLLECT";
 
 export interface ActivityItem {
   id: string;
@@ -23,9 +23,9 @@ export type ActivityTab = "الكل" | "شحن" | "تسديد" | "تصفية";
 
 // Adapter functions
 function mapChargeOrdersToActivities(items: any[]): ActivityItem[] {
-  return items.map(item => ({
+  return items.map((item) => ({
     id: `RECHARGE-${item.id}`,
-    type: 'RECHARGE' as ActivityType,
+    type: "RECHARGE" as ActivityType,
     date: item.chargeDate || item.insertDate,
     amount: item.amount,
     isApproved: item.isApproved,
@@ -36,9 +36,9 @@ function mapChargeOrdersToActivities(items: any[]): ActivityItem[] {
 }
 
 function mapReceiptChargesToActivities(items: any[]): ActivityItem[] {
-  return items.map(item => ({
+  return items.map((item) => ({
     id: `PAY-${item.id}`,
-    type: 'PAY' as ActivityType,
+    type: "PAY" as ActivityType,
     date: item.insertDate,
     amount: item.amount,
     isApproved: item.isApproved,
@@ -51,9 +51,9 @@ function mapReceiptChargesToActivities(items: any[]): ActivityItem[] {
 }
 
 function mapReceiptReChargesToActivities(items: any[]): ActivityItem[] {
-  return items.map(item => ({
+  return items.map((item) => ({
     id: `COLLECT-${item.id}`,
-    type: 'COLLECT' as ActivityType,
+    type: "COLLECT" as ActivityType,
     date: item.insertDate,
     amount: item.amount,
     isApproved: item.isApproved,
@@ -74,9 +74,18 @@ export function useActivityFeed(activeTab: ActivityTab) {
         queryKey: ["activityFeed", "all"] as const,
         queryFn: async ({ pageParam }: { pageParam: number }) => {
           const [recharge, pay, collect] = await Promise.all([
-            chargeOrdersService.getChargeOrdersByMerchant({ pageSize, pageNumber: pageParam }),
-            documentsService.getAllReceiptCharge({ pageSize, pageNumber: pageParam }),
-            documentsService.getAllReceiptReCharge({ pageSize, pageNumber: pageParam }),
+            chargeOrdersService.getChargeOrdersByMerchant({
+              pageSize,
+              pageNumber: pageParam,
+            }),
+            documentsService.getAllReceiptCharge({
+              pageSize,
+              pageNumber: pageParam,
+            }),
+            documentsService.getAllReceiptReCharge({
+              pageSize,
+              pageNumber: pageParam,
+            }),
           ]);
 
           const allItems = [
@@ -85,19 +94,28 @@ export function useActivityFeed(activeTab: ActivityTab) {
             ...mapReceiptReChargesToActivities(collect.items),
           ];
 
-          allItems.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+          allItems.sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          );
 
           const pageItems = allItems.slice(0, 5);
 
           return {
             items: pageItems,
-            hasNextPage: (recharge.hasNextPage || pay.hasNextPage || collect.hasNextPage) && allItems.length >= 5,
+            hasNextPage:
+              (recharge.hasNextPage ||
+                pay.hasNextPage ||
+                collect.hasNextPage) &&
+              allItems.length >= 5,
             pageParam,
           };
         },
         initialPageParam: 1 as number,
-        getNextPageParam: (lastPage: { items: ActivityItem[]; hasNextPage: boolean; pageParam: number }) =>
-          lastPage.hasNextPage ? lastPage.pageParam + 1 : undefined,
+        getNextPageParam: (lastPage: {
+          items: ActivityItem[];
+          hasNextPage: boolean;
+          pageParam: number;
+        }) => (lastPage.hasNextPage ? lastPage.pageParam + 1 : undefined),
         select: (data: any) => ({
           pages: data.pages.flatMap((page: any) => page.items),
           pageParams: data.pageParams,
@@ -109,11 +127,17 @@ export function useActivityFeed(activeTab: ActivityTab) {
       return {
         queryKey: ["activityFeed", "recharge"] as const,
         queryFn: async ({ pageParam }: { pageParam: number }) =>
-          chargeOrdersService.getChargeOrdersByMerchant({ pageSize, pageNumber: pageParam }),
+          chargeOrdersService.getChargeOrdersByMerchant({
+            pageSize,
+            pageNumber: pageParam,
+          }),
         initialPageParam: 1 as number,
-        getNextPageParam: (lastPage: any) => lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
+        getNextPageParam: (lastPage: any) =>
+          lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
         select: (data: any) => ({
-          pages: data.pages.flatMap((page: any) => mapChargeOrdersToActivities(page.items)),
+          pages: data.pages.flatMap((page: any) =>
+            mapChargeOrdersToActivities(page.items)
+          ),
           pageParams: data.pageParams,
         }),
       };
@@ -123,11 +147,17 @@ export function useActivityFeed(activeTab: ActivityTab) {
       return {
         queryKey: ["activityFeed", "pay"] as const,
         queryFn: async ({ pageParam }: { pageParam: number }) =>
-          documentsService.getAllReceiptCharge({ pageSize, pageNumber: pageParam }),
+          documentsService.getAllReceiptCharge({
+            pageSize,
+            pageNumber: pageParam,
+          }),
         initialPageParam: 1 as number,
-        getNextPageParam: (lastPage: any) => lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
+        getNextPageParam: (lastPage: any) =>
+          lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
         select: (data: any) => ({
-          pages: data.pages.flatMap((page: any) => mapReceiptChargesToActivities(page.items)),
+          pages: data.pages.flatMap((page: any) =>
+            mapReceiptChargesToActivities(page.items)
+          ),
           pageParams: data.pageParams,
         }),
       };
@@ -137,11 +167,17 @@ export function useActivityFeed(activeTab: ActivityTab) {
       return {
         queryKey: ["activityFeed", "collect"] as const,
         queryFn: async ({ pageParam }: { pageParam: number }) =>
-          documentsService.getAllReceiptReCharge({ pageSize, pageNumber: pageParam }),
+          documentsService.getAllReceiptReCharge({
+            pageSize,
+            pageNumber: pageParam,
+          }),
         initialPageParam: 1 as number,
-        getNextPageParam: (lastPage: any) => lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
+        getNextPageParam: (lastPage: any) =>
+          lastPage.hasNextPage ? lastPage.pageIndex + 1 : undefined,
         select: (data: any) => ({
-          pages: data.pages.flatMap((page: any) => mapReceiptReChargesToActivities(page.items)),
+          pages: data.pages.flatMap((page: any) =>
+            mapReceiptReChargesToActivities(page.items)
+          ),
           pageParams: data.pageParams,
         }),
       };

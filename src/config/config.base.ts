@@ -10,7 +10,7 @@ export interface BaseConfig {
 
 export const defaultConfig: BaseConfig = {
   env: "INT", // TODO: adjust default environment if needed
-  API_URL: "https://e-voucher-merchant.zaho.ly:6443/",
-  SIGNAL_R_URL: "https://e-voucher-merchant.zaho.ly:6443/balanceHub",
+  API_URL: "https://e-vouchermerchant.zaho.ly:12443/",
+  SIGNAL_R_URL: "https://e-vouchermerchant.zaho.ly:12443/balanceHub",
   TIMEOUT: 60000,
 };

@@ -45,7 +45,6 @@ export default function ActivityScreen() {
 
   // Animation for tab indicator
   const tabIndicatorPosition = useRef(new Animated.Value(0)).current;
-  const lastFetchRef = useRef(Date.now());
 
   // Activity hook
   const {

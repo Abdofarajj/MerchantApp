@@ -29,5 +29,14 @@ export const usePosDetails = () => {
     isError: query.isError,
   });
 
+  // Log device coordinates if available
+  if (query.data) {
+    query.data.forEach((device, index) => {
+      console.log(
+        `Device ${index}: longtude=${device.longtude}, linthtude=${device.linthtude}`
+      );
+    });
+  }
+
   return query;
 };

@@ -29,22 +29,29 @@ const useDeviceActivation = (device: DeviceMerchant | undefined) => {
 
     // Handle API call asynchronously
     const performToggle = async () => {
-      try {
-        if (value) {
-          // Activate
-          await activateMutation.mutateAsync({
-            id: device.id,
-            updateToken: device.updateToken,
-          });
-          success("تم تفعيل الجهاز بنجاح");
-        } else {
-          // Deactivate
-          await deactivateMutation.mutateAsync({
-            id: device.id,
-            updateToken: device.updateToken,
-          });
-          success("تم إلغاء تفعيل الجهاز بنجاح");
-        }
+      let response;
+      if (value) {
+        // Activate
+        response = await activateMutation.mutateAsync({
+          id: device.id,
+          updateToken: device.updateToken,
+        });
+      } else {
+        // Deactivate
+        response = await deactivateMutation.mutateAsync({
+          id: device.id,
+          updateToken: device.updateToken,
+        });
+      }
+
+      if (response.isError) {
+        // Revert on failure
+        setIsEnabled(previousState);
+        showError(response.messageName);
+      } else {
+        success(
+          value ? "تم تفعيل الجهاز بنجاح" : "تم إلغاء تفعيل الجهاز بنجاح"
+        );
 
         // Update the global query cache for HomeScreen
         queryClient.setQueryData(["posDetails"], (oldData: any) => {
@@ -56,11 +63,6 @@ const useDeviceActivation = (device: DeviceMerchant | undefined) => {
             ),
           };
         });
-      } catch (apiError) {
-        // Revert on failure
-        setIsEnabled(previousState);
-        showError("فشل في تحديث حالة الجهاز");
-        console.error("Failed to toggle device:", apiError);
       }
     };
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { accountsService } from "../services/Accounts/service";
 import { GetChargeOrdersResponse } from "../services/Dashboards/schema";
 import { dashboardsService } from "../services/Dashboards/service";
@@ -34,7 +34,7 @@ export const useHomeDetails = () => {
     }
   }, [token, userInfo, setUserInfo]);
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -71,13 +71,13 @@ export const useHomeDetails = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [userInfo]);
 
   useEffect(() => {
     if (userInfo) {
       fetchDashboard();
     }
-  }, [userInfo]);
+  }, [userInfo, fetchDashboard]);
 
   const refetch = async () => {
     if (userInfo) {

@@ -42,36 +42,36 @@ const lightColors = {
 };
 
 const darkColors = {
-  primary: "#004A99", // Brightened for dark background
-  onPrimary: "#000000", // Text on primary buttons
-  primaryContainer: "#005FCC", // Darker container for primary
-  posBackground: "#c3d8f3ff", // Primary container color
+  primary: "#007AFF", // Main brand blue
+  onPrimary: "#FFFFFF", // Text on primary buttons
+  primaryContainer: "#007AFF", // Primary container color
+  posBackground: "#ffffffff", // Primary container color
 
-  secondary: "#4A8DDB", // Softer alternative to primary
+  secondary: "#0c29a8ff", // Secondary accent blue
 
-  background: "#000000ff", // Main app background (near-black)
-  background2: "#1A1A1A", // Secondary background
+  background2: "#FFFFFF", // Main app background
+  background: "#eeeeeeff", // Secondary background sections
   background3: "#060e17", // Tertiary background sections
 
-  surface: "#1E1E1E", // Cards / surfaces
-  surfaceVariant: "#2A2A2A", // Slightly brighter surface variant
+  surface: "#ffffffff", // Cards / surfaces
+  surfaceVariant: "#F0F4F2", // Slightly darker surface variant
 
-  text: "#FFFFFFFF", // Main white text
-  text2: "#000000ff", // Slightly dimmed white
-  textSecondary: "#A0AEC0", // Cool gray for less emphasis
-  textDim: "#7A7A7AFF", // Even dimmer text (labels, hints)
+  text: "#000000FF", // Main black text
+  text2: "#ffffffff", // Secondary main text
+  textSecondary: "#334155", // Less emphasis text
+  textDim: "#727272FF", // Dimmed / hint text
 
-  outline: "#5F5F5FFF", // Border / dividers
+  outline: "#9C9C9CFF", // Borders / dividers
 
-  success: "#22C55E", // Green success on dark
-  warning: "#FBBF24", // Deep warm yellow
-  error: "#F87171", // Light red for visibility
-  info: "#60A5FA", // Light blue info
+  success: "#10B981", // Success green
+  warning: "#F59E0B", // Warning orange
+  error: "#EF4444", // Error red
+  info: "#3B82F6", // Info blue
 
-  white: "#FFFFFF",
-  black: "#000000",
+  white: "#FFFFFF", // Pure white
+  black: "#000000", // Pure black
 
-  disabled: "#555555FF", // Disabled elements (low contrast)
+  disabled: "#474747FF", // Disabled elements
 };
 
 export const lightTheme = {

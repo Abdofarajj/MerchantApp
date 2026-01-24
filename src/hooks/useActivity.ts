@@ -67,7 +67,6 @@ export const useActivity = (activeTab: ActivityTab) => {
     }
   );
 
-
   // Accumulate items
   useEffect(() => {
     if (rechargeData?.items) {

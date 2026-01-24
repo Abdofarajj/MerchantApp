@@ -78,7 +78,7 @@ const SecurityDepositCard: React.FC<SecurityDepositCardProps> = ({
 const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
-    padding: 30,
+    // padding: 30,
   },
   amount: {
     fontSize: 26,
