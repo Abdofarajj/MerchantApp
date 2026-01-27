@@ -141,14 +141,12 @@ const setupEventHandlers = () => {
 };
 
 const handleAppStateChange = (nextAppState: string) => {
-  if (nextAppState === "background") {
-    // Optionally stop connection in background
-    logger.log("App going to background, stopping SignalR connection");
-    stopSignalRConnection();
-  } else if (nextAppState === "active") {
-    // Restart connection when app becomes active
-    logger.log("App becoming active, starting SignalR connection");
-    createSignalRConnection();
+  if (nextAppState === "active") {
+    // Ensure connection is started when app becomes active
+    logger.log("App becoming active, ensuring SignalR connection");
+    if (!connection || connection.state !== "Connected") {
+      createSignalRConnection();
+    }
   }
 };
 

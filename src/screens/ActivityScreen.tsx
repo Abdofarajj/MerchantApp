@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
@@ -19,6 +19,8 @@ import Text from "../components/Text";
 import { ActivityItem, useActivityFeed } from "../hooks/useActivityFeed";
 import { useHeader } from "../hooks/useHeader";
 import { useDeleteChargeOrderMutation } from "../services/ChargeOrders/hook";
+import { chargeOrdersService } from "../services/ChargeOrders/service";
+import { documentsService } from "../services/Documents/service";
 import { darkTheme, lightTheme } from "../theme";
 import { useToast } from "../utils/toast";
 
@@ -55,6 +57,39 @@ export default function ActivityScreen() {
     hasNextPage,
     isFetchingNextPage,
   } = useActivityFeed(activeTab);
+
+  // Total queries for tab counts
+  const rechargeTotalQuery = useQuery({
+    queryKey: ["activityFeed", "recharge", "total"],
+    queryFn: () =>
+      chargeOrdersService
+        .getChargeOrdersByMerchant({ pageSize: 1, pageNumber: 1 })
+        .then((r) => r.totalItems),
+  });
+  const payTotalQuery = useQuery({
+    queryKey: ["activityFeed", "pay", "total"],
+    queryFn: () =>
+      documentsService
+        .getAllReceiptCharge({ pageSize: 1, pageNumber: 1 })
+        .then((r) => r.totalItems),
+  });
+  const collectTotalQuery = useQuery({
+    queryKey: ["activityFeed", "collect", "total"],
+    queryFn: () =>
+      documentsService
+        .getAllReceiptReCharge({ pageSize: 1, pageNumber: 1 })
+        .then((r) => r.totalItems),
+  });
+
+  const totals = {
+    شحن: rechargeTotalQuery.data || 0,
+    تسديد: payTotalQuery.data || 0,
+    تصفية: collectTotalQuery.data || 0,
+    الكل:
+      (rechargeTotalQuery.data || 0) +
+      (payTotalQuery.data || 0) +
+      (collectTotalQuery.data || 0),
+  };
 
   // Compute sections from data
   const sections = useMemo(() => {
@@ -184,25 +219,28 @@ export default function ActivityScreen() {
             { transform: [{ translateX: tabIndicatorPosition }] },
           ]}
         />
-        {["الكل", "تصفية", "تسديد", "شحن"].map((tab, index) => (
-          <TouchableOpacity
-            key={tab}
-            style={styles.tab}
-            onPress={() => handleTabPress(tab as any)}
-            activeOpacity={0.7}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === tab
-                  ? styles.activeTabText
-                  : styles.inactiveTabText,
-              ]}
+        {["الكل", "تصفية", "تسديد", "شحن"].map((tab, index) => {
+          const tabTotal = totals[tab as keyof typeof totals];
+          return (
+            <TouchableOpacity
+              key={tab}
+              style={styles.tab}
+              onPress={() => handleTabPress(tab as any)}
+              activeOpacity={0.7}
             >
-              {tab}
-            </Text>
-          </TouchableOpacity>
-        ))}
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === tab
+                    ? styles.activeTabText
+                    : styles.inactiveTabText,
+                ]}
+              >
+                {tab} {tabTotal > 0 ? `(${tabTotal})` : ""}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
 
       <SectionList
@@ -242,7 +280,7 @@ export default function ActivityScreen() {
             </View>
           );
         }}
-        contentContainerStyle={{ paddingBottom: 100 }}
+        contentContainerStyle={{ paddingBottom: 70 }}
         refreshControl={
           <RefreshControl
             refreshing={false}

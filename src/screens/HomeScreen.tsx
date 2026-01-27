@@ -27,7 +27,6 @@ import type { RootStackParamList } from "../navigation/AppNavigator";
 import { useAuthStore } from "../store/authStore";
 import { darkTheme, lightTheme } from "../theme";
 import { AccountSnapshot } from "../types/account";
-import { logger } from "../utils/logger";
 import { useToast } from "../utils/toast";
 
 type QuickAction = {
@@ -110,13 +109,6 @@ export default function HomeScreen() {
   const hasVisiblePending = chargeOrders
     ? chargeOrders.filter((item) => !dismissedItems.has(item.id)).length > 0
     : false;
-
-  // Log userInfo when component mounts or userInfo changes
-  useEffect(() => {
-    if (userInfo) {
-      logger.log("HomeScreen: userInfo", userInfo);
-    }
-  }, [userInfo]);
 
   // Fallback: refetch on screen focus (optional, but recommended)
   useFocusEffect(

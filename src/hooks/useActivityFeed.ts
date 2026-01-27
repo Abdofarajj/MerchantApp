@@ -67,6 +67,7 @@ function mapReceiptReChargesToActivities(items: any[]): ActivityItem[] {
 
 export function useActivityFeed(activeTab: ActivityTab) {
   const pageSize = 5;
+  const fetchPageSize = 100; // Fetch larger batch for merging
 
   const options = (() => {
     if (activeTab === "الكل") {
@@ -75,16 +76,16 @@ export function useActivityFeed(activeTab: ActivityTab) {
         queryFn: async ({ pageParam }: { pageParam: number }) => {
           const [recharge, pay, collect] = await Promise.all([
             chargeOrdersService.getChargeOrdersByMerchant({
-              pageSize,
-              pageNumber: pageParam,
+              pageSize: fetchPageSize,
+              pageNumber: 1,
             }),
             documentsService.getAllReceiptCharge({
-              pageSize,
-              pageNumber: pageParam,
+              pageSize: fetchPageSize,
+              pageNumber: 1,
             }),
             documentsService.getAllReceiptReCharge({
-              pageSize,
-              pageNumber: pageParam,
+              pageSize: fetchPageSize,
+              pageNumber: 1,
             }),
           ]);
 
@@ -98,15 +99,13 @@ export function useActivityFeed(activeTab: ActivityTab) {
             (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
           );
 
-          const pageItems = allItems.slice(0, 5);
+          const start = (pageParam - 1) * pageSize;
+          const end = start + pageSize;
+          const pageItems = allItems.slice(start, end);
 
           return {
             items: pageItems,
-            hasNextPage:
-              (recharge.hasNextPage ||
-                pay.hasNextPage ||
-                collect.hasNextPage) &&
-              allItems.length >= 5,
+            hasNextPage: end < allItems.length,
             pageParam,
           };
         },

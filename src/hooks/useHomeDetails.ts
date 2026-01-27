@@ -79,6 +79,15 @@ export const useHomeDetails = () => {
     }
   }, [userInfo, fetchDashboard]);
 
+  // Ensure SignalR is connected when userInfo is available
+  useEffect(() => {
+    if (userInfo && !signalRConnected) {
+      createSignalRConnection().catch((error) => {
+        console.warn("Failed to ensure SignalR connection:", error);
+      });
+    }
+  }, [userInfo, signalRConnected]);
+
   const refetch = async () => {
     if (userInfo) {
       await fetchDashboard();

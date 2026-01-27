@@ -55,7 +55,7 @@ export default function ActivityCard({
               iconName={item.isApproved ? "checkCircle" : "schedule"}
               iconSize={25}
               iconColor={item.isApproved ? "green" : "#ffc70dff"}
-              iconContainerStyle={{ marginLeft: 8 }}
+              iconContainerStyle={{ marginLeft: 10 }}
             />
           </View>
           <Text style={styles.amountText}>{amountText}</Text>
@@ -92,10 +92,10 @@ const getStyles = (theme: any, type: string) =>
     container: {
       flexDirection: "row",
       backgroundColor: theme.colors.surface,
-      padding: 15,
-      marginVertical: 5,
+      padding: 6,
+      marginVertical: 2,
       marginHorizontal: 8,
-      borderRadius: 10,
+      borderRadius: 20,
     },
     leftArea: {
       flex: 1,
@@ -106,7 +106,7 @@ const getStyles = (theme: any, type: string) =>
       flexDirection: "row-reverse", // 👈 flips order of text inside row only
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 4,
+      // marginBottom: 4,
     },
     rightAlignedText: {
       textAlign: "right",
@@ -117,6 +117,7 @@ const getStyles = (theme: any, type: string) =>
       textAlign: "right",
       fontSize: 17,
       color: type === "collect" ? "green" : theme.colors.text,
+      marginLeft: 10,
     },
     rightBox: {
       width: 40,

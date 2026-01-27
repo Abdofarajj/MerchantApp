@@ -28,7 +28,6 @@ api.interceptors.request.use(
       const cleanRequest = {
         method: config.method?.toUpperCase(),
         url: config.url,
-        data: config.data,
         baseURL: config.baseURL,
       };
       logger.log("API Request:", cleanRequest);
@@ -54,7 +53,6 @@ api.interceptors.response.use(
         statusText: response.statusText,
         url: response.config.url,
         method: response.config.method?.toUpperCase(),
-        data: response.data,
       };
       logger.log("API Response:", cleanResponse);
     }

@@ -538,7 +538,7 @@ export function ActivityDetailsModal({
             <Button
               text="إلغاء الطلب"
               onPress={() => confirmationModalRef.current?.present()}
-              style={{ marginTop: 20 }}
+              // style={{ marginTop: 2 }}
             />
           )}
         </View>
@@ -548,7 +548,7 @@ export function ActivityDetailsModal({
             iconName="share"
             backgroundColor={theme.colors.primary}
             onPress={() => shareReceiptAsPdf(generateReceiptHtml(item))}
-            width={100}
+            width={300}
           />
         </View>
       </TouchableOpacity>

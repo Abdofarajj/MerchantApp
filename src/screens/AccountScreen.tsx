@@ -231,9 +231,9 @@ export default function AccountScreen() {
             style={{ width: "100%" }}
           />
           <Button
-            backgroundColor={theme.colors.background2}
+            gradientColors={["#666666", "#4e4d4d"]}
             text="تسجيل الخروج"
-            textColor={theme.colors.text}
+            textColor={theme.colors.text2}
             onPress={handleLogout}
             style={{ width: "100%" }}
           />
